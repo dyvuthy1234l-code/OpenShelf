@@ -1,0 +1,337 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  BookOpen, Building2, Clock, AlertTriangle, RefreshCw, 
+  DollarSign, CheckCircle2, ArrowRightLeft, X 
+} from 'lucide-react';
+import memberService from '../../services/memberService';
+
+export default function BorrowingCard({ borrowing, onActionSuccess }) {
+  const [extending, setExtending] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [requestingReturn, setRequestingReturn] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+
+  const [actionMessage, setActionMessage] = useState('');
+  const [actionError, setActionError] = useState('');
+
+  const book = borrowing.book || {};
+  const library = borrowing.library || {};
+  const status = borrowing.status || 'pending';
+
+  // Compute countdown / overdue
+  const now = new Date();
+  const dueDate = borrowing.due_date ? new Date(borrowing.due_date) : null;
+
+  let countdownText = '';
+  let isOverdue = status === 'overdue';
+
+  if (dueDate) {
+    const diffTime = dueDate - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) {
+      isOverdue = true;
+      countdownText = `${Math.abs(diffDays)} days overdue`;
+    } else if (diffDays === 0) {
+      countdownText = 'Due today';
+    } else if (diffDays === 1) {
+      countdownText = 'Due tomorrow';
+    } else {
+      countdownText = `${diffDays} days left`;
+    }
+  }
+
+  const isEligibleForReturn = (status === 'borrowed' || status === 'picked_up' || isOverdue) && status !== 'return_requested' && status !== 'returned';
+
+  const handleRequestReturnSubmit = async () => {
+    try {
+      setRequestingReturn(true);
+      setActionMessage('');
+      setActionError('');
+      await memberService.requestReturn(borrowing.id);
+      setActionMessage('Return request submitted successfully.');
+      setShowReturnModal(false);
+      if (onActionSuccess) onActionSuccess();
+    } catch (err) {
+      setActionError(err.response?.data?.message || 'Failed to submit return request.');
+      setShowReturnModal(false);
+    } finally {
+      setRequestingReturn(false);
+    }
+  };
+
+  const handleExtend = async () => {
+    try {
+      setExtending(true);
+      setActionMessage('');
+      setActionError('');
+      await memberService.extendBorrowing(borrowing.id);
+      setActionMessage('Loan extension requested successfully!');
+      if (onActionSuccess) onActionSuccess();
+    } catch (err) {
+      setActionError(err.response?.data?.message || 'Failed to extend loan.');
+    } finally {
+      setExtending(false);
+    }
+  };
+
+  const handlePayFine = async () => {
+    try {
+      setPaying(true);
+      setActionMessage('');
+      setActionError('');
+      await memberService.payFine(borrowing.id);
+      setActionMessage('Fine payment processed!');
+      if (onActionSuccess) onActionSuccess();
+    } catch (err) {
+      setActionError(err.response?.data?.message || 'Failed to process payment.');
+    } finally {
+      setPaying(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          {/* Book + Library Info */}
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="w-12 h-16 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+              {book.cover_image_url ? (
+                <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover" />
+              ) : (
+                <BookOpen className="w-6 h-6 text-slate-400" />
+              )}
+            </div>
+
+            <div className="min-w-0 space-y-1">
+              <h3 className="text-base font-bold text-slate-900 truncate">{book.title || 'Untitled Book'}</h3>
+              {book.author && <p className="text-xs text-slate-500 truncate">By {book.author}</p>}
+              {library.name && (
+                <div className="flex items-center gap-1 text-xs text-amber-700 font-semibold truncate">
+                  <Building2 className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{library.name}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Status Pill & Countdown */}
+          <div className="shrink-0 flex sm:flex-col items-start sm:items-end justify-between w-full sm:w-auto gap-2">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                status === 'return_requested'
+                  ? 'bg-amber-50 text-amber-800 border border-amber-300'
+                  : status === 'approved'
+                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                  : status === 'borrowed' || status === 'picked_up'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  : status === 'returned'
+                  ? 'bg-slate-100 text-slate-600 border border-slate-200'
+                  : status === 'rejected' || isOverdue
+                  ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+              }`}
+            >
+              {status === 'return_requested' ? '🟡 Return Requested' : isOverdue ? '🔴 Overdue' : status}
+            </span>
+
+            {dueDate && (status === 'borrowed' || status === 'picked_up' || isOverdue) && status !== 'return_requested' && (
+              <div className={`flex items-center gap-1 text-xs font-bold ${isOverdue ? 'text-rose-600' : 'text-amber-700'}`}>
+                {isOverdue ? <AlertTriangle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
+                <span>{countdownText}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Dates Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
+          <div>
+            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Requested</span>
+            <span className="font-bold text-slate-800">
+              {borrowing.created_at ? new Date(borrowing.created_at).toLocaleDateString() : 'N/A'}
+            </span>
+          </div>
+
+          {(borrowing.picked_up_at || borrowing.pickup_date) && (
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Picked Up</span>
+              <span className="font-bold text-slate-800">
+                {new Date(borrowing.picked_up_at || borrowing.pickup_date).toLocaleDateString()}
+              </span>
+            </div>
+          )}
+
+          {borrowing.due_date && (
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Due Date</span>
+              <span className={`font-bold ${isOverdue ? 'text-rose-600' : 'text-slate-800'}`}>
+                {new Date(borrowing.due_date).toLocaleDateString()}
+              </span>
+            </div>
+          )}
+
+          {(borrowing.returned_at || borrowing.return_date) && (
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Returned</span>
+              <span className="font-bold text-emerald-700">
+                {new Date(borrowing.returned_at || borrowing.return_date).toLocaleDateString()}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Return Requested Status Notice */}
+        {status === 'return_requested' && (
+          <div className="bg-amber-50/80 border border-amber-200/90 rounded-xl p-3 text-xs text-amber-900 flex items-start gap-2.5 font-medium">
+            <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-bold">Return Requested</strong>
+              <span>Waiting for the librarian to confirm the physical return.</span>
+            </div>
+          </div>
+        )}
+
+        {/* Fine Status (if any) */}
+        {borrowing.fine_amount > 0 && (
+          <div className="flex items-center justify-between bg-rose-50 border border-rose-200 p-3 rounded-xl text-xs">
+            <div className="flex items-center gap-2 text-rose-800 font-semibold">
+              <DollarSign className="w-4 h-4 text-rose-600" />
+              <span>
+                Fine: <strong>${borrowing.fine_amount}</strong> ({borrowing.fine_status || 'unpaid'})
+              </span>
+            </div>
+
+            {borrowing.fine_status === 'unpaid' && (
+              <button
+                onClick={handlePayFine}
+                disabled={paying}
+                className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all"
+              >
+                {paying ? 'Processing...' : 'Pay Fine'}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Action Messages */}
+        {actionMessage && (
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <span>{actionMessage}</span>
+          </div>
+        )}
+
+        {actionError && (
+          <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-xl text-xs font-semibold">
+            {actionError}
+          </div>
+        )}
+
+        {/* Action Buttons: Request Return & Extend Loan */}
+        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+          {(status === 'borrowed' || status === 'picked_up') && !isOverdue && status !== 'return_requested' && (
+            <button
+              onClick={handleExtend}
+              disabled={extending}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${extending ? 'animate-spin' : ''}`} />
+              <span>{extending ? 'Extending...' : 'Extend Loan'}</span>
+            </button>
+          )}
+
+          {isEligibleForReturn && (
+            <button
+              onClick={() => setShowReturnModal(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+            >
+              <ArrowRightLeft className="w-3.5 h-3.5" />
+              <span>Request Return</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* CONFIRMATION MODAL */}
+      <AnimatePresence>
+        {showReturnModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2 text-slate-900 font-extrabold text-lg">
+                  <ArrowRightLeft className="w-5 h-5 text-amber-600" />
+                  <h3>Request Book Return</h3>
+                </div>
+                <button
+                  onClick={() => setShowReturnModal(false)}
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-600">
+                Are you sure you want to request the return of this book?
+              </p>
+
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Book</span>
+                  <span className="font-extrabold text-slate-900 text-sm block truncate">{book.title || 'Untitled'}</span>
+                  {book.author && <span className="text-slate-500 block truncate">By {book.author}</span>}
+                </div>
+
+                {library.name && (
+                  <div className="pt-2 border-t border-slate-200/60">
+                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Library</span>
+                    <span className="font-bold text-amber-700 truncate block">{library.name}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 leading-relaxed font-medium">
+                The librarian will confirm the physical return after you hand the book back.
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  onClick={() => setShowReturnModal(false)}
+                  disabled={requestingReturn}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleRequestReturnSubmit}
+                  disabled={requestingReturn}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                >
+                  {requestingReturn ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Requesting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRightLeft className="w-3.5 h-3.5" />
+                      <span>Request Return</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

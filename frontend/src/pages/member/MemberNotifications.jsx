@@ -1,0 +1,228 @@
+import { useState, useEffect, useCallback } from 'react';
+import { Bell, CheckCheck, CheckCircle2, Trash2 } from 'lucide-react';
+import memberService from '../../services/memberService';
+import { formatNotificationTime } from '../../utils/dateUtils';
+import LoadingState from '../../components/public/LoadingState';
+import EmptyState from '../../components/public/EmptyState';
+import ErrorState from '../../components/public/ErrorState';
+import Pagination from '../../components/public/Pagination';
+
+export default function MemberNotifications() {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [actionMessage, setActionMessage] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
+  const ITEMS_PER_PAGE = 5;
+
+  const loadNotifications = useCallback(async (isSilent = false) => {
+    try {
+      if (!isSilent) setLoading(true);
+      setError(null);
+      const res = await memberService.getNotifications({ page: currentPage, per_page: ITEMS_PER_PAGE });
+      const list = res.data || [];
+      setNotifications(list);
+      if (res.meta) {
+        setMeta(res.meta);
+      } else {
+        setMeta({ current_page: 1, last_page: 1, total: list.length });
+      }
+    } catch {
+      if (!isSilent) setError('Failed to load notifications.');
+    } finally {
+      if (!isSilent) setLoading(false);
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    loadNotifications(false);
+
+    // Auto-refresh interval every 10 seconds for real-time member notifications
+    const interval = setInterval(() => {
+      loadNotifications(true);
+    }, 10000);
+
+    const handleFocus = () => loadNotifications(true);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [loadNotifications]);
+
+  const handleMarkAsRead = async (id) => {
+    try {
+      await memberService.markNotificationAsRead(id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
+      );
+      window.dispatchEvent(new Event('notificationsRead'));
+    } catch {
+      // non-critical error
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await memberService.markAllNotificationsAsRead();
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
+      );
+      setActionMessage('All notifications marked as read.');
+      window.dispatchEvent(new Event('notificationsRead'));
+      setTimeout(() => setActionMessage(''), 3000);
+    } catch {
+      // non-critical
+    }
+  };
+
+  const handleDeleteNotification = async (e, id) => {
+    e.stopPropagation();
+    try {
+      await memberService.deleteNotification(id);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      setActionMessage('Notification deleted.');
+      window.dispatchEvent(new Event('notificationsRead'));
+      setTimeout(() => setActionMessage(''), 3000);
+      loadNotifications();
+    } catch {
+      // non-critical error
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Are you sure you want to clear all notifications?')) return;
+    try {
+      await memberService.clearAllNotifications();
+      setNotifications([]);
+      setActionMessage('All notifications cleared.');
+      window.dispatchEvent(new Event('notificationsRead'));
+      setTimeout(() => setActionMessage(''), 3000);
+      loadNotifications();
+    } catch {
+      // non-critical error
+    }
+  };
+
+  const unreadCount = notifications.filter((n) => !n.read_at).length;
+  const totalPages = meta.last_page || 1;
+  const paginatedNotifications = notifications;
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200/80">
+        <div>
+          <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1">
+            <Bell className="w-4 h-4" />
+            <span>Activity Inbox</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Notifications</h1>
+          <p className="text-slate-500 text-xs sm:text-sm mt-1">
+            Updates on borrowing requests, due dates, and library activity
+          </p>
+        </div>
+
+        {notifications.length > 0 && (
+          <div className="flex items-center gap-2 shrink-0">
+            {unreadCount > 0 && (
+              <button
+                onClick={handleMarkAllRead}
+                className="inline-flex items-center gap-2 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
+              >
+                <CheckCheck className="w-4 h-4" />
+                <span>Mark All as Read</span>
+              </button>
+            )}
+
+            <button
+              onClick={handleClearAll}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200/80 transition-all cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>Clear All</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {actionMessage && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold">
+          {actionMessage}
+        </div>
+      )}
+
+      {/* Content */}
+      {loading ? (
+        <LoadingState message="Loading your notifications..." />
+      ) : error ? (
+        <ErrorState message={error} />
+      ) : notifications.length === 0 ? (
+        <EmptyState
+          title="You're all caught up."
+          description="There are no notifications in your inbox at this time."
+        />
+      ) : (
+        <div className="bg-white border border-slate-200/90 rounded-2xl divide-y divide-slate-100 overflow-hidden shadow-2xs">
+          {paginatedNotifications.map((n) => {
+            const isUnread = !n.read_at;
+            const message = n.data?.message || n.message || 'Notification update';
+            const title = n.data?.title || n.type?.split('\\').pop() || 'Notice';
+
+            return (
+              <div
+                key={n.id}
+                onClick={() => isUnread && handleMarkAsRead(n.id)}
+                className={`p-5 flex items-start justify-between gap-4 transition-colors cursor-pointer group ${
+                  isUnread ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-slate-50'
+                }`}
+              >
+                <div className="flex items-start gap-4 min-w-0 flex-1">
+                  {/* Unread indicator */}
+                  <div className="mt-1 shrink-0">
+                    {isUnread ? (
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                    ) : (
+                      <CheckCircle2 className="w-4 h-4 text-slate-400" />
+                    )}
+                  </div>
+
+                  <div className="min-w-0 space-y-1 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className={`text-xs font-bold ${isUnread ? 'text-amber-800' : 'text-slate-900'}`}>
+                        {title}
+                      </h4>
+                      <span className="text-[10px] text-slate-400 shrink-0">
+                        {formatNotificationTime(n.created_at)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{message}</p>
+                  </div>
+                </div>
+
+                {/* Delete Button */}
+                <button
+                  onClick={(e) => handleDeleteNotification(e, n.id)}
+                  title="Delete notification"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all opacity-80 group-hover:opacity-100 shrink-0 cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {!loading && !error && notifications.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          lastPage={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
+    </div>
+  );
+}
