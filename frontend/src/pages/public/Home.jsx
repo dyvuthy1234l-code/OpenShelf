@@ -134,9 +134,9 @@ export default function Home() {
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
       {/* 1. HERO SECTION — DEEP NAVY */}
-      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-24 bg-gradient-to-b from-[#0B1220] via-[#111827] to-[#18181B] text-[#F8FAFC] overflow-hidden border-b border-[#26344D]">
+      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-24 bg-gradient-to-b from-[#0B1F3A] via-[#123A63] to-[#163F6B] text-white overflow-hidden border-b border-[#163F6B]">
         {/* Glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[45rem] h-[20rem] sm:h-[28rem] bg-[#F59E0B]/10 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[45rem] h-[20rem] sm:h-[28rem] bg-[#D9A83E]/10 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
@@ -147,21 +147,21 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="lg:col-span-6 space-y-5 sm:space-y-6"
             >
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#FBBF24] text-xs font-bold tracking-wide">
-                <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
-                OpenShelf Digital Library Network
+              {/* Eyebrow / Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D9A83E]/10 border border-[#D9A83E]/30 text-[#D9A83E] text-xs font-bold tracking-wide">
+                <Sparkles className="w-3.5 h-3.5 text-[#D9A83E]" />
+                OPEN SHELF COLLECTION
               </div>
 
               {/* Editorial Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] text-[#F8FAFC]">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] text-white">
                 Discover books from libraries across{' '}
                 <span
-                  className="inline-flex min-w-[9ch] text-transparent bg-clip-text bg-gradient-to-r from-[#FBBF24] via-[#F59E0B] to-[#FBBF24]"
+                  className="inline-flex min-w-[9ch] text-[#D9A83E]"
                   aria-label={locationWord}
                 >
                   {typedLocation}
-                  <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-[#FBBF24] rounded-full animate-pulse" aria-hidden="true" />
+                  <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-[#D9A83E] rounded-full animate-pulse" aria-hidden="true" />
                 </span>
               </h1>
 
@@ -172,18 +172,18 @@ export default function Home() {
 
               {/* Search Bar */}
               <form onSubmit={handleHeroSearch} className="pt-2 max-w-lg">
-                <div className="relative flex items-center bg-[#111A2E] border border-[#334155] focus-within:border-[#F59E0B] rounded-2xl p-1.5 sm:p-2 shadow-2xl transition-all">
+                <div className="relative flex items-center bg-[#123A63]/80 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-2xl p-1.5 sm:p-2 shadow-2xl transition-all">
                   <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#94A3B8] ml-3 shrink-0" />
                   <input
                     type="text"
                     placeholder="Search by book title, author, or library..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-transparent px-3 py-2 text-xs sm:text-sm text-[#F8FAFC] placeholder-[#94A3B8] focus:outline-none"
+                    className="w-full bg-transparent px-3 py-2 text-xs sm:text-sm text-white placeholder-[#94A3B8] focus:outline-none"
                   />
                   <button
                     type="submit"
-                    className="px-4 sm:px-5 py-2 sm:py-2.5 bg-[#F59E0B] hover:bg-[#FBBF24] text-[#0B1220] text-xs font-bold rounded-xl shadow-md shadow-[#F59E0B]/20 shrink-0 transition-all cursor-pointer"
+                    className="px-4 sm:px-5 py-2 sm:py-2.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#0B1F3A] text-xs font-black rounded-xl shadow-md shadow-[#D9A83E]/20 shrink-0 transition-all cursor-pointer"
                   >
                     Search
                   </button>
@@ -194,28 +194,28 @@ export default function Home() {
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-2">
                 <Link
                   to="/libraries"
-                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#F59E0B] hover:bg-[#FBBF24] text-[#0B1220] font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-[#F59E0B]/20 transition-all"
+                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#0B1F3A] font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-[#D9A83E]/20 transition-all"
                 >
-                  <Building2 className="w-4 h-4 text-[#0B1220]" />
+                  <Building2 className="w-4 h-4 text-[#0B1F3A]" />
                   Explore Libraries
                 </Link>
                 <Link
                   to="/books"
-                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#111A2E] hover:bg-[#1E293B] text-[#F8FAFC] font-semibold text-xs sm:text-sm rounded-xl border border-[#26344D] hover:border-[#334155] transition-all"
+                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#0B1F3A] hover:bg-[#123A63] text-white font-bold text-xs sm:text-sm rounded-xl border border-[#DCE6F0]/20 hover:border-[#D9A83E]/40 transition-all"
                 >
-                  <BookOpen className="w-4 h-4 text-[#F59E0B]" />
+                  <BookOpen className="w-4 h-4 text-[#D9A83E]" />
                   Browse Books
                 </Link>
               </div>
 
               {/* Trust Indicators */}
-              <div className="pt-4 sm:pt-6 border-t border-[#26344D] flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#94A3B8]">
+              <div className="pt-4 sm:pt-6 border-t border-[#123A63] flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#CBD5E1]">
                 <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-[#10B981]" />
+                  <ShieldCheck className="w-4 h-4 text-[#2D8A61]" />
                   <span>Verified Libraries</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#F59E0B]" />
+                  <CheckCircle2 className="w-4 h-4 text-[#D9A83E]" />
                   <span>Real-time Availability</span>
                 </div>
                 <div className="flex items-center gap-1.5">

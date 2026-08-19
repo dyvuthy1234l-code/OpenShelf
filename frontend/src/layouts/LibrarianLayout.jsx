@@ -9,6 +9,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import librarianService from '../services/librarianService';
 import { formatNotificationTime } from '../utils/dateUtils';
+import OpenShelfBrand from '../components/common/OpenShelfBrand';
 
 export default function LibrarianLayout() {
   const { user, logout } = useAuth();
@@ -109,21 +110,12 @@ export default function LibrarianLayout() {
     <div className="h-screen w-full bg-slate-100 flex overflow-hidden font-sans text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950">
       <div className="flex flex-1 w-full h-full relative overflow-hidden">
         {/* DESKTOP FIXED SIDEBAR */}
-        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-slate-950 text-white border-r border-slate-800 shrink-0 select-none z-20 overflow-hidden">
+        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#07172B] text-white border-r border-[#0F3256] shrink-0 select-none z-20 overflow-hidden">
           {/* Brand Header */}
-          <div className="p-4 border-b border-slate-800/80 flex items-center gap-3 shrink-0">
-            <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0 transition-transform duration-200 hover:scale-105">
-              <BookOpen className="w-5 h-5 text-slate-950" strokeWidth={2.5} />
-            </div>
-            <div>
-              <span className="font-extrabold text-base text-white tracking-tight block">OpenShelf</span>
-              <span className="text-[9px] font-bold text-amber-400 uppercase tracking-widest block -mt-0.5">
-                Library Network
-              </span>
-              <span className="text-[8px] font-extrabold text-slate-400 uppercase tracking-wider block mt-0.5">
-                Librarian Workspace
-              </span>
-            </div>
+          <div className="p-4 border-b border-[#0F3256] flex items-center gap-3 shrink-0">
+            <Link to="/librarian" className="shrink-0">
+              <OpenShelfBrand role="librarian" size="md" dark />
+            </Link>
           </div>
 
           {/* Sidebar Navigation Links */}
@@ -138,14 +130,14 @@ export default function LibrarianLayout() {
                   to={item.path}
                   className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
                     isActive
-                      ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-extrabold translate-x-0.5 motion-reduce:transform-none'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-900/90 hover:translate-x-0.5 motion-reduce:transform-none'
+                      ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-extrabold translate-x-0.5'
+                      : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70 hover:translate-x-0.5'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transform-none ${isActive ? 'text-slate-950' : 'text-slate-400 group-hover:text-amber-400'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'}`} />
                   <span className="flex-1 truncate transition-all duration-200">{item.name}</span>
                   {item.badge > 0 && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold transition-transform duration-200 group-hover:scale-105 motion-reduce:transform-none ${isActive ? 'bg-slate-950 text-amber-400' : 'bg-amber-500 text-slate-950'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-transform duration-200 group-hover:scale-105 ${isActive ? 'bg-[#07172B] text-[#F0B429]' : 'bg-[#F0B429] text-[#07172B]'}`}>
                       {item.badge > 99 ? '99+' : item.badge}
                     </span>
                   )}
@@ -160,19 +152,19 @@ export default function LibrarianLayout() {
               to="/librarian/profile"
               className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
                 location.pathname === '/librarian/profile'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-extrabold translate-x-0.5 motion-reduce:transform-none'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-900/90 hover:translate-x-0.5 motion-reduce:transform-none'
+                  ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-extrabold translate-x-0.5'
+                  : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70 hover:translate-x-0.5'
               }`}
             >
-              <UserCircle className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transform-none ${location.pathname === '/librarian/profile' ? 'text-slate-950' : 'text-slate-400 group-hover:text-amber-400'}`} />
+              <UserCircle className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'}`} />
               <span>My Profile</span>
             </Link>
           </div>
 
           {/* Sidebar Footer User Card */}
-          <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 shrink-0">
-            <div className="group flex items-center gap-2.5 p-2 bg-slate-900/80 border border-slate-800/90 hover:border-amber-500/40 rounded-xl transition-all duration-200 ease-out hover:bg-slate-900">
-              <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03] motion-reduce:transform-none">
+          <div className="p-3 border-t border-[#0F3256] bg-[#07172B] shrink-0">
+            <div className="group flex items-center gap-2.5 p-2 bg-[#0F3256]/70 border border-[#0F3256] rounded-xl transition-all duration-200 ease-out hover:bg-[#0F3256]/90">
+              <div className="w-8 h-8 rounded-xl bg-[#F0B429] text-[#07172B] font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03]">
                 {user?.avatar_url ? (
                   <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
@@ -181,8 +173,8 @@ export default function LibrarianLayout() {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-white truncate group-hover:text-amber-300 transition-colors duration-200">{user?.name || 'Librarian'}</p>
-                <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-amber-400">
+                <p className="text-xs font-bold text-white truncate group-hover:text-[#F0B429] transition-colors duration-200">{user?.name || 'Librarian'}</p>
+                <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-[#F0B429]">
                   {user?.role || 'LIBRARIAN'}
                 </span>
               </div>
@@ -190,9 +182,9 @@ export default function LibrarianLayout() {
               <button
                 onClick={handleLogout}
                 title="Log Out"
-                className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 rounded-xl transition-all duration-200 group/logout shrink-0 cursor-pointer"
+                className="p-1.5 text-[#94A3B8] hover:text-[#D32F2F] hover:bg-[#D32F2F]/10 rounded-xl transition-all duration-200 group/logout shrink-0 cursor-pointer"
               >
-                <LogOut className="w-4 h-4 transition-transform duration-200 group-hover/logout:translate-x-0.5 motion-reduce:transform-none" />
+                <LogOut className="w-4 h-4 transition-transform duration-200 group-hover/logout:translate-x-0.5" />
               </button>
             </div>
           </div>
@@ -208,7 +200,7 @@ export default function LibrarianLayout() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="fixed inset-0 bg-slate-950/75 backdrop-blur-xs"
+                className="fixed inset-0 bg-[#07172B]/80 backdrop-blur-xs"
               />
 
               <motion.aside
@@ -216,27 +208,16 @@ export default function LibrarianLayout() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative w-72 bg-slate-950 text-white flex flex-col h-full z-10 shadow-2xl"
+                className="relative w-72 bg-[#07172B] text-white flex flex-col h-full z-10 shadow-2xl border-r border-[#0F3256]"
               >
-                <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0">
-                      <BookOpen className="w-5.5 h-5.5 text-slate-950" strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <span className="font-extrabold text-base text-white tracking-tight block">OpenShelf</span>
-                      <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block -mt-0.5">
-                        Library Network
-                      </span>
-                      <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider block mt-0.5">
-                        Librarian Workspace
-                      </span>
-                    </div>
-                  </div>
+                <div className="p-4 border-b border-[#0F3256] flex items-center justify-between shrink-0">
+                  <Link to="/librarian" onClick={() => setMobileSidebarOpen(false)} className="shrink-0">
+                    <OpenShelfBrand role="librarian" size="md" dark />
+                  </Link>
 
                   <button
                     onClick={() => setMobileSidebarOpen(false)}
-                    className="p-1 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                    className="p-1 text-[#94A3B8] hover:text-white rounded-lg transition-colors cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -254,14 +235,14 @@ export default function LibrarianLayout() {
                         onClick={() => setMobileSidebarOpen(false)}
                         className={`group flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ease-out ${
                           isActive
-                            ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
-                            : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                            ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-bold'
+                            : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-slate-950' : 'text-slate-400 group-hover:text-amber-400'}`} />
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-[#94A3B8]'}`} />
                         <span className="flex-1">{item.name}</span>
                         {item.badge > 0 && (
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${isActive ? 'bg-slate-950 text-amber-400' : 'bg-amber-500 text-slate-950'}`}>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-[#07172B] text-[#F0B429]' : 'bg-[#F0B429] text-[#07172B]'}`}>
                             {item.badge > 99 ? '99+' : item.badge}
                           </span>
                         )}
@@ -277,19 +258,19 @@ export default function LibrarianLayout() {
                     onClick={() => setMobileSidebarOpen(false)}
                     className={`group flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ease-out ${
                       location.pathname === '/librarian/profile'
-                        ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                        ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-bold'
+                        : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70'
                     }`}
                   >
-                    <UserCircle className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${location.pathname === '/librarian/profile' ? 'text-slate-950' : 'text-slate-400 group-hover:text-amber-400'}`} />
+                    <UserCircle className={`w-4 h-4 shrink-0 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-[#94A3B8]'}`} />
                     <span>My Profile</span>
                   </Link>
                 </div>
 
-                <div className="p-4 border-t border-slate-800 bg-slate-950/60">
+                <div className="p-4 border-t border-[#0F3256] bg-[#07172B]">
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-950/30 hover:bg-rose-900/50 border border-rose-900/50 text-rose-300 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#D32F2F]/10 hover:bg-[#D32F2F]/20 border border-[#D32F2F]/30 text-[#D32F2F] font-bold text-xs rounded-xl transition-all cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Log Out</span>
@@ -301,23 +282,23 @@ export default function LibrarianLayout() {
         </AnimatePresence>
 
         {/* MAIN WORKSPACE WRAPPER */}
-        <div className="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#EEF4FA] overflow-hidden">
           {/* LIBRARIAN TOP HEADER */}
-          <header className="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
+          <header className="h-16 bg-white border-b border-[#C8D7E6] px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
             {/* Left Header Info + Mobile Menu Trigger */}
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setMobileSidebarOpen(true)}
-                className="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
+                className="lg:hidden p-2 text-[#081B2E] hover:bg-[#EEF4FA] rounded-xl transition-colors"
                 title="Toggle Navigation Menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 truncate">
-                <span className="hidden sm:inline text-amber-700">Librarian</span>
-                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-slate-400" />
-                <span className="text-slate-900 font-extrabold truncate">{pageTitle}</span>
+              <div className="flex items-center gap-2 text-xs font-bold text-[#475569] truncate">
+                <span className="hidden sm:inline text-[#0F3256] font-extrabold">Librarian</span>
+                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-[#94A3B8]" />
+                <span className="text-[#081B2E] font-black truncate">{pageTitle}</span>
               </div>
             </div>
 

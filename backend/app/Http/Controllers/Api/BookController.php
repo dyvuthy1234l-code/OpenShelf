@@ -25,7 +25,7 @@ class BookController extends Controller
             'per_page' => ['nullable', 'integer', 'min:-1', 'max:100'],
         ]);
 
-        $query = Book::with(['library:id,name,address', 'category:id,name'])
+        $query = Book::with(['library:id,name,address,phone,google_maps_url,fine_per_day,borrowing_period_days,max_books_per_member', 'category:id,name'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->where('status', '!=', 'inactive')
@@ -86,7 +86,7 @@ class BookController extends Controller
 
     public function show(int $id)
     {
-        $book = Book::with(['library:id,name,address,google_maps_url', 'category:id,name'])
+        $book = Book::with(['library:id,name,address,phone,google_maps_url,fine_per_day,borrowing_period_days,max_books_per_member', 'category:id,name'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->where('status', '!=', 'inactive')

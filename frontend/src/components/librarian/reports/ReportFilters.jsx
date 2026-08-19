@@ -1,75 +1,22 @@
-import { useState } from 'react';
-import { RotateCcw, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function ReportFilters({
-  startDate,
-  endDate,
+  activePreset: parentPreset = 'month',
   onApply,
-  onReset,
+  isFiltering = false,
 }) {
-  const [localStart, setLocalStart] = useState(startDate || '');
-  const [localEnd, setLocalEnd] = useState(endDate || '');
-  const [activePreset, setActivePreset] = useState('month');
-  const [error, setError] = useState('');
+  const [activePreset, setActivePreset] = useState(parentPreset);
 
-  const formatDateLocal = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const handleApply = (e) => {
-    e.preventDefault();
-    if (localStart && localEnd && new Date(localStart) > new Date(localEnd)) {
-      setError('Start date must be before or equal to end date.');
-      return;
+  useEffect(() => {
+    if (parentPreset) {
+      setActivePreset(parentPreset);
     }
-    setError('');
-    setActivePreset('custom');
-    onApply({ startDate: localStart, endDate: localEnd, preset: 'custom' });
-  };
+  }, [parentPreset]);
 
   const handlePreset = (preset) => {
-    setError('');
     setActivePreset(preset);
-    let start = '';
-    let end = '';
-
-    const today = new Date();
-    const todayStr = formatDateLocal(today);
-
-    if (preset === 'today') {
-      start = todayStr;
-      end = todayStr;
-    } else if (preset === 'month') {
-      end = todayStr;
-      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-      start = formatDateLocal(firstDay);
-    } else if (preset === 'quarter') {
-      end = todayStr;
-      const qStart = new Date(today.getFullYear(), today.getMonth() - 3, 1);
-      start = formatDateLocal(qStart);
-    } else if (preset === 'year') {
-      end = todayStr;
-      const yStart = new Date(today.getFullYear(), 0, 1);
-      start = formatDateLocal(yStart);
-    } else if (preset === 'all') {
-      start = '';
-      end = '';
-    }
-
-    setLocalStart(start);
-    setLocalEnd(end);
-    onApply({ startDate: start, endDate: end, preset });
-  };
-
-  const handleResetClick = () => {
-    setLocalStart('');
-    setLocalEnd('');
-    setActivePreset('all');
-    setError('');
-    onReset();
+    onApply({ preset });
   };
 
   const presets = [
@@ -81,66 +28,40 @@ export default function ReportFilters({
   ];
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs space-y-1.5 shrink-0">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+    <div className="bg-white border border-[#DCE6F0] rounded-2xl p-2.5 sm:p-3 shadow-xs shrink-0 transition-all duration-200">
+      <div className="flex items-center justify-between gap-2.5 flex-wrap">
         {/* Quick Filter Presets */}
-        <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shrink-0 flex-wrap">
-          {presets.map((p) => (
-            <button
-              key={p.key}
-              type="button"
-              onClick={() => handlePreset(p.key)}
-              className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
-                activePreset === p.key
-                  ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+        <div className="flex items-center gap-1 bg-[#F5F8FC] p-1 rounded-xl border border-[#DCE6F0] shrink-0 flex-wrap">
+          {presets.map((p) => {
+            const isActive = activePreset === p.key;
+            return (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => handlePreset(p.key)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-[#D9A83E] text-[#0B1F3A] font-black shadow-xs scale-[1.02]'
+                    : 'text-[#64748B] hover:text-[#102A43] hover:bg-[#DCE6F0]/50'
+                }`}
+              >
+                <span>{p.label}</span>
+                {isActive && isFiltering && (
+                  <Loader2 className="w-3 h-3 text-[#0B1F3A] animate-spin shrink-0" />
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Custom Date Pickers & Action Buttons */}
-        <form onSubmit={handleApply} className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-xs font-bold text-slate-700">
-            <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <input
-              type="date"
-              value={localStart}
-              onChange={(e) => setLocalStart(e.target.value)}
-              className="bg-transparent focus:outline-hidden text-xs font-bold text-slate-900 cursor-pointer"
-              title="Start Date"
-            />
-            <span className="text-slate-400 font-extrabold">→</span>
-            <input
-              type="date"
-              value={localEnd}
-              onChange={(e) => setLocalEnd(e.target.value)}
-              className="bg-transparent focus:outline-hidden text-xs font-bold text-slate-900 cursor-pointer"
-              title="End Date"
-            />
+        {/* Live Filter Indicator Status Badge */}
+        {isFiltering && (
+          <div className="flex items-center gap-2 text-xs font-bold text-[#123A63] bg-[#F5F8FC] px-3 py-1 rounded-xl border border-[#DCE6F0] animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-[#D9A83E]" />
+            <span>Updating analytics...</span>
           </div>
-
-          <button
-            type="submit"
-            className="px-3.5 py-1.5 bg-slate-950 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-2xs transition-colors cursor-pointer"
-          >
-            Apply Filter
-          </button>
-
-          <button
-            type="button"
-            onClick={handleResetClick}
-            className="p-1.5 text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
-            title="Reset Filters"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-        </form>
+        )}
       </div>
-
-      {error && <p className="text-xs font-bold text-rose-600 px-1">{error}</p>}
     </div>
   );
 }

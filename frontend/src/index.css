@@ -1,27 +1,81 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-navy-950: #0B0F19;
-  --color-navy-900: #0F172A;
-  --color-navy-800: #1E293B;
-  --color-navy-700: #334155;
-  --color-navy-600: #475569;
-  --color-navy-500: #64748B;
-  --color-navy-400: #94A3B8;
-  --color-navy-300: #CBD5E1;
-  --color-navy-200: #E2E8F0;
-  --color-navy-100: #F1F5F9;
+  /* OpenShelf Bold & Rich Blue Visual System */
+  --color-brand-navy: #07172B;        /* Extra Deep Rich Navy (Sidebar / Hero / Footer) */
+  --color-brand-blue-main: #0F3256;   /* Rich Deep Blue (Active Menu / Headers) */
+  --color-brand-blue-strong: #143E6B; /* Strong Accent Blue */
+  --color-brand-blue-soft: #1B4B7C;   /* Soft Accent Blue */
+  --color-brand-surface: #FFFFFF;     /* Pure White Surface */
+  --color-brand-bg: #EEF4FA;          /* Rich Soft Blue Page Background */
+  --color-brand-text: #081B2E;        /* Deep Bold Navy Main Text */
+  --color-brand-muted: #475569;       /* Crisp High-Contrast Muted Text */
+  --color-brand-border: #C8D7E6;      /* Defined Crisp Border */
+  --color-brand-gold: #F0B429;        /* Rich Vibrant Gold Accent */
+  --color-brand-gold-hover: #D69E1E;  /* Deep Gold Hover */
 
-  --color-amber-500: #F59E0B;
-  --color-amber-400: #FBBF24;
-  --color-amber-300: #FCD34D;
-  --color-amber-600: #D97706;
+  /* Primary Dark Navy Family */
+  --color-navy-950: #07172B; /* Deepest Navy */
+  --color-navy-900: #0B213D; /* Deep Navy */
+  --color-navy-800: #0F3256; /* Rich Main Blue */
+  --color-navy-700: #143E6B; /* Strong Blue */
+  --color-navy-600: #1B4B7C; /* Soft Blue */
+  --color-navy-500: #081B2E; /* Bold Main Text */
+  --color-navy-400: #475569; /* Crisp Muted Text */
+  --color-navy-300: #64748B;
+  --color-navy-200: #94A3B8;
+  --color-navy-100: #C8D7E6; /* Soft Blue Border */
+  --color-navy-50: #EEF4FA;  /* Soft Blue Page Surface Background */
 
-  --color-emerald-500: #10B981;
-  --color-emerald-400: #34D399;
+  /* Rich Gold Family */
+  --color-gold-600: #D69E1E;
+  --color-gold-500: #F0B429;
+  --color-gold-400: #F3C04D;
+  --color-gold-300: #F7D072;
+  --color-gold-200: #FAECB8;
+  --color-gold-100: #FCF5DA;
+  --color-gold-50: #FEFCF5;
 
-  --color-rose-500: #F43F5E;
-  --color-rose-400: #FB7185;
+  /* Aliasing Amber classes to Rich Gold system */
+  --color-amber-950: #451A03;
+  --color-amber-900: #78350F;
+  --color-amber-800: #92400E;
+  --color-amber-700: #B45309;
+  --color-amber-600: #D69E1E;
+  --color-amber-500: #F0B429;
+  --color-amber-400: #F3C04D;
+  --color-amber-300: #F7D072;
+  --color-amber-200: #FAECB8;
+  --color-amber-100: #FCF5DA;
+  --color-amber-50: #FEFCF5;
+
+  /* Aliasing Slate classes to Rich Soft Blue & Crisp High-Contrast Text system */
+  --color-slate-950: #07172B;
+  --color-slate-900: #081B2E; /* Bold Deep Main Text */
+  --color-slate-800: #0F3256; /* Rich Deep Blue */
+  --color-slate-700: #143E6B;
+  --color-slate-600: #1B4B7C;
+  --color-slate-500: #475569; /* Crisp Muted Text */
+  --color-slate-400: #64748B;
+  --color-slate-300: #94A3B8;
+  --color-slate-200: #C8D7E6; /* Defined Crisp Border */
+  --color-slate-100: #E1ECF7;
+  --color-slate-50: #EEF4FA;
+
+  /* Bold Semantic Colors */
+  --color-emerald-700: #115E3B;
+  --color-emerald-600: #157347;
+  --color-emerald-500: #1E7E52;
+  --color-emerald-400: #2BB275;
+  --color-emerald-100: #D3EFE3;
+  --color-emerald-50: #EEF8F4;
+
+  --color-rose-700: #991B1B;
+  --color-rose-600: #B71C1C;
+  --color-rose-500: #D32F2F;
+  --color-rose-400: #EF5350;
+  --color-rose-100: #FCE8E8;
+  --color-rose-50: #FDF2F2;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -29,21 +83,29 @@
 /* Global Styles */
 html {
   scroll-behavior: smooth;
+  background-color: #EEF4FA;
+  color: #081B2E;
 }
 
 body {
   font-family: var(--font-sans);
+  background-color: #EEF4FA;
+  color: #081B2E;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Shared OpenShelf motion language. */
+/* Premium Soft Library Card & Button Language */
 .os-card {
   transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  box-shadow: 0 4px 20px rgba(7, 23, 43, 0.07);
+  background-color: #FFFFFF;
+  border-color: #C8D7E6;
 }
 
 .os-card:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(7, 23, 43, 0.12);
 }
 
 .os-button {
@@ -77,28 +139,22 @@ body {
   }
 }
 
-/* Custom Scrollbar */
+/* Hide Scrollbars Globally Across All Pages & Containers (Scrollable but Invisible) */
+*, *::before, *::after {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
 /* Focus styles */
 *:focus-visible {
-  outline: 2px solid var(--color-amber-500);
+  outline: 2px solid #0F3256;
   outline-offset: 2px;
 }
 
@@ -106,9 +162,9 @@ body {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #1E293B inset !important;
-  -webkit-text-fill-color: #E2E8F0 !important;
-  caret-color: #E2E8F0 !important;
+  -webkit-box-shadow: 0 0 0 1000px #07172B inset !important;
+  -webkit-text-fill-color: #EEF4FA !important;
+  caret-color: #EEF4FA !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 

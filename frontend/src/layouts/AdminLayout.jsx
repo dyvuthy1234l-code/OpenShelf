@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import adminService from '../services/adminService';
+import OpenShelfBrand from '../components/common/OpenShelfBrand';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
@@ -97,30 +98,19 @@ export default function AdminLayout() {
     <div className="h-screen w-full bg-slate-100 flex overflow-hidden font-sans text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950">
       <div className="flex flex-1 w-full h-full relative overflow-hidden">
         {/* DESKTOP FIXED SIDEBAR */}
-        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#070D1A] text-[#F8FAFC] border-r border-[#1E293B] shrink-0 select-none z-20 overflow-hidden">
+        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#07172B] text-white border-r border-[#0F3256] shrink-0 select-none z-20 overflow-hidden">
           {/* Brand Header (~100px) */}
-          <div className="p-5 border-b border-[#1E293B] flex items-center justify-between shrink-0 h-[100px]">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0 transition-transform duration-200 hover:scale-105">
-                <BookOpen className="w-5.5 h-5.5 text-slate-950" strokeWidth={2.5} />
-              </div>
-              <div>
-                <span className="font-extrabold text-lg text-[#F8FAFC] tracking-tight block leading-none">OpenShelf</span>
-                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mt-1 leading-none">
-                  ADMIN WORKSPACE
-                </span>
-                <span className="text-[8px] font-extrabold text-[#64748B] uppercase tracking-wider block mt-1 leading-none">
-                  SYSTEM ADMINISTRATION
-                </span>
-              </div>
-            </div>
+          <div className="p-5 border-b border-[#0F3256] flex items-center justify-between shrink-0 h-[100px]">
+            <Link to="/admin" className="shrink-0">
+              <OpenShelfBrand role="admin" size="md" dark />
+            </Link>
           </div>
 
           {/* Sidebar Navigation Links with Conceptual Grouping */}
           <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto min-h-0 scrollbar-none">
             {navSections.map((section) => (
               <div key={section.title} className="space-y-1">
-                <div className="px-3 pt-1 pb-1 text-[10px] font-bold tracking-widest text-[#64748B] uppercase">
+                <div className="px-3 pt-1 pb-1 text-[10px] font-black tracking-widest text-[#94A3B8] uppercase">
                   {section.title}
                 </div>
                 {section.items.map((item) => {
@@ -135,11 +125,11 @@ export default function AdminLayout() {
                       to={item.path}
                       className={`group relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
                         isActive
-                          ? 'bg-[#F59E0B] text-slate-950 shadow-md shadow-amber-500/20 font-extrabold translate-x-0.5 motion-reduce:transform-none'
-                          : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-slate-900/90 hover:translate-x-0.5 motion-reduce:transform-none'
+                          ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-extrabold translate-x-0.5'
+                          : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70 hover:translate-x-0.5'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transform-none ${isActive ? 'text-slate-950' : 'text-[#94A3B8] group-hover:text-amber-400'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'}`} />
                       <span className="flex-1 truncate transition-all duration-200">{item.name}</span>
                     </Link>
                   );
@@ -149,10 +139,10 @@ export default function AdminLayout() {
           </nav>
 
           {/* Sidebar Footer User Card */}
-          <div className="p-4 border-t border-[#1E293B] bg-[#070D1A]/80 shrink-0">
-            <div className="flex items-center justify-between gap-2 p-2.5 bg-slate-900/90 border border-[#1E293B] rounded-xl">
+          <div className="p-4 border-t border-[#0F3256] bg-[#07172B] shrink-0">
+            <div className="flex items-center justify-between gap-2 p-2.5 bg-[#0F3256]/70 border border-[#0F3256] rounded-xl">
               <Link to="/admin/profile" className="flex items-center gap-2.5 min-w-0 flex-1 group">
-                <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03] motion-reduce:transform-none">
+                <div className="w-9 h-9 rounded-xl bg-[#F0B429] text-[#07172B] font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03]">
                   {user?.avatar_url ? (
                     <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -161,11 +151,9 @@ export default function AdminLayout() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold text-[#F8FAFC] truncate group-hover:text-amber-300 transition-colors duration-200">
-                    {user?.name || 'System Admin'}
-                  </p>
-                  <span className="text-[9px] uppercase tracking-widest font-extrabold text-amber-400 block">
-                    ADMINISTRATOR
+                  <p className="text-xs font-bold text-white truncate group-hover:text-[#F0B429] transition-colors duration-200">{user?.name || 'Administrator'}</p>
+                  <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-[#F0B429]">
+                    SYSTEM ADMIN
                   </span>
                 </div>
               </Link>
@@ -173,9 +161,9 @@ export default function AdminLayout() {
               <button
                 onClick={handleLogout}
                 title="Log Out"
-                className="p-1.5 text-[#94A3B8] hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition-all duration-200 group/logout shrink-0 cursor-pointer"
+                className="p-1.5 text-[#94A3B8] hover:text-[#D32F2F] hover:bg-[#D32F2F]/10 rounded-lg transition-all duration-200 group/logout shrink-0 cursor-pointer"
               >
-                <LogOut className="w-4 h-4 transition-transform duration-200 group-hover/logout:translate-x-0.5 motion-reduce:transform-none" />
+                <LogOut className="w-4 h-4 transition-transform duration-200 group-hover/logout:translate-x-0.5" />
               </button>
             </div>
           </div>
@@ -191,7 +179,7 @@ export default function AdminLayout() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="fixed inset-0 bg-[#070D1A]/80 backdrop-blur-xs"
+                className="fixed inset-0 bg-[#07172B]/80 backdrop-blur-xs"
               />
 
               <motion.aside
@@ -199,27 +187,16 @@ export default function AdminLayout() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative w-72 bg-[#070D1A] text-[#F8FAFC] flex flex-col h-full z-10 shadow-2xl border-r border-[#1E293B]"
+                className="relative w-72 bg-[#07172B] text-white flex flex-col h-full z-10 shadow-2xl border-r border-[#0F3256]"
               >
-                <div className="p-5 border-b border-[#1E293B] flex items-center justify-between shrink-0 h-[100px]">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0">
-                      <BookOpen className="w-5.5 h-5.5 text-slate-950" strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <span className="font-extrabold text-lg text-[#F8FAFC] tracking-tight block leading-none">OpenShelf</span>
-                      <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mt-1 leading-none">
-                        ADMIN WORKSPACE
-                      </span>
-                      <span className="text-[8px] font-extrabold text-[#64748B] uppercase tracking-wider block mt-1 leading-none">
-                        SYSTEM ADMINISTRATION
-                      </span>
-                    </div>
-                  </div>
+                <div className="p-5 border-b border-[#0F3256] flex items-center justify-between shrink-0 h-[100px]">
+                  <Link to="/admin" onClick={() => setMobileSidebarOpen(false)} className="shrink-0">
+                    <OpenShelfBrand role="admin" size="md" dark />
+                  </Link>
 
                   <button
                     onClick={() => setMobileSidebarOpen(false)}
-                    className="p-1.5 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-slate-900 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-[#94A3B8] hover:text-white hover:bg-[#0F3256] rounded-lg transition-colors cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -228,7 +205,7 @@ export default function AdminLayout() {
                 <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto">
                   {navSections.map((section) => (
                     <div key={section.title} className="space-y-1">
-                      <div className="px-3 pt-1 pb-1 text-[10px] font-bold tracking-widest text-[#64748B] uppercase">
+                      <div className="px-3 pt-1 pb-1 text-[10px] font-bold tracking-widest text-[#94A3B8] uppercase">
                         {section.title}
                       </div>
                       {section.items.map((item) => {
@@ -244,12 +221,12 @@ export default function AdminLayout() {
                             onClick={() => setMobileSidebarOpen(false)}
                             className={`group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ease-out ${
                               isActive
-                                ? 'bg-[#F59E0B] text-slate-950 shadow-md font-extrabold'
-                                : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-slate-900'
+                                ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-bold'
+                                : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70'
                             }`}
                           >
-                            <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-slate-950' : 'text-[#94A3B8] group-hover:text-amber-400'}`} />
-                            <span>{item.name}</span>
+                            <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-[#94A3B8]'}`} />
+                            <span className="flex-1 truncate">{item.name}</span>
                           </Link>
                         );
                       })}
@@ -257,14 +234,14 @@ export default function AdminLayout() {
                   ))}
                 </nav>
 
-                <div className="p-4 border-t border-[#1E293B] bg-[#070D1A]/80 shrink-0">
-                  <div className="flex items-center justify-between gap-2 p-2.5 bg-slate-900/90 border border-[#1E293B] rounded-xl">
+                <div className="p-4 border-t border-[#0F3256] bg-[#07172B] shrink-0">
+                  <div className="flex items-center justify-between gap-2 p-2.5 bg-[#0F3256]/70 border border-[#0F3256] rounded-xl">
                     <Link
                       to="/admin/profile"
                       onClick={() => setMobileSidebarOpen(false)}
                       className="flex items-center gap-2.5 min-w-0 flex-1 group"
                     >
-                      <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
+                      <div className="w-9 h-9 rounded-xl bg-[#F0B429] text-[#07172B] font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
                         {user?.avatar_url ? (
                           <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -273,11 +250,11 @@ export default function AdminLayout() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-bold text-[#F8FAFC] truncate">
-                          {user?.name || 'System Admin'}
+                        <p className="text-xs font-bold text-white truncate">
+                          {user?.name || 'Administrator'}
                         </p>
-                        <span className="text-[9px] uppercase tracking-widest font-extrabold text-amber-400 block">
-                          ADMINISTRATOR
+                        <span className="text-[9px] uppercase tracking-widest font-extrabold text-[#F0B429] block">
+                          SYSTEM ADMIN
                         </span>
                       </div>
                     </Link>
@@ -288,7 +265,7 @@ export default function AdminLayout() {
                         handleLogout();
                       }}
                       title="Log Out"
-                      className="p-1.5 text-[#94A3B8] hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition-all cursor-pointer"
+                      className="p-1.5 text-[#94A3B8] hover:text-[#D32F2F] hover:bg-[#D32F2F]/10 rounded-lg transition-all cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                     </button>
@@ -300,23 +277,23 @@ export default function AdminLayout() {
         </AnimatePresence>
 
         {/* MAIN WORKSPACE WRAPPER */}
-        <div className="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#EEF4FA] overflow-hidden">
           {/* ADMIN TOP HEADER */}
-          <header className="h-14 bg-white border-b border-slate-200/80 px-4 sm:px-5 lg:px-6 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
+          <header className="h-14 bg-white border-b border-[#C8D7E6] px-4 sm:px-5 lg:px-6 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
             {/* Left Header Info + Mobile Menu Trigger */}
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setMobileSidebarOpen(true)}
-                className="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
+                className="lg:hidden p-2 text-[#081B2E] hover:bg-[#EEF4FA] rounded-xl transition-colors"
                 title="Toggle Navigation Menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 truncate">
-                <span className="hidden sm:inline text-amber-700">Administrator</span>
-                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-slate-400" />
-                <span className="text-slate-900 font-extrabold truncate">{pageTitle}</span>
+              <div className="flex items-center gap-2 text-xs font-bold text-[#475569] truncate">
+                <span className="hidden sm:inline text-[#0F3256] font-extrabold">Administrator</span>
+                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-[#94A3B8]" />
+                <span className="text-[#081B2E] font-black truncate">{pageTitle}</span>
               </div>
             </div>
 

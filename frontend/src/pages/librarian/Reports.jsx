@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { RefreshCw, AlertCircle, FileText, Download, Info } from 'lucide-react';
 import librarianService from '../../services/librarianService';
 
@@ -15,45 +16,51 @@ import PopularBooks from '../../components/librarian/reports/PopularBooks';
 export default function ReportsPage() {
   const [rawReport, setRawReport] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
 
-  // Date Range Filters (default preset: 'month')
-  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '', preset: 'month' });
+  // Date Range Preset Filter (default preset: 'month')
+  const [preset, setPreset] = useState('month');
 
-  const fetchReportsData = useCallback(async () => {
+  // Fetch static categories once on mount
+  useEffect(() => {
+    librarianService.getCategories()
+      .then((res) => setCategories(res.data || res.categories || []))
+      .catch(() => setCategories([]));
+  }, []);
+
+  // Fetch report data dynamically when preset changes
+  const fetchReportsData = useCallback(async (selectedPreset) => {
+    const currentPreset = selectedPreset || preset;
     try {
-      setLoading(true);
+      if (rawReport) {
+        setIsUpdating(true);
+      } else {
+        setInitialLoading(true);
+      }
       setError(null);
-      const reportParams = {};
-      if (dateRange.startDate) reportParams.start_date = dateRange.startDate;
-      if (dateRange.endDate) reportParams.end_date = dateRange.endDate;
-      if (dateRange.preset) reportParams.date_range = dateRange.preset;
 
-      const [reportRes, catRes] = await Promise.all([
-        librarianService.getReports(reportParams),
-        librarianService.getCategories().catch(() => ({ data: [] })),
-      ]);
-
+      const reportParams = { date_range: currentPreset };
+      const reportRes = await librarianService.getReports(reportParams);
       setRawReport(reportRes.data || null);
-      setCategories(catRes.data || catRes.categories || []);
     } catch (err) {
       setError('Unable to load library reports & analytics.');
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
+      setIsUpdating(false);
     }
-  }, [dateRange.startDate, dateRange.endDate, dateRange.preset]);
+  }, [preset, rawReport]);
 
   useEffect(() => {
-    fetchReportsData();
-  }, [fetchReportsData]);
+    fetchReportsData(preset);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preset]);
 
-  const handleApplyFilter = ({ startDate, endDate, preset }) => {
-    setDateRange({ startDate, endDate, preset: preset || 'custom' });
-  };
-
-  const handleResetFilter = () => {
-    setDateRange({ startDate: '', endDate: '', preset: 'all' });
+  const handlePresetFilter = ({ preset: newPreset }) => {
+    if (newPreset !== preset) {
+      setPreset(newPreset);
+    }
   };
 
   const handleExportPDF = () => {
@@ -101,14 +108,14 @@ export default function ReportsPage() {
         <div className="flex items-center gap-2 print:hidden">
           <button
             onClick={handleExportPDF}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs rounded-xl border border-slate-200/90 transition-colors shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#102A43] font-extrabold text-xs rounded-xl border border-[#DCE6F0] transition-colors shadow-xs cursor-pointer"
           >
-            <FileText className="w-3.5 h-3.5 text-slate-500" />
+            <FileText className="w-3.5 h-3.5 text-[#64748B]" />
             <span>Print / Save PDF</span>
           </button>
           <button
             onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-2xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2D8A61] hover:bg-[#236F4E] text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-white" />
             <span>Export CSV</span>
@@ -118,13 +125,13 @@ export default function ReportsPage() {
 
       {/* Error Alert Banner */}
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-3 shadow-2xs shrink-0 print:hidden">
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-3 shadow-xs shrink-0 print:hidden">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
           </div>
           <button
-            onClick={fetchReportsData}
+            onClick={() => fetchReportsData(preset)}
             className="inline-flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shrink-0 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -133,36 +140,38 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {/* Loading Skeleton */}
-      {loading ? (
+      {/* 2. DATE FILTER CONTROL BAR (Always visible & interactive) */}
+      <div className="print:hidden">
+        <ReportFilters
+          activePreset={preset}
+          onApply={handlePresetFilter}
+          isFiltering={isUpdating}
+        />
+      </div>
+
+      {/* Loading Skeleton on Initial Page Load Only */}
+      {initialLoading ? (
         <div className="space-y-3.5 animate-pulse flex-1 flex flex-col justify-between">
-          <div className="h-12 bg-white rounded-2xl border border-slate-200" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-[115px] bg-white rounded-2xl border border-slate-200" />
+              <div key={i} className="h-[115px] bg-white rounded-2xl border border-[#DCE6F0]" />
             ))}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-            <div className="lg:col-span-8 h-[260px] bg-white rounded-2xl border border-slate-200" />
-            <div className="lg:col-span-4 h-[260px] bg-white rounded-2xl border border-slate-200" />
+            <div className="lg:col-span-8 h-[260px] bg-white rounded-2xl border border-[#DCE6F0]" />
+            <div className="lg:col-span-4 h-[260px] bg-white rounded-2xl border border-[#DCE6F0]" />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-            <div className="lg:col-span-6 h-[230px] bg-white rounded-2xl border border-slate-200" />
-            <div className="lg:col-span-6 h-[230px] bg-white rounded-2xl border border-slate-200" />
+            <div className="lg:col-span-6 h-[230px] bg-white rounded-2xl border border-[#DCE6F0]" />
+            <div className="lg:col-span-6 h-[230px] bg-white rounded-2xl border border-[#DCE6F0]" />
           </div>
         </div>
       ) : (
-        <div className="flex-1 flex flex-col min-h-0 space-y-3.5">
-          {/* 2. DATE FILTER CONTROL BAR */}
-          <div className="print:hidden">
-            <ReportFilters
-              startDate={dateRange.startDate}
-              endDate={dateRange.endDate}
-              onApply={handleApplyFilter}
-              onReset={handleResetFilter}
-            />
-          </div>
-
+        <motion.div
+          animate={{ opacity: isUpdating ? 0.65 : 1, y: isUpdating ? 2 : 0 }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
+          className="flex-1 flex flex-col min-h-0 space-y-3.5"
+        >
           {/* 3. 4 KPI CARDS (Total Books, Active Borrowings, Completed Returns, Overdue Books) */}
           <ReportStats reportData={rawReport} />
 
@@ -172,7 +181,7 @@ export default function ReportsPage() {
               <BorrowingChart
                 circulationData={rawReport?.monthly_circulation || []}
                 borrowings={rawReport?.borrowing_history || []}
-                timeFilter={dateRange.preset}
+                timeFilter={preset}
                 library={rawReport}
               />
             </div>
@@ -202,11 +211,11 @@ export default function ReportsPage() {
           </div>
 
           {/* 7. REAL-TIME DISCLAIMER BANNER */}
-          <div className="flex items-center gap-2 text-[10.5px] font-bold text-slate-500 bg-slate-50 border border-slate-200/80 px-3.5 py-2 rounded-xl shrink-0 print:hidden">
-            <Info className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+          <div className="flex items-center gap-2 text-[10.5px] font-bold text-[#64748B] bg-white border border-[#DCE6F0] px-3.5 py-2 rounded-xl shrink-0 print:hidden">
+            <Info className="w-3.5 h-3.5 text-[#123A63] shrink-0" />
             <span>Reports are based on real-time library database records and reflect current performance analysis.</span>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

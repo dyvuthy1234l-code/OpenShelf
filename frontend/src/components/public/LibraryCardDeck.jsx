@@ -18,10 +18,10 @@ export default function LibraryCardDeck({ libraries = [] }) {
 
   if (!libraries || libraries.length === 0) {
     return (
-      <div className="w-full max-w-md sm:max-w-lg h-80 sm:h-96 bg-slate-900/80 border border-slate-800 rounded-3xl flex flex-col items-center justify-center text-center p-6 shadow-2xl">
-        <Building2 className="w-14 h-14 text-amber-400/40 mb-3" />
+      <div className="w-full max-w-md sm:max-w-lg h-80 sm:h-96 bg-[#163A63]/80 border border-[#E8E6DF]/20 rounded-3xl flex flex-col items-center justify-center text-center p-6 shadow-2xl">
+        <Building2 className="w-14 h-14 text-[#D9A83E]/40 mb-3" />
         <p className="text-white font-bold text-base mb-1">OpenShelf Network</p>
-        <p className="text-slate-400 text-xs">Connecting community libraries across Cambodia</p>
+        <p className="text-[#CAD2DC] text-xs">Connecting community libraries across Cambodia</p>
       </div>
     );
   }
@@ -63,76 +63,67 @@ export default function LibraryCardDeck({ libraries = [] }) {
                   setActiveIndex((prev) => (prev + stackOffset) % libraries.length);
                 }
               }}
-              className={`absolute top-0 left-0 right-0 cursor-pointer bg-[#111A2E] border ${
-                isTop ? 'border-[#F59E0B]/45 shadow-[0_20px_50px_rgba(0,0,0,0.25)]' : 'border-[#26344D]'
+              className={`absolute top-0 left-0 right-0 cursor-pointer bg-[#123A63] border ${
+                isTop ? 'border-[#D9A83E]/45 shadow-[0_20px_50px_rgba(11,31,58,0.35)]' : 'border-[#DCE6F0]/20'
               } rounded-3xl p-4 sm:p-5 overflow-hidden backdrop-blur-xl transition-all duration-300 group`}
             >
               {/* Top Cover Header Banner */}
-              <div className="relative h-32 sm:h-40 bg-[#0B1220] rounded-2xl overflow-hidden border border-[#26344D]">
+              <div className="relative h-32 sm:h-40 bg-[#0B1F3A] rounded-2xl overflow-hidden border border-[#DCE6F0]/15">
                 {coverUrl ? (
                   <img src={coverUrl} alt={library.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-tr from-[#0B1220] via-[#111A2E] to-[#18181B] flex items-center justify-center text-[#F59E0B]/40">
+                  <div className="w-full h-full bg-gradient-to-tr from-[#0B1F3A] via-[#123A63] to-[#163F6B] flex items-center justify-center text-[#D9A83E]/40">
                     <Building2 className="w-12 h-12" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1220]/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3A]/80 via-transparent to-transparent pointer-events-none" />
 
                 {/* Top Badge */}
-                <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#0B1220]/90 backdrop-blur-md border border-[#F59E0B]/40 text-[#FBBF24] px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-1.5 shadow-md">
-                  <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
+                <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#0B1F3A]/90 backdrop-blur-md border border-[#D9A83E]/40 text-[#D9A83E] px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-1.5 shadow-md">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D9A83E]" />
                   <span>Featured Partner</span>
                 </div>
               </div>
 
               {/* Overlapping Logo Avatar & Library Header Details */}
-              <div className="px-2 pt-0 relative space-y-2">
+              <div className="px-2 pt-0 relative space-y-3 mt-2">
                 <div className="flex items-end justify-between gap-3 -mt-7 sm:-mt-8 relative z-10">
                   {/* Overlapping Logo Avatar Badge */}
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white p-1 shadow-xl border-2 border-[#111A2E] overflow-hidden shrink-0 flex items-center justify-center">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white p-1 shadow-xl border-2 border-[#123A63] overflow-hidden shrink-0 flex items-center justify-center">
                     {logoUrl ? (
                       <img src={logoUrl} alt={library.name} className="w-full h-full object-cover rounded-xl" />
                     ) : (
-                      <div className="w-full h-full bg-[#F59E0B] rounded-xl flex items-center justify-center text-[#0B1220] font-black text-lg">
-                        <Building2 className="w-7 h-7 text-[#0B1220]" />
+                      <div className="w-full h-full bg-[#D9A83E] rounded-xl flex items-center justify-center text-[#0B1F3A] font-black text-lg">
+                        <Building2 className="w-7 h-7 text-[#0B1F3A]" />
                       </div>
                     )}
                   </div>
 
-                  {/* Status Indicator */}
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-[10px] sm:text-xs font-bold mb-1">
-                    <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-                    <span>● Active</span>
-                  </div>
+                  <span className="inline-flex items-center gap-1 text-xs font-extrabold text-[#D9A83E] bg-[#0B1F3A]/80 border border-[#D9A83E]/30 px-3 py-1 rounded-xl backdrop-blur-sm">
+                    <BookOpen className="w-3.5 h-3.5 text-[#D9A83E]" />
+                    <span>{bookCount} {bookCount === 1 ? 'Book' : 'Books'}</span>
+                  </span>
                 </div>
 
-                {/* Title & Metadata */}
-                <div>
-                  <h4 className="text-base sm:text-lg font-black text-[#F8FAFC] line-clamp-1 group-hover:text-[#FBBF24] transition-colors tracking-tight">
+                <div className="space-y-1">
+                  <h3 className="text-base sm:text-lg font-extrabold text-white group-hover:text-[#D9A83E] transition-colors truncate">
                     {library.name}
-                  </h4>
-                  <p className="text-[11px] text-[#94A3B8] font-medium">Library ID: #{library.id}</p>
+                  </h3>
+                  {library.address && (
+                    <div className="flex items-center gap-1.5 text-xs text-[#CBD5E1] font-medium truncate">
+                      <MapPin className="w-3.5 h-3.5 text-[#D9A83E] shrink-0" />
+                      <span className="truncate">{library.address}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Info Highlights (Province & Book Count) */}
-                <div className="pt-2 border-t border-[#26344D] space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs font-medium">
-                    <div className="flex items-center gap-1.5 text-[#CBD5E1] bg-[#0B1220] border border-[#26344D] px-2.5 py-1 rounded-xl truncate">
-                      <MapPin className="w-3.5 h-3.5 text-[#F59E0B] shrink-0" />
-                      <span className="truncate">{library.city ? `Province: ${library.city}` : (library.address || 'Phnom Penh')}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-[#FBBF24] bg-[#F59E0B]/10 border border-[#F59E0B]/30 px-2.5 py-1 rounded-xl shrink-0 font-bold">
-                      <BookOpen className="w-3.5 h-3.5 text-[#F59E0B]" />
-                      <span>{bookCount} Books</span>
-                    </div>
-                  </div>
-
-                  {/* Amber Button */}
-                  <div className="inline-flex items-center justify-between w-full py-2.5 px-4 bg-[#F59E0B] hover:bg-[#FBBF24] text-[#0B1220] text-xs font-extrabold rounded-xl transition-all duration-200 shadow-md group/btn cursor-pointer">
-                    <span>Explore Library Profile</span>
-                    <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform shrink-0" />
-                  </div>
+                {/* Card Action Link */}
+                <div className="pt-2 flex items-center justify-between border-t border-[#DCE6F0]/15">
+                  <span className="text-xs font-extrabold text-[#D9A83E] group-hover:underline inline-flex items-center gap-1">
+                    <span>Visit Library</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#D9A83E]" />
+                  </span>
+                  <span className="text-[10px] text-[#CBD5E1] font-bold">OpenShelf Network</span>
                 </div>
               </div>
             </motion.div>

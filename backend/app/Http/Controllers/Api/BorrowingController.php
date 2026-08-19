@@ -31,7 +31,7 @@ class BorrowingController extends Controller
         ]);
 
         $query = $request->user()->borrowings()
-            ->with(['book.category', 'library:id,name,address,phone,fine_per_day,borrowing_period_days'])
+            ->with(['book.category', 'library:id,name,address,phone,fine_per_day,borrowing_period_days,max_books_per_member'])
             ->when($request->filled('status') && $request->input('status') !== 'all', function ($query) use ($request) {
                 $statusStr = $request->string('status')->toString();
                 $statuses = array_filter(explode(',', $statusStr));
@@ -75,7 +75,7 @@ class BorrowingController extends Controller
     public function memberShow(Request $request, int $id)
     {
         $borrowing = $request->user()->borrowings()
-            ->with(['book.category', 'library:id,name,address,phone,fine_per_day,borrowing_period_days'])
+            ->with(['book.category', 'library:id,name,address,phone,fine_per_day,borrowing_period_days,max_books_per_member'])
             ->findOrFail($id);
 
         return response()->json(['data' => $borrowing]);

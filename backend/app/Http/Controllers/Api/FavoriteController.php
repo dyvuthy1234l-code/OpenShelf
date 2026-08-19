@@ -18,7 +18,7 @@ class FavoriteController extends Controller
         $query = $request->user()->favorites()
             ->with([
                 'book' => fn ($q) => $q->withAvg('reviews', 'rating')->withCount('reviews'),
-                'book.library:id,name,address',
+                'book.library:id,name,address,phone,google_maps_url,fine_per_day,borrowing_period_days,max_books_per_member',
                 'book.category:id,name'
             ])
             ->whereHas('book', fn ($q) => $q->where('status', '!=', 'inactive'))
