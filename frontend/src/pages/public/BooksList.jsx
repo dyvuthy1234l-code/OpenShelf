@@ -1,8 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { BookOpen, Search, X, Filter, SlidersHorizontal, RefreshCw } from 'lucide-react';
-import publicService from '../../services/publicService';
+import { BookOpen, Search, X, SlidersHorizontal, RefreshCw } from 'lucide-react';
+import { useBooks } from '../../hooks/queries/useBooks';
+import { useLibraries } from '../../hooks/queries/useLibraries';
+import { useCategories } from '../../hooks/queries/useCategories';
+import useDebounce from '../../hooks/useDebounce';
 import BookCard from '../../components/public/BookCard';
+import BookSkeleton from '../../components/common/BookSkeleton';
 import Pagination from '../../components/public/Pagination';
 import ErrorState from '../../components/public/ErrorState';
 
@@ -10,11 +14,6 @@ export default function BooksList() {
   const directoryRef = useRef(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [books, setBooks] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [libraries, setLibraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Read URL query parameters
   const search = searchParams.get('search') || '';
@@ -22,83 +21,50 @@ export default function BooksList() {
   const libraryId = searchParams.get('library_id') || '';
   const page = Number(searchParams.get('page')) || 1;
 
-  const [meta, setMeta] = useState({
-    current_page: 1,
-    last_page: 1,
+  // Instant local typing state + 300ms debounced search query for API requests
+  const [searchInput, setSearchInput] = useState(search);
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
+  useEffect(() => {
+    if (debouncedSearch !== search) {
+      updateFilters({ search: debouncedSearch });
+    }
+  }, [debouncedSearch]);
+
+  // Query Hooks (Cached with TanStack Query + keepPreviousData)
+  const { data: librariesRes } = useLibraries({ per_page: -1 });
+  const libraries = librariesRes?.data || librariesRes?.libraries || [];
+
+  const { data: categoriesRes } = useCategories(libraryId ? { library_id: libraryId } : {});
+  const categories = categoriesRes?.data || [];
+
+  const queryParams = {
+    search: search || undefined,
+    category_id: categoryId || undefined,
+    library_id: libraryId || undefined,
+    page,
     per_page: 12,
-    total: 0,
-  });
+  };
 
-  // Fetch Libraries list on mount for dropdown
-  useEffect(() => {
-    async function loadLibraries() {
-      try {
-        const libRes = await publicService.getLibraries({ per_page: -1 });
-        setLibraries(libRes.data || libRes.libraries || []);
-      } catch {
-        // filter options non-critical
-      }
-    }
-    loadLibraries();
-  }, []);
+  const {
+    data: booksRes,
+    isLoading: loading,
+    isError,
+    refetch: loadBooks,
+  } = useBooks(queryParams);
 
-  // Fetch Categories dependently whenever libraryId changes!
-  useEffect(() => {
-    async function loadCategories() {
-      try {
-        const params = libraryId ? { library_id: libraryId } : {};
-        const catRes = await publicService.getCategories(params);
-        setCategories(catRes.data || []);
-      } catch {
-        // filter options non-critical
-      }
-    }
-    loadCategories();
-  }, [libraryId]);
-
-  // Fetch Paginated Books from Backend API
-  const loadBooks = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const res = await publicService.getBooks({
-        search,
-        category_id: categoryId || undefined,
-        library_id: libraryId || undefined,
-        page,
-        per_page: 12,
-      });
-
-      const list = res.data || [];
-      setBooks(list);
-
-      if (res.meta) {
-        setMeta({
-          current_page: Number(res.meta.current_page) || page,
-          last_page: Number(res.meta.last_page) || 1,
-          per_page: Number(res.meta.per_page) || 12,
-          total: Number(res.meta.total) || list.length,
-        });
-      } else {
-        setMeta({
-          current_page: 1,
-          last_page: 1,
-          per_page: 12,
-          total: list.length,
-        });
-      }
-    } catch {
-      setError('Failed to load books catalogue. Please check your network connection.');
-    } finally {
-      setLoading(false);
-    }
-  }, [search, categoryId, libraryId, page]);
-
-  useEffect(() => {
-    const timer = setTimeout(loadBooks, 300);
-    return () => clearTimeout(timer);
-  }, [loadBooks]);
+  const books = booksRes?.data || [];
+  const meta = {
+    current_page: Number(booksRes?.meta?.current_page) || page,
+    last_page: Number(booksRes?.meta?.last_page) || 1,
+    per_page: Number(booksRes?.meta?.per_page) || 12,
+    total: Number(booksRes?.meta?.total) || books.length,
+  };
+  const error = isError ? 'Failed to load books catalogue. Please check your network connection.' : null;
 
   // Update query params helper
   const updateFilters = (updated) => {
@@ -177,13 +143,13 @@ export default function BooksList() {
             <input
               type="text"
               placeholder="Search by title, author, or ISBN..."
-              value={search}
-              onChange={(e) => updateFilters({ search: e.target.value })}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
             />
-            {search && (
+            {searchInput && (
               <button
-                onClick={() => updateFilters({ search: '' })}
+                onClick={() => { setSearchInput(''); updateFilters({ search: '' }); }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
               >
                 <X className="w-3.5 h-3.5" />
@@ -245,17 +211,7 @@ export default function BooksList() {
       {/* Book Grid Container */}
       <div ref={directoryRef} className="space-y-8">
         {loading ? (
-          /* Skeleton Loading Cards (4 columns x 2 rows = 8 cards) */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-              <div key={n} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse">
-                <div className="h-48 bg-slate-100 rounded-xl" />
-                <div className="h-4 bg-slate-100 rounded w-3/4" />
-                <div className="h-3 bg-slate-100 rounded w-1/2" />
-                <div className="h-8 bg-slate-100 rounded-xl" />
-              </div>
-            ))}
-          </div>
+          <BookSkeleton count={8} />
         ) : error ? (
           <ErrorState message={error} onRetry={loadBooks} />
         ) : books.length === 0 ? (

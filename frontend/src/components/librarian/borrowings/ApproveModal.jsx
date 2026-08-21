@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, X, RefreshCw, BookOpen, User, AlertCircle } from 'lucide-react';
+import { MODAL_MOTION_VARIANTS } from '../../../constants/motionTokens';
 
 export default function ApproveModal({ borrowing, onConfirm, onClose }) {
   const [approving, setApproving] = useState(false);
@@ -26,10 +27,7 @@ export default function ApproveModal({ borrowing, onConfirm, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
+        {...MODAL_MOTION_VARIANTS}
         className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
       >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">

@@ -10,7 +10,7 @@ import BookCard from '../../components/public/BookCard';
 import Pagination from '../../components/public/Pagination';
 import ErrorState from '../../components/public/ErrorState';
 import LibraryTopRatedBooks from '../../components/public/LibraryTopRatedBooks';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl, { getLibraryCoverUrl, getLibraryLogoUrl } from '../../utils/imageUrl';
 
 export default function LibraryDetail() {
   const { id } = useParams();
@@ -189,13 +189,12 @@ export default function LibraryDetail() {
           transition={{ duration: 0.5 }}
           className="relative h-48 sm:h-64 md:h-72 lg:h-80 xl:h-96 bg-slate-950 overflow-hidden"
         >
-          {getImageUrl(library.cover_image_url || library.cover_image) ? (
+          {getLibraryCoverUrl(library.cover_image_url || library.cover_image, 1200) ? (
             <img
-              src={getImageUrl(library.cover_image_url || library.cover_image)}
-              alt={`${library.name} Cover Banner`}
-              className="w-full h-full object-cover object-center transform-gpu transition-transform duration-700 ease-out"
+              src={getLibraryCoverUrl(library.cover_image_url || library.cover_image, 1200)}
+              alt={`${library.name} Banner`}
               loading="eager"
-              decoding="async"
+              className="w-full h-full object-cover"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           ) : (
@@ -219,10 +218,11 @@ export default function LibraryDetail() {
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl sm:rounded-3xl bg-white p-2 border-4 border-white shadow-xl shrink-0 z-10 overflow-hidden"
               >
-                {getImageUrl(library.image_url || library.image) ? (
+                {getLibraryLogoUrl(library.image_url || library.image, 200) ? (
                   <img
-                    src={getImageUrl(library.image_url || library.image)}
+                    src={getLibraryLogoUrl(library.image_url || library.image, 200)}
                     alt={`${library.name} Logo`}
+                    loading="eager"
                     className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />

@@ -153,7 +153,7 @@ class BookController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')->store('books', 'public');
+            $validated['cover_image'] = \App\Services\CloudinaryStorageService::upload($request->file('cover_image'), 'books');
         }
 
         $validated['library_id'] = $library->id;
@@ -207,10 +207,8 @@ class BookController extends Controller
             }
 
             if ($request->hasFile('cover_image')) {
-                if ($book->cover_image) {
-                    Storage::disk('public')->delete($book->cover_image);
-                }
-                $validated['cover_image'] = $request->file('cover_image')->store('books', 'public');
+                \App\Services\CloudinaryStorageService::delete($book->cover_image);
+                $validated['cover_image'] = \App\Services\CloudinaryStorageService::upload($request->file('cover_image'), 'books');
             }
 
             $book->update($validated);

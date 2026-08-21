@@ -14,25 +14,25 @@ export default function MemberTable({ members = [] }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs">
-      <div className="overflow-x-auto">
+    <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs w-full">
+      <div className="w-full overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
-              <th className="py-4 px-6">Member</th>
-              <th className="py-4 px-4">Email</th>
-              <th className="py-4 px-4">Status</th>
-              <th className="py-4 px-4 text-center">Active Loans</th>
-              <th className="py-4 px-4 text-center">Overdue</th>
-              <th className="py-4 px-4">Joined Date</th>
-              <th className="py-4 px-6 text-right">Actions</th>
+              <th className="py-3 px-6">Member</th>
+              <th className="py-3 px-4">Email</th>
+              <th className="py-3 px-4">Status</th>
+              <th className="py-3 px-4 text-center">Active Loans</th>
+              <th className="py-3 px-4 text-center">Overdue</th>
+              <th className="py-3 px-4">Joined Date</th>
+              <th className="py-3 px-6 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
             {members.map((m) => (
               <tr key={m.id} className="hover:bg-slate-50/80 transition-colors">
                 {/* Member */}
-                <td className="py-4 px-6 font-bold text-slate-900">
+                <td className="py-3 px-6 font-bold text-slate-900">
                   <div className="flex items-center gap-2.5">
                     {m.avatar_url ? (
                       <img
@@ -47,7 +47,7 @@ export default function MemberTable({ members = [] }) {
                     )}
                     <Link
                       to={`/librarian/members/${m.id}`}
-                      className="hover:text-amber-700 transition-colors truncate max-w-[140px] block font-extrabold"
+                      className="hover:text-amber-700 transition-colors truncate max-w-[160px] block font-extrabold"
                     >
                       {m.name}
                     </Link>
@@ -55,17 +55,17 @@ export default function MemberTable({ members = [] }) {
                 </td>
 
                 {/* Email */}
-                <td className="py-4 px-4 text-slate-500 font-medium">
-                  <span className="truncate max-w-[180px] block">{m.email}</span>
+                <td className="py-3 px-4 text-slate-500 font-medium">
+                  <span className="truncate max-w-[220px] block">{m.email}</span>
                 </td>
 
                 {/* Status */}
-                <td className="py-4 px-4">
+                <td className="py-3 px-4">
                   {getStatusBadge(m.status)}
                 </td>
 
                 {/* Active Loans */}
-                <td className="py-4 px-4 text-center font-bold">
+                <td className="py-3 px-4 text-center font-bold">
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 text-xs">
                     <BookOpen className="w-3 h-3 text-amber-600" />
                     {m.active_count ?? 0}
@@ -73,7 +73,7 @@ export default function MemberTable({ members = [] }) {
                 </td>
 
                 {/* Overdue */}
-                <td className="py-4 px-4 text-center font-bold">
+                <td className="py-3 px-4 text-center font-bold">
                   {m.overdue_count > 0 ? (
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-extrabold">
                       <AlertTriangle className="w-3 h-3" />
@@ -85,12 +85,12 @@ export default function MemberTable({ members = [] }) {
                 </td>
 
                 {/* Joined Date */}
-                <td className="py-4 px-4 text-slate-500">
+                <td className="py-3 px-4 text-slate-500">
                   {m.joined_at ? new Date(m.joined_at).toLocaleDateString() : 'N/A'}
                 </td>
 
                 {/* Actions */}
-                <td className="py-4 px-6 text-right">
+                <td className="py-3 px-6 text-right">
                   <Link
                     to={`/librarian/members/${m.id}`}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors"

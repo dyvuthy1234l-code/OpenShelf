@@ -1,11 +1,16 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen, Eye, Edit3, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import { CARD_MOTION_PROPS } from '../../../constants/motionTokens';
 
 export default function BookCard({ book, onEdit, onDelete }) {
   const isAvailable = (book.available_quantity ?? 0) > 0;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+    <motion.div
+      {...CARD_MOTION_PROPS}
+      className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+    >
       <div className="flex items-start gap-3">
         <div className="w-14 h-20 bg-slate-100 border border-slate-200 rounded-xl overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
           {book.cover_image_url ? (
@@ -65,6 +70,6 @@ export default function BookCard({ book, onEdit, onDelete }) {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

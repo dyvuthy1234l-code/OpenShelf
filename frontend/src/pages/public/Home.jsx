@@ -133,12 +133,12 @@ export default function Home() {
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
-      {/* 1. HERO SECTION — DEEP NAVY */}
-      <section className="relative pt-8 sm:pt-16 pb-16 sm:pb-24 bg-gradient-to-b from-[#0B1F3A] via-[#123A63] to-[#163F6B] text-white overflow-hidden border-b border-[#163F6B]">
+      {/* 1. HERO SECTION — DEEP RICH NAVY FULL VIEWPORT */}
+      <section className="relative min-h-[calc(100vh-4rem)] flex items-center py-12 sm:py-20 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
         {/* Glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[45rem] h-[20rem] sm:h-[28rem] bg-[#D9A83E]/10 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[50rem] h-[20rem] sm:h-[32rem] bg-[#D9A83E]/10 rounded-full blur-[130px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             {/* Left Content */}
             <motion.div
@@ -172,7 +172,7 @@ export default function Home() {
 
               {/* Search Bar */}
               <form onSubmit={handleHeroSearch} className="pt-2 max-w-lg">
-                <div className="relative flex items-center bg-[#123A63]/80 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-2xl p-1.5 sm:p-2 shadow-2xl transition-all">
+                <div className="relative flex items-center bg-[#091A30]/90 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-2xl p-1.5 sm:p-2 shadow-2xl transition-all">
                   <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#94A3B8] ml-3 shrink-0" />
                   <input
                     type="text"
@@ -183,7 +183,7 @@ export default function Home() {
                   />
                   <button
                     type="submit"
-                    className="px-4 sm:px-5 py-2 sm:py-2.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#0B1F3A] text-xs font-black rounded-xl shadow-md shadow-[#D9A83E]/20 shrink-0 transition-all cursor-pointer"
+                    className="px-4 sm:px-5 py-2 sm:py-2.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] text-xs font-black rounded-xl shadow-md shadow-[#D9A83E]/20 shrink-0 transition-all cursor-pointer"
                   >
                     Search
                   </button>
@@ -194,14 +194,14 @@ export default function Home() {
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-2">
                 <Link
                   to="/libraries"
-                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#0B1F3A] font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-[#D9A83E]/20 transition-all"
+                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-[#D9A83E]/20 transition-all"
                 >
-                  <Building2 className="w-4 h-4 text-[#0B1F3A]" />
+                  <Building2 className="w-4 h-4 text-[#061120]" />
                   Explore Libraries
                 </Link>
                 <Link
                   to="/books"
-                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#0B1F3A] hover:bg-[#123A63] text-white font-bold text-xs sm:text-sm rounded-xl border border-[#DCE6F0]/20 hover:border-[#D9A83E]/40 transition-all"
+                  className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#061120] hover:bg-[#091A30] text-white font-bold text-xs sm:text-sm rounded-xl border border-[#DCE6F0]/20 hover:border-[#D9A83E]/40 transition-all"
                 >
                   <BookOpen className="w-4 h-4 text-[#D9A83E]" />
                   Browse Books
@@ -209,7 +209,7 @@ export default function Home() {
               </div>
 
               {/* Trust Indicators */}
-              <div className="pt-4 sm:pt-6 border-t border-[#123A63] flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#CBD5E1]">
+              <div className="pt-4 sm:pt-6 border-t border-[#0D2440] flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#CBD5E1]">
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-[#2D8A61]" />
                   <span>Verified Libraries</span>
@@ -401,9 +401,16 @@ export default function Home() {
               { num: '03', title: 'Request', desc: 'Reserve your copy online with your free member account.' },
               { num: '04', title: 'Pick Up', desc: 'Visit the library in person to collect and enjoy reading!' },
             ].map((step) => (
-              <div key={step.num} className="space-y-2.5 p-5 bg-slate-50 border border-slate-200/80 rounded-2xl">
-                <span className="text-2xl sm:text-3xl font-extrabold text-amber-600">{step.num}</span>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900">{step.title}</h3>
+              <div
+                key={step.num}
+                className="group space-y-2.5 p-5 bg-slate-50 border border-slate-200/80 rounded-2xl transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md hover:bg-white hover:border-amber-400/60"
+              >
+                <span className="text-2xl sm:text-3xl font-extrabold text-amber-600 group-hover:text-amber-500 transition-colors duration-200 block">
+                  {step.num}
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-amber-950 transition-colors duration-200">
+                  {step.title}
+                </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
               </div>
             ))}

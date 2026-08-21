@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Bell, CheckCheck, CheckCircle2, Trash2 } from 'lucide-react';
+import { useNotifications } from '../../hooks/queries/useNotifications';
+import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
 import memberService from '../../services/memberService';
 import { formatNotificationTime } from '../../utils/dateUtils';
 import LoadingState from '../../components/public/LoadingState';
@@ -8,74 +10,31 @@ import ErrorState from '../../components/public/ErrorState';
 import Pagination from '../../components/public/Pagination';
 
 export default function MemberNotifications() {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [actionMessage, setActionMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const ITEMS_PER_PAGE = 5;
 
-  const loadNotifications = useCallback(async (isSilent = false) => {
-    try {
-      if (!isSilent) setLoading(true);
-      setError(null);
-      const res = await memberService.getNotifications({ page: currentPage, per_page: ITEMS_PER_PAGE });
-      const list = res.data || [];
-      setNotifications(list);
-      if (res.meta) {
-        setMeta(res.meta);
-      } else {
-        setMeta({ current_page: 1, last_page: 1, total: list.length });
-      }
-    } catch {
-      if (!isSilent) setError('Failed to load notifications.');
-    } finally {
-      if (!isSilent) setLoading(false);
-    }
-  }, [currentPage]);
+  // TanStack Query with Optimistic UI updates
+  const { data: resData, isLoading: loading, isError } = useNotifications('member');
+  const markReadMutation = useMarkNotificationAsRead('member');
+  const markAllReadMutation = useMarkAllNotificationsAsRead('member');
 
-  useEffect(() => {
-    loadNotifications(false);
+  const notifications = Array.isArray(resData?.data) ? resData.data : (Array.isArray(resData) ? resData : []);
+  const meta = resData?.meta || { current_page: 1, last_page: 1, total: notifications.length };
+  const error = isError ? 'Failed to load notifications.' : null;
 
-    // Auto-refresh interval every 10 seconds for real-time member notifications
-    const interval = setInterval(() => {
-      loadNotifications(true);
-    }, 10000);
-
-    const handleFocus = () => loadNotifications(true);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [loadNotifications]);
-
-  const handleMarkAsRead = async (id) => {
-    try {
-      await memberService.markNotificationAsRead(id);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
-      );
-      window.dispatchEvent(new Event('notificationsRead'));
-    } catch {
-      // non-critical error
-    }
+  const handleMarkAsRead = (id) => {
+    markReadMutation.mutate(id, {
+      onSuccess: () => setActionMessage('Notification marked as read.'),
+      onError: () => setActionMessage('Unable to update notification. Rollback applied.'),
+    });
   };
 
-  const handleMarkAllRead = async () => {
-    try {
-      await memberService.markAllNotificationsAsRead();
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
-      );
-      setActionMessage('All notifications marked as read.');
-      window.dispatchEvent(new Event('notificationsRead'));
-      setTimeout(() => setActionMessage(''), 3000);
-    } catch {
-      // non-critical
-    }
+  const handleMarkAllRead = () => {
+    markAllReadMutation.mutate(undefined, {
+      onSuccess: () => setActionMessage('All notifications marked as read.'),
+      onError: () => setActionMessage('Unable to mark all as read. Rollback applied.'),
+    });
   };
 
   const handleDeleteNotification = async (e, id) => {

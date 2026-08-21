@@ -126,11 +126,11 @@ class LibraryController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('libraries', 'public');
+            $validated['image'] = \App\Services\CloudinaryStorageService::upload($request->file('image'), 'libraries');
         }
 
         if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')->store('libraries/covers', 'public');
+            $validated['cover_image'] = \App\Services\CloudinaryStorageService::upload($request->file('cover_image'), 'libraries/covers');
         }
 
         $validated['owner_id'] = $user->id;
@@ -185,17 +185,13 @@ class LibraryController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($library->image) {
-                Storage::disk('public')->delete($library->image);
-            }
-            $validated['image'] = $request->file('image')->store('libraries', 'public');
+            \App\Services\CloudinaryStorageService::delete($library->image);
+            $validated['image'] = \App\Services\CloudinaryStorageService::upload($request->file('image'), 'libraries');
         }
 
         if ($request->hasFile('cover_image')) {
-            if ($library->cover_image) {
-                Storage::disk('public')->delete($library->cover_image);
-            }
-            $validated['cover_image'] = $request->file('cover_image')->store('libraries/covers', 'public');
+            \App\Services\CloudinaryStorageService::delete($library->cover_image);
+            $validated['cover_image'] = \App\Services\CloudinaryStorageService::upload($request->file('cover_image'), 'libraries/covers');
         }
 
         $library->update($validated);

@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Tag, Eye, Edit3, Trash2, BookOpen } from 'lucide-react';
+import { CARD_MOTION_PROPS } from '../../../constants/motionTokens';
 
 export default function CategoryCard({ category, onEdit, onDelete }) {
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+    <motion.div
+      {...CARD_MOTION_PROPS}
+      className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+    >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold shrink-0">
           <Tag className="w-5 h-5" />
@@ -52,6 +57,6 @@ export default function CategoryCard({ category, onEdit, onDelete }) {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

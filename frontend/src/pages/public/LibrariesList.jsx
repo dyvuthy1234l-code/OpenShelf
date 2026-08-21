@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { 
   Building2, Search, X, Sparkles, SlidersHorizontal, ArrowUpDown, RefreshCw, MapPin 
 } from 'lucide-react';
-import publicService from '../../services/publicService';
+import { useLibraries } from '../../hooks/queries/useLibraries';
+import useDebounce from '../../hooks/useDebounce';
 import LibraryCard from '../../components/public/LibraryCard';
 import FeaturedLibraryCard from '../../components/public/FeaturedLibraryCard';
 import Pagination from '../../components/public/Pagination';
@@ -11,83 +12,42 @@ import ErrorState from '../../components/public/ErrorState';
 export default function LibrariesList() {
   const directoryRef = useRef(null);
 
-  const [libraries, setLibraries] = useState([]);
-  const [featuredLibraries, setFeaturedLibraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   // Search, filter & pagination state
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const debouncedSearch = useDebounce(searchInput, 300);
   const [selectedProvince, setSelectedProvince] = useState('');
   const [sortBy, setSortBy] = useState('most_books');
   const [page, setPage] = useState(1);
-  const [meta, setMeta] = useState({
-    current_page: 1,
-    last_page: 1,
+
+  // Query Hooks (Cached with TanStack Query + keepPreviousData)
+  const { data: featuredRes } = useLibraries({ per_page: 5 });
+  const featuredLibraries = (featuredRes?.data || featuredRes?.libraries || []).slice(0, 3);
+
+  const queryParams = {
+    search: debouncedSearch || selectedProvince || undefined,
+    page,
     per_page: 12,
-    total: 0,
-  });
+  };
 
-  // Fetch Featured Libraries once near top
-  useEffect(() => {
-    async function loadFeatured() {
-      try {
-        const res = await publicService.getLibraries({ per_page: 5 });
-        const list = res.data || res.libraries || [];
-        setFeaturedLibraries(list.slice(0, 3));
-      } catch {
-        // Featured non-critical failure
-      }
-    }
-    loadFeatured();
-  }, []);
+  const {
+    data: librariesRes,
+    isLoading: loading,
+    isError,
+    refetch: loadLibraries,
+  } = useLibraries(queryParams);
 
-  // Fetch Paginated Libraries from Backend API
-  const loadLibraries = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const query = search || selectedProvince;
-      const res = await publicService.getLibraries({
-        search: query,
-        page,
-        per_page: 12,
-      });
-
-      const list = res.data || res.libraries || [];
-      setLibraries(list);
-
-      if (res.meta) {
-        setMeta({
-          current_page: Number(res.meta.current_page) || page,
-          last_page: Number(res.meta.last_page) || 1,
-          per_page: Number(res.meta.per_page) || 12,
-          total: Number(res.meta.total) || list.length,
-        });
-      } else {
-        setMeta({
-          current_page: 1,
-          last_page: 1,
-          per_page: 12,
-          total: list.length,
-        });
-      }
-    } catch {
-      setError('Failed to load physical libraries directory. Please check your network or try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [search, selectedProvince, page]);
-
-  useEffect(() => {
-    const timer = setTimeout(loadLibraries, 300);
-    return () => clearTimeout(timer);
-  }, [loadLibraries]);
+  const libraries = librariesRes?.data || librariesRes?.libraries || [];
+  const meta = {
+    current_page: Number(librariesRes?.meta?.current_page) || page,
+    last_page: Number(librariesRes?.meta?.last_page) || 1,
+    per_page: Number(librariesRes?.meta?.per_page) || 12,
+    total: Number(librariesRes?.meta?.total) || libraries.length,
+  };
+  const error = isError ? 'Failed to load physical libraries directory. Please check your network or try again.' : null;
 
   // Handle Search Input Change -> Reset to page 1
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
+    setSearchInput(e.target.value);
     setPage(1);
   };
 
@@ -182,7 +142,7 @@ export default function LibrariesList() {
               <span>COMPLETE DIRECTORY</span>
             </div>
             <h2 className="text-2xl font-extrabold text-slate-900">
-              {search ? `Search Results for "${search}"` : 'All Physical Libraries'}
+              {debouncedSearch ? `Search Results for "${debouncedSearch}"` : 'All Physical Libraries'}
             </h2>
           </div>
         </div>
@@ -205,13 +165,13 @@ export default function LibrariesList() {
                 <input
                   type="text"
                   placeholder="Search library name, address, or location..."
-                  value={search}
+                  value={searchInput}
                   onChange={handleSearchChange}
                   className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2 pl-10 pr-9 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all font-medium"
                 />
-                {search && (
+                {searchInput && (
                   <button
-                    onClick={() => { setSearch(''); setSelectedProvince(''); setPage(1); }}
+                    onClick={() => { setSearchInput(''); setSelectedProvince(''); setPage(1); }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />

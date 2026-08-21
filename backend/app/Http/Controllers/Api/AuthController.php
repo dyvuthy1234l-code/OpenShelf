@@ -147,11 +147,8 @@ class AuthController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
-            }
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
+            \App\Services\CloudinaryStorageService::delete($user->avatar);
+            $user->avatar = \App\Services\CloudinaryStorageService::upload($request->file('avatar'), 'avatars');
         }
 
         if (!empty($validated['name'])) {
@@ -173,8 +170,8 @@ class AuthController extends Controller
     public function removeAvatar(Request $request)
     {
         $user = $request->user();
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar) {
+            \App\Services\CloudinaryStorageService::delete($user->avatar);
         }
         $user->avatar = null;
         $user->save();

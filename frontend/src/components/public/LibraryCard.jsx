@@ -2,22 +2,23 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Building2, MapPin, BookOpen, ArrowRight, Clock, Star, ShieldCheck } from 'lucide-react';
-import getImageUrl from '../../utils/imageUrl';
+import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
+
+import { CARD_MOTION_PROPS } from '../../constants/motionTokens';
 
 export default function LibraryCard({ library }) {
   const [coverErr, setCoverErr] = useState(false);
   const [logoErr, setLogoErr] = useState(false);
 
-  const logoUrl = getImageUrl(library.image_url || library.image || library.logo);
-  const coverUrl = getImageUrl(library.cover_image_url || library.cover_image);
+  const logoUrl = getLibraryLogoUrl(library.image_url || library.image || library.logo, 160);
+  const coverUrl = getLibraryCoverUrl(library.cover_image_url || library.cover_image, 600);
 
   const bookCount = library.books_count ?? (library.books ? library.books.length : 0);
   const isFeatured = library.id === 1 || library.id === 3 || Boolean(library.is_featured);
 
   return (
     <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
+      {...CARD_MOTION_PROPS}
       className="group bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-3xl overflow-hidden shadow-2xs hover:shadow-xl transition-all duration-300 flex flex-col h-full select-none"
     >
       {/* 1. COVER BANNER HEADER */}
@@ -26,6 +27,8 @@ export default function LibraryCard({ library }) {
           <img
             src={coverUrl}
             alt={`${library.name} Cover`}
+            loading="lazy"
+            decoding="async"
             onError={() => setCoverErr(true)}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
           />

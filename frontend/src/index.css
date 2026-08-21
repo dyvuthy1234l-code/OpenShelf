@@ -97,19 +97,19 @@ body {
 
 /* Premium Soft Library Card & Button Language */
 .os-card {
-  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms ease, border-color 180ms ease;
   box-shadow: 0 4px 20px rgba(7, 23, 43, 0.07);
   background-color: #FFFFFF;
   border-color: #C8D7E6;
 }
 
 .os-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 26px rgba(7, 23, 43, 0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(7, 23, 43, 0.10);
 }
 
 .os-button {
-  transition: transform 180ms ease, box-shadow 220ms ease, background-color 180ms ease, color 180ms ease;
+  transition: transform 150ms ease-out, box-shadow 180ms ease, background-color 150ms ease, color 150ms ease;
 }
 
 .os-button:hover:not(:disabled) {
@@ -117,7 +117,7 @@ body {
 }
 
 .os-button:active:not(:disabled) {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 .openshelf-brand {

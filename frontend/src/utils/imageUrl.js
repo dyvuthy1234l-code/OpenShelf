@@ -1,10 +1,5 @@
 /**
  * Normalizes any image path or URL into a fully-qualified displayable image URL.
- * Handles:
- * Case A: Full URL ('https://...' or 'http://...' or 'data:...') -> returns directly
- * Case B: Relative URL starting with '/storage/' or 'storage/' -> prepends backend base origin
- * Case C: Raw storage path ('libraries/logos/file.jpg' or 'avatars/1.jpg') -> prepends backend origin + '/storage/'
- * Case D: null / undefined -> returns null
  */
 export function getImageUrl(path) {
   if (!path || typeof path !== 'string') return null;
@@ -32,6 +27,49 @@ export function getImageUrl(path) {
   // Case C: Raw relative storage path without leading slash/storage
   const cleanPath = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
   return `${backendOrigin}/storage/${cleanPath}`;
+}
+
+/**
+ * Cloudinary Transformation Helper.
+ * Inserts Cloudinary optimization parameters (f_auto, q_auto, w_X, c_X) into image URLs.
+ */
+export function getOptimizedImageUrl(path, { width = null, height = null, crop = 'limit', quality = 'auto', format = 'auto' } = {}) {
+  const url = getImageUrl(path);
+  if (!url) return null;
+
+  if (url.includes('/image/upload/')) {
+    const transforms = [];
+    if (format) transforms.push(`f_${format}`);
+    if (quality) transforms.push(`q_${quality}`);
+    if (width) transforms.push(`w_${width}`);
+    if (height) transforms.push(`h_${height}`);
+    if ((width || height) && crop) transforms.push(`c_${crop}`);
+
+    const transformStr = transforms.join(',');
+
+    // Insert transformations right after /image/upload/
+    if (/\/image\/upload\/(?:[a-z]_[a-z0-9_.,]+\/)?/.test(url)) {
+      return url.replace(/\/image\/upload\/(?:[a-z]_[a-z0-9_.,]+\/)?/, `/image/upload/${transformStr}/`);
+    }
+  }
+
+  return url;
+}
+
+export function getBookCoverUrl(path, width = 400) {
+  return getOptimizedImageUrl(path, { width, crop: 'limit' });
+}
+
+export function getLibraryLogoUrl(path, width = 160) {
+  return getOptimizedImageUrl(path, { width, height: width, crop: 'fill' });
+}
+
+export function getLibraryCoverUrl(path, width = 1200) {
+  return getOptimizedImageUrl(path, { width, crop: 'limit' });
+}
+
+export function getAvatarUrl(path, width = 120) {
+  return getOptimizedImageUrl(path, { width, height: width, crop: 'fill' });
 }
 
 export default getImageUrl;

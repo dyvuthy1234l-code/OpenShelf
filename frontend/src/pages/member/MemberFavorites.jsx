@@ -12,8 +12,9 @@ export default function MemberFavorites() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const ITEMS_PER_PAGE = 15;
   const [favorites, setFavorites] = useState([]);
-  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: 5, total: 0 });
+  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: ITEMS_PER_PAGE, total: 0 });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +25,7 @@ export default function MemberFavorites() {
     try {
       setLoading(true);
       setError(null);
-      const res = await memberService.getFavorites({ page: pageToFetch, per_page: 5 });
+      const res = await memberService.getFavorites({ page: pageToFetch, per_page: ITEMS_PER_PAGE });
       
       const items = res.data || [];
       setFavorites(items);
@@ -33,14 +34,14 @@ export default function MemberFavorites() {
         setMeta({
           current_page: res.meta.current_page || pageToFetch,
           last_page: res.meta.last_page || 1,
-          per_page: res.meta.per_page || 5,
+          per_page: res.meta.per_page || ITEMS_PER_PAGE,
           total: res.meta.total || 0,
         });
       } else {
         setMeta({
           current_page: 1,
           last_page: 1,
-          per_page: 5,
+          per_page: ITEMS_PER_PAGE,
           total: items.length,
         });
       }
@@ -125,10 +126,10 @@ export default function MemberFavorites() {
 
       {/* Content */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 5 }).map((_, idx) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
+          {Array.from({ length: 15 }).map((_, idx) => (
             <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-4 space-y-3 animate-pulse">
-              <div className="h-48 bg-slate-200 rounded-xl" />
+              <div className="h-44 bg-slate-200 rounded-xl" />
               <div className="h-4 bg-slate-200 rounded w-3/4" />
               <div className="h-3 bg-slate-200 rounded w-1/2" />
               <div className="h-8 bg-slate-100 rounded-xl" />
@@ -153,7 +154,7 @@ export default function MemberFavorites() {
         />
       ) : (
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
             {favorites.map((fav) => {
               const book = fav.book || {};
               const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;

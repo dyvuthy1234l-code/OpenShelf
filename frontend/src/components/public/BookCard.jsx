@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen, Building2, User, CheckCircle2, XCircle, ArrowRight, Bookmark, Star, Clock } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import memberService from '../../services/memberService';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl, { getBookCoverUrl } from '../../utils/imageUrl';
+import { CARD_MOTION_PROPS } from '../../constants/motionTokens';
 
 function formatRelativeTime(dateString) {
   if (!dateString) return null;
@@ -65,13 +66,18 @@ export default function BookCard({ book, showDateAdded = false }) {
   const [imageErr, setImageErr] = useState(false);
 
   return (
-    <div className="group bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+    <motion.div
+      {...CARD_MOTION_PROPS}
+      className="group bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+    >
       {/* Cover Image Container */}
       <div className="relative h-56 bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center p-4">
-        {getImageUrl(book.cover_image_url || book.cover_image) && !imageErr ? (
+        {getBookCoverUrl(book.cover_image_url || book.cover_image, 400) && !imageErr ? (
           <img
-            src={getImageUrl(book.cover_image_url || book.cover_image)}
+            src={getBookCoverUrl(book.cover_image_url || book.cover_image, 400)}
             alt={book.title}
+            loading="lazy"
+            decoding="async"
             onError={() => setImageErr(true)}
             className="h-full w-auto max-w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
           />
@@ -173,6 +179,6 @@ export default function BookCard({ book, showDateAdded = false }) {
           <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

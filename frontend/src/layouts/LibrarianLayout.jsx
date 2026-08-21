@@ -428,7 +428,7 @@ export default function LibrarianLayout() {
           </header>
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
-          <main className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-5 flex flex-col min-h-0">
+          <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-4 flex flex-col min-h-0">
             <Outlet />
           </main>
         </div>

@@ -1,75 +1,39 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Bell, Inbox, ArrowLeftRight, CheckCircle2, 
   Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink 
 } from 'lucide-react';
-import librarianService from '../../services/librarianService';
+import { useNotifications } from '../../hooks/queries/useNotifications';
+import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { formatNotificationTime } from '../../utils/dateUtils';
 
 export default function LibrarianNotificationsPage() {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [filter, setFilter] = useState('all'); // 'all' | 'unread'
 
-  const fetchNotifications = useCallback(async (isSilent = false) => {
-    try {
-      if (!isSilent) setLoading(true);
-      setError(null);
-      const res = await librarianService.getNotifications();
-      setNotifications(res.data || []);
-    } catch (err) {
-      if (!isSilent) {
-        setError('Unable to load notifications. Please try again.');
-      }
-    } finally {
-      if (!isSilent) setLoading(false);
-    }
-  }, []);
+  // TanStack Query with Optimistic UI updates
+  const { data: resData, isLoading: loading, isError, refetch: fetchNotifications } = useNotifications('librarian');
+  const markReadMutation = useMarkNotificationAsRead('librarian');
+  const markAllReadMutation = useMarkAllNotificationsAsRead('librarian');
 
-  useEffect(() => {
-    fetchNotifications(false);
+  const notifications = Array.isArray(resData?.data) ? resData.data : (Array.isArray(resData) ? resData : []);
+  const error = isError ? 'Unable to load notifications. Please try again.' : null;
 
-    // Auto-refresh every 15 seconds
-    const interval = setInterval(() => {
-      fetchNotifications(true);
-    }, 15000);
-
-    const handleFocus = () => fetchNotifications(true);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [fetchNotifications]);
-
-  const handleMarkAsRead = async (id) => {
-    try {
-      await librarianService.markNotificationAsRead(id);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
-      );
-    } catch {
-      // Non-critical
-    }
+  const handleMarkAsRead = (id) => {
+    markReadMutation.mutate(id, {
+      onSuccess: () => setSuccessMessage('Notification marked as read.'),
+      onError: () => setSuccessMessage('Unable to update notification. Rollback applied.'),
+    });
   };
 
-  const handleMarkAllRead = async () => {
-    try {
-      await librarianService.markAllNotificationsAsRead();
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
-      );
-      setSuccessMessage('All notifications marked as read.');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch {
-      setError('Failed to mark all as read.');
-    }
+  const handleMarkAllRead = () => {
+    markAllReadMutation.mutate(undefined, {
+      onSuccess: () => setSuccessMessage('All notifications marked as read.'),
+      onError: () => setSuccessMessage('Unable to mark all as read. Rollback applied.'),
+    });
   };
 
   const handleDelete = async (e, id) => {

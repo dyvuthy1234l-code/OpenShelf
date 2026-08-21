@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import memberService from '../../services/memberService';
 import OpenShelfBrand from '../common/OpenShelfBrand';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl, { getAvatarUrl } from '../../utils/imageUrl';
+import { useNotifications } from '../../hooks/queries/useNotifications';
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -14,44 +14,13 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    let isMounted = true;
-    async function loadNotifCount() {
-      if (isAuthenticated && user?.role === 'member') {
-        try {
-          const res = await memberService.getNotifications();
-          if (!isMounted) return;
-          if (res.unread_count !== undefined) {
-            setUnreadCount(res.unread_count);
-          } else if (Array.isArray(res.data)) {
-            setUnreadCount(res.data.filter((n) => !n.read_at).length);
-          }
-        } catch {
-          // non-critical
-        }
-      }
-    }
+  // Shared TanStack Query for notifications (Updates instantly on optimistic mutations)
+  const isMember = isAuthenticated && user?.role === 'member';
+  const { data: notifData } = useNotifications('member', isMember);
 
-    loadNotifCount();
-
-    // Auto-refresh interval every 10 seconds for real-time member notification badge
-    const interval = setInterval(loadNotifCount, 10000);
-
-    const handleReadEvent = () => loadNotifCount();
-    const handleFocus = () => loadNotifCount();
-
-    window.addEventListener('notificationsRead', handleReadEvent);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-      window.removeEventListener('notificationsRead', handleReadEvent);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [isAuthenticated, user, location.pathname]);
+  const notifList = Array.isArray(notifData?.data) ? notifData.data : (Array.isArray(notifData) ? notifData : []);
+  const unreadCount = notifData?.unread_count ?? notifList.filter((n) => !n.read_at && !n.is_read).length;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -72,8 +41,8 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#DCE6F0] shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Brand Logo */}
           <Link to="/" className="shrink-0">
             <OpenShelfBrand role="member" size="sm" />
@@ -87,7 +56,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? 'text-[#123A63] bg-[#F5F8FC] font-extrabold border border-[#DCE6F0]'
                       : 'text-[#64748B] hover:text-[#102A43] hover:bg-[#F5F8FC]'
@@ -100,7 +69,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Side: Search + Member Shortcuts / Guest Auth */}
-          <div className="hidden lg:flex items-center gap-3 xl:gap-4">
+          <div className="hidden lg:flex items-center gap-2.5 xl:gap-3.5">
             {/* Search Input */}
             <form onSubmit={handleSearchSubmit} className="relative w-48 xl:w-56">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
@@ -109,7 +78,7 @@ export default function Navbar() {
                 placeholder="Search title, author, ISBN..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#F5F8FC] border border-[#DCE6F0] focus:border-[#123A63] rounded-xl py-2 pl-10 pr-4 text-xs text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#123A63]/15 transition-all"
+                className="w-full bg-[#F5F8FC] border border-[#DCE6F0] focus:border-[#123A63] rounded-xl py-1.5 pl-10 pr-4 text-xs text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#123A63]/15 transition-all"
               />
             </form>
 
@@ -119,7 +88,7 @@ export default function Navbar() {
                 <Link
                   to="/member/favorites"
                   title="My Favorites"
-                  className="p-2.5 text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors"
+                  className="p-2 text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors"
                 >
                   <Bookmark className="w-4 h-4" />
                 </Link>
@@ -128,7 +97,7 @@ export default function Navbar() {
                 <Link
                   to="/member/notifications"
                   title="Notifications"
-                  className="relative p-2.5 text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors"
+                  className="relative p-2 text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors"
                 >
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
@@ -142,13 +111,14 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className="flex items-center gap-2 p-1.5 pr-3 bg-slate-100/80 border border-slate-200 hover:border-amber-500/50 rounded-xl transition-all"
+                    className="flex items-center gap-2 p-1 pr-2.5 bg-slate-100/80 border border-slate-200 hover:border-amber-500/50 rounded-xl transition-all"
                   >
                     <div className="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
-                      {getImageUrl(user.avatar_url || user.avatar) ? (
+                      {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
                         <img
-                          src={getImageUrl(user.avatar_url || user.avatar)}
+                          src={getAvatarUrl(user.avatar_url || user.avatar, 120)}
                           alt={user.name}
+                          loading="eager"
                           className="w-full h-full object-cover"
                           onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
@@ -168,10 +138,11 @@ export default function Navbar() {
                     >
                       <div className="px-3 py-2 border-b border-slate-100 mb-1 flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
-                          {getImageUrl(user.avatar_url || user.avatar) ? (
+                          {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
                             <img
-                              src={getImageUrl(user.avatar_url || user.avatar)}
+                              src={getAvatarUrl(user.avatar_url || user.avatar, 120)}
                               alt={user.name}
+                              loading="eager"
                               className="w-full h-full object-cover"
                               onError={(e) => { e.currentTarget.style.display = 'none'; }}
                             />

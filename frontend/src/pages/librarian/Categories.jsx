@@ -258,20 +258,42 @@ export default function CategoriesPage() {
                   <ChevronLeft className="w-4 h-4" />
                 </button>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    disabled={loading}
-                    className={`w-7 h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      currentPage === page
-                        ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {(() => {
+                  const getPages = () => {
+                    if (totalPages <= 5) return Array.from({ length: totalPages }, (_, i) => i + 1);
+                    const set = new Set([1, totalPages, currentPage]);
+                    if (currentPage > 1) set.add(currentPage - 1);
+                    if (currentPage < totalPages) set.add(currentPage + 1);
+                    const sorted = [...set].filter((p) => p >= 1 && p <= totalPages).sort((a, b) => a - b);
+                    const res = [];
+                    sorted.forEach((p, idx) => {
+                      if (idx > 0 && p - sorted[idx - 1] > 1) res.push(`ellipsis-${p}`);
+                      res.push(p);
+                    });
+                    return res;
+                  };
+
+                  return getPages().map((item) =>
+                    typeof item === 'string' ? (
+                      <span key={item} className="w-5 text-center text-xs text-slate-400 font-bold">
+                        ...
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        onClick={() => setCurrentPage(item)}
+                        disabled={loading}
+                        className={`w-7 h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          currentPage === item
+                            ? 'bg-amber-500 text-slate-950 shadow-2xs'
+                            : 'text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    )
+                  );
+                })()}
 
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}

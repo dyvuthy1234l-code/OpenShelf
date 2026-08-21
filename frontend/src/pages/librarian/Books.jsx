@@ -4,6 +4,8 @@ import {
   ChevronLeft, ChevronRight, Inbox 
 } from 'lucide-react';
 import librarianService from '../../services/librarianService';
+import { queryClient } from '../../query/queryClient';
+import useDebounce from '../../hooks/useDebounce';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import BookTable from '../../components/librarian/books/BookTable';
@@ -19,7 +21,8 @@ export default function BooksPage() {
   const [error, setError] = useState(null);
 
   // Server Pagination & Filters State
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const debouncedSearch = useDebounce(searchInput, 300);
   const [categoryId, setCategoryId] = useState('');
   const [availability, setAvailability] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,7 +55,7 @@ export default function BooksPage() {
       setLoading(true);
       setError(null);
 
-      const s = overrides.search !== undefined ? overrides.search : search;
+      const s = overrides.search !== undefined ? overrides.search : debouncedSearch;
       const c = overrides.categoryId !== undefined ? overrides.categoryId : categoryId;
       const a = overrides.availability !== undefined ? overrides.availability : availability;
 
@@ -80,18 +83,17 @@ export default function BooksPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, categoryId, availability, perPage]);
+  }, [debouncedSearch, categoryId, availability, perPage]);
 
-  // Initial load
+  // Refetch when debounced search term changes
   useEffect(() => {
     fetchBooks(1);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
 
-  // Filter change handlers (Reset page to 1 & fetch from server)
+  // Filter change handlers
   const handleSearchChange = (val) => {
-    setSearch(val);
+    setSearchInput(val);
     setCurrentPage(1);
-    fetchBooks(1, { search: val });
   };
 
   const handleCategoryChange = (val) => {
@@ -107,7 +109,7 @@ export default function BooksPage() {
   };
 
   const handleClearFilters = () => {
-    setSearch('');
+    setSearchInput('');
     setCategoryId('');
     setAvailability('all');
     setCurrentPage(1);
@@ -120,7 +122,7 @@ export default function BooksPage() {
     fetchBooks(page);
   };
 
-  const hasActiveFilters = !!search || !!categoryId || availability !== 'all';
+  const hasActiveFilters = !!searchInput || !!categoryId || availability !== 'all';
 
   // Pagination display calculation
   const startIndex = total > 0 ? (currentPage - 1) * perPage + 1 : 0;
@@ -161,6 +163,7 @@ export default function BooksPage() {
       await librarianService.updateBook(id, formData);
       setSuccessMessage('Book updated successfully.');
       setShowFormModal(false);
+      queryClient.invalidateQueries({ queryKey: ['books'] });
       await fetchBooks(currentPage);
     } else {
       // Add
@@ -171,6 +174,7 @@ export default function BooksPage() {
       setCategoryId('');
       setAvailability('all');
       setCurrentPage(1);
+      queryClient.invalidateQueries({ queryKey: ['books'] });
       await fetchBooks(1, { search: '', categoryId: '', availability: 'all' });
     }
   };
@@ -178,7 +182,8 @@ export default function BooksPage() {
   const handleDeleteBookConfirm = async (id) => {
     await librarianService.deleteBook(id);
     setDeletingBook(null);
-    setSuccessMessage('Book deleted successfully.');
+    setSuccessMessage('Book status updated to inactive.');
+    queryClient.invalidateQueries({ queryKey: ['books'] });
 
     // If deleting last item on current page (> 1), step back to previous page
     const targetPage = (books.length === 1 && currentPage > 1) ? currentPage - 1 : currentPage;
@@ -231,7 +236,7 @@ export default function BooksPage() {
       {/* Search & Filters Toolbar */}
       <div className="shrink-0">
         <BookFilters
-          search={search}
+          search={searchInput}
           onSearchChange={handleSearchChange}
           categoryId={categoryId}
           onCategoryChange={handleCategoryChange}
