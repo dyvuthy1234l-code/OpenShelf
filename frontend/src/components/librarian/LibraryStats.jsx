@@ -9,7 +9,7 @@ export default function LibraryStats({ booksCount = 0, availableCount = 0, membe
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-4 gap-4">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (

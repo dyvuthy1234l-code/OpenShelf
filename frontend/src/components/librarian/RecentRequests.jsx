@@ -38,7 +38,7 @@ export default function RecentRequests({ requests = [] }) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs">
+        <table className="w-full min-w-full max-w-[800px] text-left text-xs">
           <thead>
             <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
               <th className="pb-3 pr-4">Member</th>

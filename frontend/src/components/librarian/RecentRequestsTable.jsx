@@ -29,7 +29,7 @@ export default function RecentRequestsTable({ requests = [] }) {
         </div>
       ) : (
         <div className="overflow-hidden flex-1 min-h-0">
-          <table className="w-full text-left text-[11px]">
+          <table className="w-full min-w-full max-w-[800px] text-left text-[11px]">
             <thead>
               <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase tracking-wider text-[9px]">
                 <th className="py-1 px-1.5">Member</th>

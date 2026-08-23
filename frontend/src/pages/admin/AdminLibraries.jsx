@@ -188,7 +188,7 @@ export default function AdminLibraries() {
       )}
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Libraries */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
@@ -343,7 +343,7 @@ export default function AdminLibraries() {
           </div>
         ) : (
           <div className="overflow-auto flex-1 min-h-0 h-full">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full min-w-full max-w-[800px] text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
                   <th className="py-2.5 px-3.5">Library</th>
@@ -572,7 +572,7 @@ export default function AdminLibraries() {
       {/* 5. LIBRARY DETAILS & REVIEW DRAWER */}
       {drawerOpen && selectedLibrary && (
         <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between p-6 space-y-6 overflow-y-auto">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white h-full shadow-2xl flex flex-col justify-between p-6 space-y-6 overflow-y-auto">
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
@@ -677,7 +677,7 @@ export default function AdminLibraries() {
       {/* 6. CONFIRMATION / REJECTION MODAL */}
       {actionModal.open && actionModal.library && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
             <div className="flex items-center gap-3 text-rose-600">
               <ShieldAlert className="w-6 h-6 shrink-0" />
               <h3 className="text-lg font-extrabold text-slate-900">
@@ -726,7 +726,7 @@ export default function AdminLibraries() {
       {/* 7. ADD LIBRARY MODAL */}
       {addModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <form onSubmit={handleCreateLibrary} className="w-full max-w-lg bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleCreateLibrary} className="w-[calc(100vw-24px)] md:w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[9px] uppercase font-extrabold tracking-widest text-amber-700 block">Create Branch</span>
@@ -842,7 +842,7 @@ export default function AdminLibraries() {
       {/* 8. EDIT LIBRARY MODAL */}
       {editModalOpen && editLib && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <form onSubmit={handleUpdateLibrary} className="w-full max-w-lg bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleUpdateLibrary} className="w-[calc(100vw-24px)] md:w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[9px] uppercase font-extrabold tracking-widest text-amber-700 block">Edit Branch</span>

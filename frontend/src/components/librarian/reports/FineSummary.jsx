@@ -42,7 +42,7 @@ export default function FineSummary({ reportData, circulationData = [] }) {
       </div>
 
       {/* 3 Summary Metrics Cards */}
-      <div className="grid grid-cols-3 gap-2 shrink-0 my-1">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 shrink-0 my-1">
         {/* 1. Overdue Books */}
         <div className="bg-rose-50/70 border border-rose-200/80 rounded-xl p-2 sm:p-2.5 space-y-0.5">
           <div className="flex items-center justify-between">

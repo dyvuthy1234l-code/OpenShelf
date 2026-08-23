@@ -209,7 +209,7 @@ export default function AdminPayments() {
       </div>
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Revenue (Strongest Financial Card) */}
         <div className="bg-white border border-emerald-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-50 rounded-bl-full -z-0" />
@@ -397,7 +397,7 @@ export default function AdminPayments() {
           </div>
         ) : (
           <div className="overflow-auto flex-1 min-h-0 h-full">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full min-w-full max-w-[800px] text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
                   <th className="py-2.5 px-3.5">Payment</th>

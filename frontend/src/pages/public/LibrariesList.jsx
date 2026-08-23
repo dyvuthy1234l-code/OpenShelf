@@ -242,7 +242,7 @@ export default function LibrariesList() {
 
         {/* LOADING SKELETON STATE */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div key={n} className="h-80 bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse">
                 <div className="h-44 bg-slate-100 rounded-xl" />
@@ -294,7 +294,7 @@ export default function LibrariesList() {
         ) : (
           /* LIBRARY CARDS GRID & PAGINATION CONTROLS */
           <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {sortedLibraries.map((lib) => (
                 <LibraryCard key={`all-${lib.id}`} library={lib} />
               ))}

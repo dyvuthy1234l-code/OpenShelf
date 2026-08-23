@@ -5,7 +5,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
   return (
     <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs">
+        <table className="w-full min-w-full max-w-[800px] text-left text-xs">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
               <th className="py-4 px-6">Book</th>

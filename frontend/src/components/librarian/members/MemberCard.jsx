@@ -30,7 +30,7 @@ export default function MemberCard({ member }) {
         </div>
       </div>
 
-      <div className="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+      <div className="pt-3 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
         <div>
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Active Loans</span>
           <span className="font-extrabold text-slate-900">{member.active_count ?? 0}</span>

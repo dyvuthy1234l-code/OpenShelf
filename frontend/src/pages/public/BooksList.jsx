@@ -252,7 +252,7 @@ export default function BooksList() {
         ) : (
           /* Real Book Cards Grid & Server-Side Pagination Bar */
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {books.map((b) => (
                 <BookCard key={b.id} book={b} />
               ))}

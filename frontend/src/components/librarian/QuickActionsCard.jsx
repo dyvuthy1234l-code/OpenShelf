@@ -48,7 +48,7 @@ export default function QuickActionsCard() {
         <Zap className="w-5 h-5 text-amber-500 shrink-0" />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {actions.map((act, idx) => {
           const Icon = act.icon;
           return (

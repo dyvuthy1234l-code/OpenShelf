@@ -221,7 +221,7 @@ export default function AdminLibrarians() {
       )}
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Librarians */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
@@ -372,7 +372,7 @@ export default function AdminLibrarians() {
           </div>
         ) : (
           <div className="overflow-auto flex-1 min-h-0 h-full">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full min-w-full max-w-[800px] text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
                   <th className="py-2.5 px-3.5">Librarian</th>
@@ -514,7 +514,7 @@ export default function AdminLibrarians() {
       {/* 5. ADD LIBRARIAN MODAL */}
       {addModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <form onSubmit={handleCreateLibrarian} className="w-full max-w-lg bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleCreateLibrarian} className="w-[calc(100vw-24px)] md:w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[9px] uppercase font-extrabold tracking-widest text-blue-700 block">Create Staff</span>
@@ -635,7 +635,7 @@ export default function AdminLibrarians() {
       {/* 6. EDIT LIBRARIAN MODAL */}
       {editModalOpen && selectedLibrarian && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <form onSubmit={handleUpdateLibrarian} className="w-full max-w-lg bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleUpdateLibrarian} className="w-[calc(100vw-24px)] md:w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[9px] uppercase font-extrabold tracking-widest text-blue-700 block">Edit Profile</span>
@@ -731,7 +731,7 @@ export default function AdminLibrarians() {
       {/* 7. STATUS CONFIRMATION MODAL */}
       {statusModal.open && statusModal.librarian && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
             <div className="flex items-center gap-3 text-rose-600">
               <ShieldAlert className="w-6 h-6 shrink-0" />
               <h3 className="text-lg font-extrabold text-slate-900">Deactivate Librarian Account?</h3>

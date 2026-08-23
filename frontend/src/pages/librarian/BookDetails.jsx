@@ -193,7 +193,7 @@ export default function BookDetails() {
               </div>
 
               {/* Meta Grid */}
-              <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">ISBN</span>
                   <span className="font-extrabold text-slate-800 font-mono">{book.isbn || 'N/A'}</span>
@@ -233,7 +233,7 @@ export default function BookDetails() {
               <span>Inventory & Circulation Metrics</span>
             </h3>
 
-            <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Copies</span>
                 <span className="text-2xl font-extrabold text-slate-900">{book.quantity ?? 1}</span>
@@ -276,7 +276,7 @@ export default function BookDetails() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-full max-w-[800px] text-left text-xs">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                   <th className="py-3.5 px-4">Member</th>

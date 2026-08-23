@@ -151,7 +151,7 @@ export default function AdminDashboard() {
               <div key={i} className="h-[100px] bg-white rounded-2xl border border-slate-200" />
             ))}
           </div>
-          <div className="flex-1 min-h-[240px] bg-white rounded-2xl border border-slate-200" />
+          <div className="flex-1 min-lg:h-[240px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
         <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5 w-full">
@@ -239,9 +239,9 @@ export default function AdminDashboard() {
           </div>
 
           {/* 3. MAIN ANALYTICS AREA (LEFT 65% / RIGHT 35%) (FLEX-1 EXPANDS TO FILL SCREEN) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch flex-1 min-h-[240px] w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch flex-1 min-lg:h-[240px] w-full">
             {/* LEFT: PLATFORM ACTIVITY (65% / lg:col-span-8) */}
-            <div className="lg:col-span-8 bg-white border border-slate-200/90 rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs h-full min-h-[240px] overflow-hidden">
+            <div className="lg:col-span-8 bg-white border border-slate-200/90 rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs h-full min-lg:h-[240px] overflow-hidden">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2 shrink-0">
                 <div>
                   <h3 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">

@@ -36,7 +36,7 @@ export default function RecentBooks({ books = [] }) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {books.map((book) => {
           const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;
 

@@ -129,7 +129,7 @@ export default function AdminMembers() {
       )}
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Members */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between min-h-[72px]">
           <div>
@@ -524,7 +524,7 @@ export default function AdminMembers() {
       {/* 5. STATUS CONFIRMATION MODAL */}
       {statusModal.open && statusModal.member && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
             <div className="flex items-center gap-3 text-rose-600">
               <ShieldAlert className="w-6 h-6 shrink-0" />
               <h3 className="text-lg font-extrabold text-slate-900">Suspend Member Account?</h3>

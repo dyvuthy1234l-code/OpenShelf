@@ -358,7 +358,7 @@ export default function AuthPage({ defaultTab = "login" }) {
         </div>
 
         {/* Social */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <button
             type="button"
             className="flex h-9 items-center justify-center gap-1.5 rounded-lg border border-[#1E3A5F]/60 bg-[#0B1A2D] text-xs font-medium text-slate-400 transition hover:border-[#2A4A6B] hover:text-slate-300"

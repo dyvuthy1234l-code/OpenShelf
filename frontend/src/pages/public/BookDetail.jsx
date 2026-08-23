@@ -504,7 +504,7 @@ export default function BookDetail() {
           </p>
 
           {/* Book Metadata Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-4 border-t border-slate-100 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-4 border-t border-slate-100 text-xs">
             {book.isbn && (
               <div>
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">ISBN</span>
@@ -735,7 +735,7 @@ export default function BookDetail() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {relatedBooks.map((relBook) => (
               <BookCard key={relBook.id} book={relBook} />
             ))}
@@ -785,7 +785,7 @@ export default function BookDetail() {
                       <span className="font-bold text-amber-700 truncate">{book.library.name}</span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 text-[10px] bg-white p-2.5 rounded-xl border border-slate-200/80 text-center">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[10px] bg-white p-2.5 rounded-xl border border-slate-200/80 text-center">
                       <div>
                         <span className="text-slate-400 block font-semibold">Period</span>
                         <span className="font-extrabold text-slate-900">{book.library.borrowing_period_days ?? 14} Days</span>

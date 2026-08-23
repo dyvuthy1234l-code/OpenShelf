@@ -468,7 +468,7 @@ export default function LibraryPage() {
 
               {/* Row 3: Structured Opening & Closing Time Pickers + Google Maps URL */}
               <div className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-end">
+                <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-end">
                   {/* Opening Time Picker */}
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
@@ -695,7 +695,7 @@ export default function LibraryPage() {
 
             {/* 3. 4 KPI STAT CARDS ROW */}
             <div className="px-5 pb-2 shrink-0">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
                 {/* Catalogued Books */}
                 <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-2.5 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-amber-100/90 border border-amber-200 text-amber-800 flex items-center justify-center shrink-0">

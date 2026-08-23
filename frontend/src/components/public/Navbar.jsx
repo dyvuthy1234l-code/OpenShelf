@@ -340,7 +340,7 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}

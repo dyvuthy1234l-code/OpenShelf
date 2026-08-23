@@ -124,8 +124,8 @@ export default function Dashboard() {
               <div key={i} className="h-[108px] bg-white rounded-2xl border border-slate-200" />
             ))}
           </div>
-          <div className="h-[255px] bg-white rounded-2xl border border-slate-200" />
-          <div className="h-[155px] bg-white rounded-2xl border border-slate-200" />
+          <div className="lg:h-[255px] bg-white rounded-2xl border border-slate-200" />
+          <div className="lg:h-[155px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
         <div className="flex-1 flex flex-col justify-between min-h-0 space-y-3">
@@ -133,7 +133,7 @@ export default function Dashboard() {
           <AnalyticsKpiGrid reports={reports} memberSummary={memberSummary} />
 
           {/* SECTION 3: MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books ~255px) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch h-[255px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[255px] min-h-0">
             <div className="lg:col-span-8 h-full min-h-0">
               <BorrowingActivityChart
                 circulationData={reports?.monthly_circulation || []}
@@ -147,7 +147,7 @@ export default function Dashboard() {
           </div>
 
           {/* SECTION 4: BOTTOM ROW (50% Recent Requests + 50% Book Categories ~155px) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch h-[155px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[155px] min-h-0">
             <div className="lg:col-span-6 h-full min-h-0">
               <RecentRequestsTable requests={recentRequests} />
             </div>

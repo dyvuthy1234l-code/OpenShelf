@@ -147,7 +147,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
         </div>
 
         {/* Dates Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
           <div>
             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Requested</span>
             <span className="font-bold text-slate-800">

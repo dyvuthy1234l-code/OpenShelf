@@ -73,7 +73,7 @@ export default function LibrarySummary({ library, booksCount = 0, membersCount =
       </div>
 
       {/* Library Quick Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+      <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
         <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70">
           <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Books</span>
           <span className="text-lg font-extrabold text-slate-900">{booksCount}</span>

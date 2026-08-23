@@ -316,7 +316,7 @@ export default function AdminLayout() {
 
                 {/* Popover Dropdown */}
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200/90 rounded-2xl shadow-xl z-50 overflow-hidden text-xs">
+                  <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] md:w-80 bg-white border border-slate-200/90 rounded-2xl shadow-xl z-50 overflow-hidden text-xs">
                     <div className="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                       <span className="font-extrabold text-slate-900">Unread Alerts</span>
                       {unreadCount > 0 ? (

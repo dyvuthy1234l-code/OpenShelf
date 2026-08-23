@@ -18,7 +18,7 @@ export default function BorrowingOverview({ summary = {} }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {items.map((item) => {
           const Icon = item.icon;
           return (

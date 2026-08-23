@@ -266,7 +266,7 @@ export default function Home() {
             No libraries currently active in the network.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {libraries.map((lib) => (
               <LibraryCard key={lib.id} library={lib} />
             ))}
@@ -301,7 +301,7 @@ export default function Home() {
             <p className="text-xs text-slate-500 font-medium">Check back later when copies are returned.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {availableBooks.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
@@ -343,7 +343,7 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {recentlyAddedBooks.map((book) => (
               <motion.div key={`recent-${book.id}`} variants={itemVariants}>
@@ -394,7 +394,7 @@ export default function Home() {
             <p className="text-slate-600 text-xs sm:text-sm">Borrow physical books from local libraries in 4 easy steps.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { num: '01', title: 'Search', desc: 'Browse books or physical libraries near you in Cambodia.' },
               { num: '02', title: 'Choose Library', desc: 'Select the community library holding your desired title.' },

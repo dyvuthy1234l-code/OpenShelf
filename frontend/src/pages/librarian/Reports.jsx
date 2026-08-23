@@ -152,7 +152,7 @@ export default function ReportsPage() {
       {/* Loading Skeleton on Initial Page Load Only */}
       {initialLoading ? (
         <div className="space-y-3.5 animate-pulse flex-1 flex flex-col justify-between">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="h-[115px] bg-white rounded-2xl border border-[#DCE6F0]" />
             ))}

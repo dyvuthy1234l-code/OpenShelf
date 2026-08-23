@@ -378,7 +378,7 @@ export default function AdminSubscriptions() {
       )}
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Active Subscriptions */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
@@ -536,7 +536,7 @@ export default function AdminSubscriptions() {
           </div>
         ) : (
           <div className="overflow-auto flex-1 min-h-0 h-full">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full min-w-full max-w-[800px] text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
                   <th className="py-2.5 px-3.5">Library</th>
@@ -714,7 +714,7 @@ export default function AdminSubscriptions() {
       {/* 5. ADD / EDIT SUBSCRIPTION MODAL */}
       {addSubscriptionOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[9px] uppercase font-extrabold tracking-widest text-blue-700 block">Subscription Management</span>
@@ -795,7 +795,7 @@ export default function AdminSubscriptions() {
               </div>
 
               {/* Dates Row */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="font-bold text-slate-700 block">Start Date *</label>
                   <input
@@ -862,7 +862,7 @@ export default function AdminSubscriptions() {
       {/* 6. CANCEL SUBSCRIPTION CONFIRMATION MODAL */}
       {cancelingSubscription && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
             <div className="flex items-center gap-3 text-amber-700">
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center font-bold shrink-0">
                 <AlertTriangle className="w-5 h-5 text-amber-700" />
@@ -900,7 +900,7 @@ export default function AdminSubscriptions() {
       {/* 7. MANAGE PLANS MODAL */}
       {plansModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/62 backdrop-blur-xs">
-          <div className="w-full max-w-3xl bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col font-sans">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col font-sans">
             {/* Modal Top Header (Dynamic based on View) */}
             <div className="flex items-start justify-between border-b border-slate-100 pb-4 shrink-0">
               <div className="flex items-center gap-3.5">
@@ -1294,7 +1294,7 @@ export default function AdminSubscriptions() {
       {/* 8. STOP NEW SUBSCRIPTIONS CONFIRMATION MODAL */}
       {stoppingPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-100">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-100">
             <div className="flex items-center gap-3.5 text-amber-700">
               <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold shrink-0">
                 <AlertTriangle className="w-5 h-5 text-amber-600" />
@@ -1331,7 +1331,7 @@ export default function AdminSubscriptions() {
       {/* 9. DELETE PLAN CONFIRMATION MODAL */}
       {deletingPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-100">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-100">
             <div className="flex items-center gap-3.5 text-rose-700">
               <div className="w-10 h-10 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center font-bold shrink-0">
                 <Trash2 className="w-5 h-5 text-rose-600" />

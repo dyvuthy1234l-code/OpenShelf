@@ -243,7 +243,7 @@ export default function AdminNotifications() {
       )}
 
       {/* 2. SUMMARY CARDS (4 COMPACT CARDS ~85px) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
         {/* Card 1: All Notifications */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
           <div>
@@ -556,7 +556,7 @@ export default function AdminNotifications() {
       {/* 6. NOTIFICATION DETAIL MODAL */}
       {selectedNotification && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/62 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-100 font-sans">
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-100 font-sans">
             {/* Modal Header */}
             <div className="flex items-start justify-between border-b border-slate-100 pb-3.5">
               <div className="flex items-center gap-3">

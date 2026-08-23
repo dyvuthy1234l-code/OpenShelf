@@ -115,7 +115,7 @@ export default function MembersPage() {
       )}
 
       {/* Overview Stat Badges */}
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
         <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
           <span className="text-[9px] uppercase font-extrabold text-slate-400">Total Library Members</span>
           <span className="text-lg font-extrabold text-slate-900">{summary.total_members}</span>

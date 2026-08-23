@@ -292,7 +292,7 @@ export default function AdminMemberDetails() {
               </div>
             ) : (
               <div className="overflow-auto max-h-[340px]">
-                <table className="w-full text-left text-xs border-collapse">
+                <table className="w-full min-w-full max-w-[800px] text-left text-xs border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[9px] tracking-wider">
                       <th className="py-3 px-4">Book Title</th>

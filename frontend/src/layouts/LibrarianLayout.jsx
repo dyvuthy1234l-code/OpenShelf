@@ -326,7 +326,7 @@ export default function LibrarianLayout() {
                 {/* Notifications Dropdown */}
                 {notifDropdownOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200/90 rounded-2xl shadow-xl p-3 z-50 space-y-2 text-xs"
+                    className="absolute right-0 mt-2 w-[calc(100vw-24px)] md:w-80 sm:w-96 bg-white border border-slate-200/90 rounded-2xl shadow-xl p-3 z-50 space-y-2 text-xs"
                     onMouseLeave={() => setNotifDropdownOpen(false)}
                   >
                     <div className="flex items-center justify-between pb-2 border-b border-slate-100 px-1">
