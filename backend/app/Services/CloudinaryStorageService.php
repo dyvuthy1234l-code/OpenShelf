@@ -16,8 +16,7 @@ class CloudinaryStorageService
     public static function upload(UploadedFile $file, string $folder = 'uploads'): string
     {
         try {
-            $cloudUrl = config('cloudinary.cloud_url');
-            if (!empty($cloudUrl) && str_contains($cloudUrl, '@')) {
+            if (!empty(config('cloudinary.cloud_url'))) {
                 $uploaded = Cloudinary::upload($file->getRealPath(), [
                     'folder' => 'openshelf/' . trim($folder, '/'),
                 ]);
@@ -45,8 +44,7 @@ class CloudinaryStorageService
 
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             try {
-                $cloudUrl = config('cloudinary.cloud_url');
-                if (!empty($cloudUrl) && str_contains($cloudUrl, '@')) {
+                if (!empty(config('cloudinary.cloud_url'))) {
                     $publicId = static::getPublicIdFromUrl($path);
                     if ($publicId) {
                         Cloudinary::destroy($publicId);

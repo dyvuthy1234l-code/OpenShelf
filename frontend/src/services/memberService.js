@@ -13,9 +13,8 @@ export const memberService = {
   },
 
   updateProfileWithAvatar: async (formData) => {
-    const res = await api.post('/profile/update', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    // Let the browser/Axios add the multipart boundary automatically.
+    const res = await api.post('/profile/update', formData);
     return res.data;
   },
 
@@ -127,6 +126,16 @@ export const memberService = {
   // Reviews
   submitBookReview: async (bookId, data) => {
     const res = await api.post(`/books/${bookId}/reviews`, data);
+    return res.data;
+  },
+
+  submitLibraryReview: async (libraryId, data) => {
+    const res = await api.post(`/libraries/${libraryId}/reviews`, data);
+    return res.data;
+  },
+
+  deleteLibraryReview: async (libraryId, reviewId) => {
+    const res = await api.delete(`/member/libraries/${libraryId}/reviews/${reviewId}`);
     return res.data;
   },
 };

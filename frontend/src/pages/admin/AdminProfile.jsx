@@ -65,8 +65,16 @@ export default function AdminProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      setProfileMessage({ type: 'error', text: 'Image file size must be less than 2MB.' });
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (!validTypes.includes(file.type.toLowerCase())) {
+      setProfileMessage({ type: 'error', text: 'Please select a JPG, PNG, or WEBP image.' });
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileMessage({ type: 'error', text: 'Image file size must be less than 5MB.' });
+      e.target.value = '';
       return;
     }
 
@@ -88,10 +96,13 @@ export default function AdminProfile() {
     } catch (err) {
       setProfileMessage({
         type: 'error',
-        text: err?.response?.data?.message || 'Failed to upload profile picture.',
+        text: err?.response?.data?.message
+          || err?.response?.data?.errors?.avatar?.[0]
+          || 'Failed to upload profile picture.',
       });
     } finally {
       setAvatarLoading(false);
+      e.target.value = '';
     }
   };
 
