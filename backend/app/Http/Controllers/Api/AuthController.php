@@ -140,11 +140,16 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        $validated = $request->validate([
+        $rules = [
             'name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-        ]);
+        ];
+
+        if ($request->hasFile('avatar')) {
+            $rules['avatar'] = ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'];
+        }
+
+        $validated = $request->validate($rules);
 
         if ($request->hasFile('avatar')) {
             try {

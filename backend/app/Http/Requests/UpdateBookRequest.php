@@ -25,7 +25,7 @@ class UpdateBookRequest extends FormRequest
         $library = $this->user()->library;
         $libraryId = $library ? $library->id : null;
 
-        return [
+        $rules = [
             'category_id' => [
                 'sometimes',
                 'integer',
@@ -40,7 +40,12 @@ class UpdateBookRequest extends FormRequest
             'available_quantity' => ['nullable', 'integer', 'min:0'],
             'description' => ['nullable', 'string', 'max:5000'],
             'status' => ['sometimes', 'in:active,inactive,maintenance'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
         ];
+
+        if ($this->hasFile('cover_image')) {
+            $rules['cover_image'] = ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'];
+        }
+
+        return $rules;
     }
 }

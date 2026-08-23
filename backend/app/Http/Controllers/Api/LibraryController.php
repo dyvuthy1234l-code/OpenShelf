@@ -133,9 +133,16 @@ class LibraryController extends Controller
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'status' => ['nullable', 'in:active,inactive'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $rules['image'] = ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'];
+        }
+        if ($request->hasFile('cover_image')) {
+            $rules['cover_image'] = ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'];
+        }
+
+        $validated = $request->validate($rules);
 
         if ($request->hasFile('image')) {
             $validated['image'] = \App\Services\CloudinaryStorageService::upload($request->file('image'), 'libraries');
@@ -192,9 +199,16 @@ class LibraryController extends Controller
             'latitude' => ['sometimes', 'nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['sometimes', 'nullable', 'numeric', 'between:-180,180'],
             'status' => ['sometimes', 'required', 'in:active,inactive'],
-            'image' => ['sometimes', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'cover_image' => ['sometimes', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $rules['image'] = ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'];
+        }
+        if ($request->hasFile('cover_image')) {
+            $rules['cover_image'] = ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'];
+        }
+
+        $validated = $request->validate($rules);
 
         if ($request->hasFile('image')) {
             \App\Services\CloudinaryStorageService::delete($library->image);
