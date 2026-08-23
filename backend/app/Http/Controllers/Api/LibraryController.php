@@ -54,6 +54,18 @@ class LibraryController extends Controller
         ]);
     }
 
+    public function locations()
+    {
+        $locations = Library::where('status', 'active')
+            ->select('id', 'name', 'address', 'latitude', 'longitude')
+            ->get();
+
+        return response()->json([
+            'data' => $locations,
+            'locations' => $locations,
+        ]);
+    }
+
     // មើល Library មួយ
     public function show(int $id)
     {

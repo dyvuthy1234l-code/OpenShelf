@@ -36,7 +36,7 @@ export const publicService = {
   submitLibraryReview: memberService.submitLibraryReview,
 
   getCategories: async (params = {}) => {
-    const response = await api.get('/categories', { params });
+    const response = await api.get('/public/categories', { params });
     return response.data;
   },
 

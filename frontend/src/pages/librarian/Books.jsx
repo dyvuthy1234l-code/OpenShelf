@@ -170,7 +170,7 @@ export default function BooksPage() {
       await librarianService.createBook(formData);
       setSuccessMessage('Book created successfully.');
       setShowFormModal(false);
-      setSearch('');
+      setSearchInput('');
       setCategoryId('');
       setAvailability('all');
       setCurrentPage(1);

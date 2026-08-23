@@ -59,7 +59,7 @@ class Borrowing extends Model
             return (float) ($this->fine_amount ?? 0.00);
         }
 
-        if (in_array($this->status, ['borrowed', 'picked_up']) && $this->due_date) {
+        if (in_array($this->status, ['borrowed', 'picked_up', 'overdue', 'return_requested']) && $this->due_date) {
             $today = Carbon::today();
             $dueDate = Carbon::parse($this->due_date);
             if ($today->gt($dueDate)) {
@@ -80,7 +80,7 @@ class Borrowing extends Model
             return $returnedDate->gt($dueDate) ? $returnedDate->diffInDays($dueDate) : 0;
         }
 
-        if (in_array($this->status, ['borrowed', 'picked_up']) && $this->due_date) {
+        if (in_array($this->status, ['borrowed', 'picked_up', 'overdue', 'return_requested']) && $this->due_date) {
             $today = Carbon::today();
             $dueDate = Carbon::parse($this->due_date);
             return $today->gt($dueDate) ? $today->diffInDays($dueDate) : 0;
@@ -91,7 +91,7 @@ class Borrowing extends Model
 
     public function getRemainingDaysAttribute(): int
     {
-        if (in_array($this->status, ['borrowed', 'picked_up']) && $this->due_date) {
+        if (in_array($this->status, ['borrowed', 'picked_up', 'overdue', 'return_requested']) && $this->due_date) {
             $today = Carbon::today();
             $dueDate = Carbon::parse($this->due_date);
             return $dueDate->gte($today) ? $today->diffInDays($dueDate) : 0;

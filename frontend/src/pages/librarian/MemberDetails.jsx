@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, User, BookOpen, AlertTriangle, 
   CheckCircle2, Clock, Mail, Phone, Calendar, 
@@ -9,6 +9,7 @@ import librarianService from '../../services/librarianService';
 
 export default function MemberDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

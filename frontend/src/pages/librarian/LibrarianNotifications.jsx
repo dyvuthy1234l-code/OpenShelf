@@ -8,6 +8,7 @@ import { useNotifications } from '../../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { formatNotificationTime } from '../../utils/dateUtils';
+import librarianService from '../../services/librarianService';
 
 export default function LibrarianNotificationsPage() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function LibrarianNotificationsPage() {
     e.stopPropagation();
     try {
       await librarianService.deleteNotification(id);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      fetchNotifications();
     } catch {
       // Non-critical
     }
@@ -50,11 +51,11 @@ export default function LibrarianNotificationsPage() {
     if (!window.confirm('Are you sure you want to clear all notifications?')) return;
     try {
       await librarianService.clearAllNotifications();
-      setNotifications([]);
+      fetchNotifications();
       setSuccessMessage('All notifications cleared.');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch {
-      setError('Failed to clear notifications.');
+      setSuccessMessage('Failed to clear notifications.');
     }
   };
 

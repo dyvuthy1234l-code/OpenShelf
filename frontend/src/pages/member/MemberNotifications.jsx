@@ -15,7 +15,7 @@ export default function MemberNotifications() {
   const ITEMS_PER_PAGE = 5;
 
   // TanStack Query with Optimistic UI updates
-  const { data: resData, isLoading: loading, isError } = useNotifications('member');
+  const { data: resData, isLoading: loading, isError, refetch } = useNotifications('member');
   const markReadMutation = useMarkNotificationAsRead('member');
   const markAllReadMutation = useMarkAllNotificationsAsRead('member');
 
@@ -41,11 +41,10 @@ export default function MemberNotifications() {
     e.stopPropagation();
     try {
       await memberService.deleteNotification(id);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      refetch();
       setActionMessage('Notification deleted.');
       window.dispatchEvent(new Event('notificationsRead'));
       setTimeout(() => setActionMessage(''), 3000);
-      loadNotifications();
     } catch {
       // non-critical error
     }
@@ -55,11 +54,10 @@ export default function MemberNotifications() {
     if (!window.confirm('Are you sure you want to clear all notifications?')) return;
     try {
       await memberService.clearAllNotifications();
-      setNotifications([]);
+      refetch();
       setActionMessage('All notifications cleared.');
       window.dispatchEvent(new Event('notificationsRead'));
       setTimeout(() => setActionMessage(''), 3000);
-      loadNotifications();
     } catch {
       // non-critical error
     }

@@ -93,27 +93,27 @@ export const memberService = {
 
   // Notifications
   getNotifications: async (params = {}) => {
-    const res = await api.get('/member/notifications', { params });
+    const res = await api.get('/notifications', { params });
     return res.data;
   },
 
   markNotificationAsRead: async (id) => {
-    const res = await api.post(`/member/notifications/${id}/read`);
+    const res = await api.post(`/notifications/${id}/read`);
     return res.data;
   },
 
   markAllNotificationsAsRead: async () => {
-    const res = await api.post('/member/notifications/read-all');
+    const res = await api.post('/notifications/read-all');
     return res.data;
   },
 
   deleteNotification: async (id) => {
-    const res = await api.delete(`/member/notifications/${id}`);
+    const res = await api.delete(`/notifications/${id}`);
     return res.data;
   },
 
   clearAllNotifications: async () => {
-    const res = await api.delete('/member/notifications');
+    const res = await api.delete('/notifications');
     return res.data;
   },
 
@@ -126,6 +126,11 @@ export const memberService = {
   // Reviews
   submitBookReview: async (bookId, data) => {
     const res = await api.post(`/books/${bookId}/reviews`, data);
+    return res.data;
+  },
+
+  deleteBookReview: async (reviewId) => {
+    const res = await api.delete('/member/reviews/' + reviewId);
     return res.data;
   },
 

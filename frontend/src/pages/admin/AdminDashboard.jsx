@@ -76,11 +76,6 @@ export default function AdminDashboard() {
   // Handle header range change with intelligent chart range auto-sync
   const handleHeaderRangeChange = (key) => {
     setHeaderRange(key);
-    if (key === 'month') {
-      setChartRange('month');
-    } else if (key === 'year') {
-      setChartRange('year');
-    }
   };
 
   return (
