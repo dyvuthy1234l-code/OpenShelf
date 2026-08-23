@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
 import AuthLayout from '../layouts/AuthLayout';
 import LibrarianLayout from '../layouts/LibrarianLayout';
@@ -68,7 +68,7 @@ const RouteFallback = () => (
 
 export default function AppRouter() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <HashRouter>
       <AuthProvider>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
@@ -153,6 +153,6 @@ export default function AppRouter() {
           </Routes>
         </Suspense>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
