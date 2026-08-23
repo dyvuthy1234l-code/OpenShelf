@@ -151,7 +151,7 @@ class DatabaseSeeder extends Seeder
                     'library_id' => $library->id,
                     'user_id' => $members[array_rand($members)]->id,
                     'rating' => rand(3, 5),
-                    'review' => 'Great library with an amazing collection and atmosphere!',
+                    'comment' => 'Great library with an amazing collection and atmosphere!',
                 ]);
             }
 
