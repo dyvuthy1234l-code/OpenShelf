@@ -3,7 +3,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Cloudinary\Cloudinary;
 
-$cloudinary = new Cloudinary('cloudinary://344373826751911:Ukxlt0ykALh9OP1Jq0KKfN0A_xY@jsyajhtr');
+$cloudinary = new Cloudinary('cloudinary://524473598627689:oBXG8v6i-3eXmqPISNcZVm2dIms@jsyajhtr');
 
 try {
     $result = $cloudinary->uploadApi()->upload('https://picsum.photos/200');
