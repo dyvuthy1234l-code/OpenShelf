@@ -374,7 +374,7 @@ export default function Home() {
           </div>
 
           <Link
-            to="/books"
+            to="/books?sort=top_rated"
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
           >
             <span>Explore rated catalogue</span>

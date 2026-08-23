@@ -61,6 +61,8 @@ class BookController extends Controller
         $sort = $request->string('sort')->toString();
         if ($sort === 'top_rated') {
             $query->orderByDesc('reviews_avg_rating')->orderByDesc('reviews_count')->latest();
+        } elseif ($sort === 'popular') {
+            $query->orderByDesc('reviews_count')->orderByDesc('reviews_avg_rating')->latest();
         } else {
             $query->latest();
         }

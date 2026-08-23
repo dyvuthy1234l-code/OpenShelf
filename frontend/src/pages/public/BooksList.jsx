@@ -19,6 +19,7 @@ export default function BooksList() {
   const search = searchParams.get('search') || '';
   const categoryId = searchParams.get('category_id') || '';
   const libraryId = searchParams.get('library_id') || '';
+  const sort = searchParams.get('sort') || '';
   const page = Number(searchParams.get('page')) || 1;
 
   // Instant local typing state + 300ms debounced search query for API requests
@@ -46,6 +47,7 @@ export default function BooksList() {
     search: search || undefined,
     category_id: categoryId || undefined,
     library_id: libraryId || undefined,
+    sort: sort || undefined,
     page,
     per_page: 12,
   };
@@ -135,14 +137,14 @@ export default function BooksList() {
           )}
         </div>
 
-        {/* Filters Bar: Search + Dependent Category + Library */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
+        {/* Filters Bar: Search + Dependent Category + Library + Sort */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
           {/* 1. Search */}
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search by title, author, or ISBN..."
+              placeholder="Search title, author..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
@@ -188,6 +190,19 @@ export default function BooksList() {
                   {c.name}
                 </option>
               ))}
+            </select>
+          </div>
+
+          {/* 4. Sort Dropdown */}
+          <div className="relative">
+            <select
+              value={sort}
+              onChange={(e) => updateFilters({ sort: e.target.value })}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+            >
+              <option value="">Default (Newest)</option>
+              <option value="top_rated">Highest Rated First</option>
+              <option value="popular">Most Popular</option>
             </select>
           </div>
         </div>
