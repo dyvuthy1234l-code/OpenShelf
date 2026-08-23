@@ -2,7 +2,7 @@
 
 $cloudName = 'jsyajhtr';
 $apiKey = '524473598627689';
-$apiSecret = 'oBXG8v6i-3eXmqPISNcZVm2dIms';
+$apiSecret = 'oBXG8v6i-3eXmqPI5NcZVm2dIms';
 $timestamp = time();
 $signature = sha1('timestamp=' . $timestamp . $apiSecret);
 

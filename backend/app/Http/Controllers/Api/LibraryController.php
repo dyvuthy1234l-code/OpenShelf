@@ -117,7 +117,7 @@ class LibraryController extends Controller
         }
         $request->replace($input);
 
-        $validated = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'phone' => ['nullable', 'string', 'max:50'],
@@ -183,7 +183,7 @@ class LibraryController extends Controller
         }
         $request->replace($input);
 
-        $validated = $request->validate([
+        $rules = [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:50'],
