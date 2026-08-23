@@ -319,7 +319,7 @@ export default function MemberProfile() {
             <button
               type="submit"
               disabled={updatingProfile}
-              className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
             >
               {updatingProfile ? 'Saving Changes...' : 'Save Profile Changes'}
             </button>
@@ -391,7 +391,7 @@ export default function MemberProfile() {
             <button
               type="submit"
               disabled={updatingPassword}
-              className="px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {updatingPassword ? 'Updating Password...' : 'Update Password'}
             </button>
@@ -444,7 +444,7 @@ export default function MemberProfile() {
                     if (fileInputRef.current) fileInputRef.current.value = '';
                   }}
                   disabled={uploadingAvatar}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+                  className="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
                 >
                   Cancel
                 </button>
@@ -498,7 +498,7 @@ export default function MemberProfile() {
                 <button
                   onClick={() => setShowRemoveModal(false)}
                   disabled={removingAvatar}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+                  className="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
                 >
                   Cancel
                 </button>

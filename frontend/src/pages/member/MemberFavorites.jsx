@@ -126,7 +126,7 @@ export default function MemberFavorites() {
 
       {/* Content */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
           {Array.from({ length: 15 }).map((_, idx) => (
             <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-4 space-y-3 animate-pulse">
               <div className="h-44 bg-slate-200 rounded-xl" />
@@ -154,7 +154,7 @@ export default function MemberFavorites() {
         />
       ) : (
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
             {favorites.map((fav) => {
               const book = fav.book || {};
               const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;
