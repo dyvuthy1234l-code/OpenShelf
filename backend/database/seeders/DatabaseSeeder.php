@@ -146,10 +146,11 @@ class DatabaseSeeder extends Seeder
 
             // Create Library Reviews (Random Rating)
             $numReviews = rand(2, 6);
-            for ($r = 0; $r < $numReviews; $r++) {
+            $randomUsers = collect($members)->random($numReviews);
+            foreach ($randomUsers as $user) {
                 LibraryReview::create([
                     'library_id' => $library->id,
-                    'user_id' => $members[array_rand($members)]->id,
+                    'user_id' => $user->id,
                     'rating' => rand(3, 5),
                     'comment' => 'Great library with an amazing collection and atmosphere!',
                 ]);
@@ -183,10 +184,11 @@ class DatabaseSeeder extends Seeder
                     // Add some reviews to the book
                     if (rand(1, 100) > 40) { // 60% chance to have reviews
                         $numBookReviews = rand(1, 5);
-                        for ($br = 0; $br < $numBookReviews; $br++) {
+                        $randomBookUsers = collect($members)->random($numBookReviews);
+                        foreach ($randomBookUsers as $bookUser) {
                             Review::create([
                                 'book_id' => $book->id,
-                                'user_id' => $members[array_rand($members)]->id,
+                                'user_id' => $bookUser->id,
                                 'rating' => rand(3, 5),
                                 'comment' => 'This book was a fantastic read! Really enjoyed the structure and pacing.',
                             ]);
