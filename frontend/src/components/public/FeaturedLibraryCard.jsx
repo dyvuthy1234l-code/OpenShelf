@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, MapPin, BookOpen, ArrowRight, Clock, Star, Sparkles } from 'lucide-react';
+import { Building2, MapPin, BookOpen, ArrowRight, Sparkles } from 'lucide-react';
 import getImageUrl from '../../utils/imageUrl';
 
 export default function FeaturedLibraryCard({ library }) {
@@ -15,12 +15,12 @@ export default function FeaturedLibraryCard({ library }) {
 
   return (
     <motion.div
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="group bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl overflow-hidden shadow-2xs hover:shadow-2xl transition-all duration-300 flex flex-col h-full relative select-none"
+      className="group bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-3xl p-4 shadow-xl hover:shadow-2xl hover:shadow-amber-900/20 transition-all duration-300 flex flex-col h-full relative select-none"
     >
       {/* 1. COVER BANNER HEADER */}
-      <div className="relative h-40 sm:h-44 bg-slate-950 overflow-hidden shrink-0">
+      <div className="relative h-44 sm:h-52 bg-slate-800 rounded-2xl overflow-hidden shrink-0 border border-slate-700/50">
         {coverUrl && !coverErr ? (
           <img
             src={coverUrl}
@@ -29,96 +29,82 @@ export default function FeaturedLibraryCard({ library }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-tr from-slate-950 via-slate-900 to-amber-950/40 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
-            <Building2 className="w-10 h-10 mb-1 text-amber-500/40" />
-            <span className="text-[11px] text-amber-200/80 font-bold uppercase tracking-wider">OpenShelf Partner Library</span>
+          <div className="w-full h-full bg-gradient-to-tr from-slate-800 to-slate-700 flex flex-col items-center justify-center text-slate-500 p-4 text-center">
+            <Building2 className="w-10 h-10 mb-1 text-slate-600" />
+            <span className="text-[11px] font-bold uppercase tracking-wider">OpenShelf Partner</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/40 pointer-events-none" />
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold shadow-md uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+        <div className="absolute top-4 left-4 z-10 pointer-events-none">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md text-amber-400 text-[11px] font-extrabold shadow-sm uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
             FEATURED PARTNER
-          </span>
-
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            ● Active
           </span>
         </div>
 
         {/* Floating Book Count Pill */}
-        <div className="absolute bottom-3 right-3 z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-800 text-amber-300 text-[11px] font-extrabold shadow-2xs">
-            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+        <div className="absolute bottom-4 right-4 z-10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-700 text-amber-400 text-[11px] font-extrabold shadow-sm">
+            <BookOpen className="w-3.5 h-3.5" />
             <span>{bookCount} {bookCount === 1 ? 'Book' : 'Books'}</span>
           </span>
         </div>
-      </div>
 
-      {/* 2. OVERLAPPING LOGO & CARD CONTENT */}
-      <div className="p-6 pt-0 flex flex-col flex-grow bg-white relative">
-        {/* Overlapping Logo Avatar */}
-        <div className="flex items-end justify-between -mt-10 mb-3 z-20">
-          <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-white p-1 border-2 border-white shadow-md overflow-hidden shrink-0 group-hover:shadow-lg transition-shadow">
+        {/* Overlapping Logo Avatar - inside the cover container but at the bottom edge */}
+        <div className="absolute -bottom-4 left-4 z-20">
+          <div className="w-16 h-16 rounded-xl bg-slate-800 p-1 border-2 border-slate-900 shadow-xl overflow-hidden shrink-0">
             {logoUrl && !logoErr ? (
               <img
                 src={logoUrl}
                 alt={`${library.name} Logo`}
                 onError={() => setLogoErr(true)}
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-cover rounded-lg"
               />
             ) : (
-              <div className="w-full h-full bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 border border-amber-200">
-                <Building2 className="w-8 h-8" />
+              <div className="w-full h-full bg-slate-700 rounded-lg flex items-center justify-center text-slate-400">
+                <Building2 className="w-6 h-6" />
               </div>
             )}
           </div>
         </div>
+      </div>
 
+      {/* 2. CARD CONTENT */}
+      <div className="pt-8 px-2 flex flex-col flex-grow relative">
+        
         {/* Title & Location */}
-        <div className="space-y-1 mb-3">
-          <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-amber-700 transition-colors line-clamp-1 tracking-tight">
+        <div className="space-y-1.5 mb-5">
+          <h3 className="text-xl font-bold text-white group-hover:text-amber-400 transition-colors line-clamp-1 tracking-tight">
             {library.name}
           </h3>
 
-          {library.address && (
-            <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium line-clamp-1">
-              <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span className="truncate">{library.address}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 text-slate-400 text-sm font-medium line-clamp-1">
+            <MapPin className="w-4 h-4 text-amber-500 shrink-0" />
+            <span className="truncate">{library.address || 'Location not specified'}</span>
+          </div>
         </div>
 
-        {/* Short Description */}
-        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-4 font-normal">
-          {library.description || 'Discover academic titles, local collections, and quiet reading spaces at this featured partner library.'}
-        </p>
-
-        {/* Info Highlights (Province & Opening Hours) */}
-        <div className="mt-auto space-y-2 pt-3 border-t border-slate-100/90">
-          <div className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700">
-            <div className="flex items-center gap-1.5 bg-amber-50/70 border border-amber-200/80 px-3 py-1 rounded-xl">
-              <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span className="truncate">{library.city ? `Province: ${library.city}` : (library.address || 'Phnom Penh')}</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-3 py-1 rounded-xl text-slate-600">
-              <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span className="truncate">{library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 AM - 05:00 PM'}</span>
-            </div>
-          </div>
-
+        {/* Push bottom section to the end */}
+        <div className="mt-auto pt-4 border-t border-slate-700/80 flex items-center justify-between">
           <Link
             to={`/libraries/${library.id}`}
-            className="inline-flex items-center justify-between w-full py-3 px-5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-extrabold rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 group/btn cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-amber-400 font-bold text-sm hover:text-amber-300 transition-colors"
           >
-            <span>Explore Library Profile</span>
-            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform shrink-0" />
+            Visit Library
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
+          <span className="text-[11px] font-semibold text-slate-500">
+            OpenShelf Network
+          </span>
         </div>
       </div>
+      
+      {/* Clickable Overlay */}
+      <Link to={`/libraries/${library.id}`} className="absolute inset-0 z-0">
+        <span className="sr-only">View {library.name}</span>
+      </Link>
     </motion.div>
   );
 }

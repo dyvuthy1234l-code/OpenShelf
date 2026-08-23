@@ -18,6 +18,8 @@ class LibraryController extends Controller
 
         $query = Library::with('owner:id,name,email')
             ->withCount(['books' => fn ($query) => $query->where('status', '!=', 'inactive')])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->where('status', 'active')
             ->when($request->filled('search'), function ($query) use ($request) {
                 $search = $request->string('search')->toString();

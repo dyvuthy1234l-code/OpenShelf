@@ -20,8 +20,10 @@ export default function LibrariesList() {
   const [page, setPage] = useState(1);
 
   // Query Hooks (Cached with TanStack Query + keepPreviousData)
-  const { data: featuredRes } = useLibraries({ per_page: 5 });
-  const featuredLibraries = (featuredRes?.data || featuredRes?.libraries || []).slice(0, 3);
+  const { data: featuredRes } = useLibraries({ per_page: -1 });
+  const featuredLibraries = (featuredRes?.data || featuredRes?.libraries || [])
+    .sort((a, b) => (b.reviews_avg_rating || 0) - (a.reviews_avg_rating || 0))
+    .slice(0, 2);
 
   const queryParams = {
     search: debouncedSearch || selectedProvince || undefined,
@@ -125,7 +127,7 @@ export default function LibrariesList() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {featuredLibraries.map((lib) => (
               <FeaturedLibraryCard key={`featured-${lib.id}`} library={lib} />
             ))}
