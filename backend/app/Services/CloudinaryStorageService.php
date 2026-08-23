@@ -15,6 +15,8 @@ class CloudinaryStorageService
      */
     public static function upload(UploadedFile $file, string $folder = 'uploads'): string
     {
+        $cloudinaryError = null;
+
         try {
             if (!empty(config('cloudinary.cloud_url'))) {
                 $uploaded = Cloudinary::upload($file->getRealPath(), [
@@ -27,10 +29,19 @@ class CloudinaryStorageService
                 }
             }
         } catch (\Throwable $e) {
-            Log::warning('Cloudinary upload exception, falling back to local disk: ' . $e->getMessage());
+            $cloudinaryError = $e->getMessage();
+            Log::warning('Cloudinary upload exception, falling back to local disk: ' . $cloudinaryError);
         }
 
-        return $file->store($folder, 'public');
+        // Fallback to local disk storage
+        try {
+            return $file->store($folder, 'public');
+        } catch (\Throwable $e) {
+            Log::error('Local disk storage also failed: ' . $e->getMessage());
+            throw new \RuntimeException(
+                'Failed to upload file. Cloudinary: ' . ($cloudinaryError ?: 'not configured') . '. Local: ' . $e->getMessage()
+            );
+        }
     }
 
     /**

@@ -147,8 +147,15 @@ class AuthController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            \App\Services\CloudinaryStorageService::delete($user->avatar);
-            $user->avatar = \App\Services\CloudinaryStorageService::upload($request->file('avatar'), 'avatars');
+            try {
+                \App\Services\CloudinaryStorageService::delete($user->avatar);
+                $user->avatar = \App\Services\CloudinaryStorageService::upload($request->file('avatar'), 'avatars');
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Avatar upload failed: ' . $e->getMessage());
+                return response()->json([
+                    'message' => 'Failed to upload profile picture. Please try again later.',
+                ], 422);
+            }
         }
 
         if (!empty($validated['name'])) {
