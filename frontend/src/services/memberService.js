@@ -13,8 +13,10 @@ export const memberService = {
   },
 
   updateProfileWithAvatar: async (formData) => {
-    // Let the browser/Axios add the multipart boundary automatically.
-    const res = await api.post('/profile/update', formData);
+    const isFormData = formData instanceof FormData;
+    const res = await api.post('/profile/update', formData, {
+      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+    });
     return res.data;
   },
 
