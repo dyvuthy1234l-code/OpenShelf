@@ -12,8 +12,9 @@ export function getImageUrl(path) {
     return trimmed;
   }
 
-  // Determine backend origin (e.g., 'http://localhost:8000')
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+  // Keep the local backend fallback limited to development. Production must
+  // provide VITE_API_URL for a separate backend, or use same-origin paths.
+  const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000/api' : '/api');
   const backendOrigin = apiBase.replace(/\/api\/?$/, '');
 
   // Case B: Relative storage path

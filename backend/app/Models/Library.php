@@ -10,7 +10,7 @@ class Library extends Model
 {
     use HasFactory;
 
-    protected $appends = ['image_url', 'cover_image_url', 'is_auto_closed', 'operating_status', 'closing_time_label'];
+    protected $appends = ['image_url', 'cover_image_url', 'is_auto_closed', 'operating_status', 'closing_time_label', 'average_rating', 'reviews_count'];
 
     protected $fillable = [
         'owner_id',
@@ -133,5 +133,20 @@ class Library extends Model
         }
         $url = Storage::url($this->cover_image);
         return str_starts_with($url, 'http') ? $url : url($url);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(LibraryReview::class);
+    }
+
+    public function getAverageRatingAttribute(): float
+    {
+        return round($this->reviews()->avg('rating') ?? 0, 1);
+    }
+
+    public function getReviewsCountAttribute(): int
+    {
+        return $this->reviews()->count();
     }
 }

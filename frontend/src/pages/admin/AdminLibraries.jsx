@@ -187,8 +187,8 @@ export default function AdminLibraries() {
         </div>
       )}
 
-      {/* 2. SUMMARY CARDS (4 ULTRA-COMPACT CARDS ~82px EQUAL HEIGHT) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Libraries */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>

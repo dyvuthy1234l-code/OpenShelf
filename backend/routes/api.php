@@ -16,13 +16,15 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\WaitlistController;
+use App\Http\Controllers\Api\LibraryReviewController;
 
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 Route::get('/libraries', [LibraryController::class, 'index']);
+Route::get('/libraries/locations', [LibraryController::class, 'locations']);
 Route::get('/libraries/{id}', [LibraryController::class, 'show']);
-Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/libraries/{library}/reviews', [LibraryReviewController::class, 'index']);
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{id}', [BookController::class, 'show']);
 Route::get('/books/{id}/reviews', [ReviewController::class, 'index']);
@@ -45,6 +47,7 @@ Route::middleware(['auth:sanctum', 'active.user'])->group(function () {
     Route::put('/notification-preferences', [AuthController::class, 'updateNotificationPreferences']);
 
     Route::post('/books/{id}/reviews', [ReviewController::class, 'store']);
+    Route::post('/libraries/{library}/reviews', [LibraryReviewController::class, 'store']);
 
     Route::get('/subscriptions', [SubscriptionController::class, 'current']);
     Route::post('/subscriptions', [SubscriptionController::class, 'subscribe']);
@@ -59,6 +62,7 @@ Route::middleware(['auth:sanctum', 'active.user'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'active.user', 'role:member'])->prefix('member')->group(function () {
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+    Route::delete('/libraries/{library}/reviews/{review}', [LibraryReviewController::class, 'destroy']);
     Route::get('/borrowings', [BorrowingController::class, 'memberIndex']);
     Route::get('/borrowings/{id}', [BorrowingController::class, 'memberShow']);
     Route::post('/borrowings', [BorrowingController::class, 'store']);

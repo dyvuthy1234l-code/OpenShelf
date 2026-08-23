@@ -68,7 +68,7 @@ const RouteFallback = () => (
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
@@ -77,6 +77,7 @@ export default function AppRouter() {
               <Route element={<AuthLayout />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/auth" element={<Login />} />
               </Route>
             </Route>
 

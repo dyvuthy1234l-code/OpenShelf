@@ -95,6 +95,14 @@ export default function LibraryCard({ library }) {
             {library.name}
           </h3>
 
+          {library.reviews_count > 0 && (
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              <span className="text-xs font-bold text-slate-900">{library.average_rating}</span>
+              <span className="text-[10px] text-slate-500">({library.reviews_count})</span>
+            </div>
+          )}
+
           {library.address && (
             <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium line-clamp-1">
               <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />

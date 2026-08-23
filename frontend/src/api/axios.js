@@ -31,8 +31,9 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       // Only redirect if not already on auth pages
-      if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
-        window.location.href = '/login';
+      const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+      if (!window.location.pathname.startsWith(`${basePath}/login`) && !window.location.pathname.startsWith(`${basePath}/register`)) {
+        window.location.href = `${basePath}/login`;
       }
     }
     return Promise.reject(error);

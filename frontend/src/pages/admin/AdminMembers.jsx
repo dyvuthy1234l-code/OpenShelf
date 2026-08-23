@@ -128,61 +128,61 @@ export default function AdminMembers() {
         </div>
       )}
 
-      {/* 2. SUMMARY CARDS (4 ULTRA-COMPACT CARDS ~82px EQUAL HEIGHT) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+      {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Members */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between min-h-[72px]">
           <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Total Members</span>
-            <span className="text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">{countTotal}</span>
-            <span className="inline-block text-[9px] font-bold text-slate-500 mt-0.5">Platform members</span>
+            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block truncate">Total Members</span>
+            <span className="text-lg sm:text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">{countTotal}</span>
+            <span className="inline-block text-[9px] font-bold text-slate-500 mt-0.5 truncate">Platform members</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <Users className="w-3.5 h-3.5 text-blue-600" />
           </div>
         </div>
 
         {/* Card 2: Active Members */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between min-h-[72px]">
           <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Active Accounts</span>
-            <span className="text-xl font-black text-emerald-950 tracking-tight block leading-tight mt-0.5">{countActive}</span>
-            <span className="inline-block text-[9px] font-bold text-emerald-700 mt-0.5">Active users</span>
+            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block truncate">Active Accounts</span>
+            <span className="text-lg sm:text-xl font-black text-emerald-950 tracking-tight block leading-tight mt-0.5">{countActive}</span>
+            <span className="inline-block text-[9px] font-bold text-emerald-700 mt-0.5 truncate">Active users</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
         </div>
 
         {/* Card 3: Active Loans */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between min-h-[72px]">
           <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">With Active Loans</span>
-            <span className="text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">{countWithBorrows}</span>
-            <span className="inline-block text-[9px] font-bold text-amber-700 mt-0.5">Active borrowers</span>
+            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block truncate">With Active Loans</span>
+            <span className="text-lg sm:text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">{countWithBorrows}</span>
+            <span className="inline-block text-[9px] font-bold text-amber-700 mt-0.5 truncate">Active borrowers</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <BookOpen className="w-3.5 h-3.5 text-amber-600" />
           </div>
         </div>
 
         {/* Card 4: Suspended / Inactive */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between min-h-[72px]">
           <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Suspended / Inactive</span>
-            <span className="text-xl font-black text-slate-700 tracking-tight block leading-tight mt-0.5">{countInactive}</span>
-            <span className="inline-block text-[9px] font-bold text-slate-500 mt-0.5">Restricted accounts</span>
+            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block truncate">Suspended / Inactive</span>
+            <span className="text-lg sm:text-xl font-black text-slate-700 tracking-tight block leading-tight mt-0.5">{countInactive}</span>
+            <span className="inline-block text-[9px] font-bold text-slate-500 mt-0.5 truncate">Restricted accounts</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <XCircle className="w-3.5 h-3.5 text-slate-500" />
           </div>
         </div>
       </div>
 
       {/* 3. FILTER & SEARCH TOOLBAR */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shrink-0">
         {/* Left: Search Input */}
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
@@ -197,7 +197,7 @@ export default function AdminMembers() {
         </div>
 
         {/* Right: Dropdowns & Reset */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {/* Library Filter */}
           <select
             value={libraryFilter}
@@ -205,7 +205,7 @@ export default function AdminMembers() {
               setLibraryFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer max-w-[150px] truncate"
+            className="flex-1 sm:flex-none px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer max-w-[140px] truncate"
           >
             <option value="all">All Libraries</option>
             <option value="no_library">No Library</option>
@@ -223,7 +223,7 @@ export default function AdminMembers() {
               setStatusFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
+            className="flex-1 sm:flex-none px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -238,7 +238,7 @@ export default function AdminMembers() {
               setBorrowFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
+            className="flex-1 sm:flex-none px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Borrowing</option>
             <option value="active">Has Active Loans</option>
@@ -249,7 +249,7 @@ export default function AdminMembers() {
           {/* Clear Filters */}
           <button
             onClick={handleResetFilters}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer inline-flex items-center gap-1 shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
             <span>Clear</span>
@@ -257,7 +257,7 @@ export default function AdminMembers() {
         </div>
       </div>
 
-      {/* 4. MAIN MEMBERS TABLE CONTAINER (EXPANDS VERTICALLY TO FILL AVAILABLE HEIGHT) */}
+      {/* 4. MAIN MEMBERS CONTAINER */}
       <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex-1 min-h-0 flex flex-col justify-between h-full">
         {loading ? (
           <div className="p-6 text-center text-xs text-slate-400 font-medium animate-pulse">
@@ -287,7 +287,8 @@ export default function AdminMembers() {
           </div>
         ) : (
           <div className="overflow-auto flex-1 min-h-0 h-full">
-            <table className="w-full text-left text-xs border-collapse">
+            {/* Desktop Table View */}
+            <table className="hidden md:table w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
                   <th className="py-2.5 px-3.5">Member</th>
@@ -426,6 +427,84 @@ export default function AdminMembers() {
                 })}
               </tbody>
             </table>
+
+            {/* Mobile Card List View */}
+            <div className="md:hidden p-2.5 space-y-2.5">
+              {paginatedMembers.map((m) => {
+                const libName = m.assigned_library_name || m.borrowings?.[0]?.library?.name || 'No Library';
+                const activeCount = m.active_borrowings_count || 0;
+                const overdueCount = m.overdue_borrowings_count || 0;
+
+                return (
+                  <div key={m.id} className="bg-slate-50/80 border border-slate-200/90 rounded-xl p-3 space-y-2 text-xs">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center overflow-hidden shrink-0">
+                          {m.avatar_url ? (
+                            <img src={m.avatar_url} alt={m.name} className="w-full h-full object-cover" />
+                          ) : (
+                            m.name[0].toUpperCase()
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <Link to={`/admin/members/${m.id}`} className="font-extrabold text-slate-900 truncate block">
+                            {m.name}
+                          </Link>
+                          <span className="text-[10px] text-slate-400 truncate block">{m.email}</span>
+                        </div>
+                      </div>
+
+                      <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0 ${
+                        m.status === 'active'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : m.status === 'suspended'
+                          ? 'bg-rose-50 text-rose-700 border-rose-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                      }`}>
+                        {m.status || 'active'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-600 pt-1 border-t border-slate-200/60">
+                      <span className="font-bold text-slate-700">{libName}</span>
+                      <div>
+                        {overdueCount > 0 ? (
+                          <span className="text-rose-700 font-bold">{overdueCount} Overdue</span>
+                        ) : activeCount > 0 ? (
+                          <span className="text-blue-700 font-bold">{activeCount} Active</span>
+                        ) : (
+                          <span className="text-emerald-700 font-bold">Clear</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-200/60">
+                      <Link
+                        to={`/admin/members/${m.id}`}
+                        className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 font-bold text-[10px] rounded-lg"
+                      >
+                        View Details
+                      </Link>
+                      {m.status === 'active' ? (
+                        <button
+                          onClick={() => setStatusModal({ open: true, type: 'suspend', member: m })}
+                          className="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[10px] rounded-lg"
+                        >
+                          Suspend
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleStatusChange(m.id, 'active')}
+                          className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] rounded-lg"
+                        >
+                          Activate
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

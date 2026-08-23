@@ -59,7 +59,7 @@ export default function LibrariesList() {
 
   // Handle Clear Filters
   const handleClearFilters = () => {
-    setSearch('');
+    setSearchInput('');
     setSelectedProvince('');
     setSortBy('most_books');
     setPage(1);
@@ -267,7 +267,7 @@ export default function LibrariesList() {
                   Currently, there are no partner libraries registered in <strong className="text-slate-800">{selectedProvince}</strong>. Most partner libraries are located in <strong className="text-slate-800">Phnom Penh</strong>.
                 </>
               ) : (
-                <>We couldn&apos;t find any physical libraries matching &quot;<strong className="text-slate-700">{search}</strong>&quot;.</>
+                <>We couldn&apos;t find any physical libraries matching &quot;<strong className="text-slate-700">{searchInput}</strong>&quot;.</>
               )}
             </p>
             <div className="pt-2 flex flex-wrap items-center justify-center gap-3">

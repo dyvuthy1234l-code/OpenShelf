@@ -136,7 +136,7 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     const data = await authService.login(credentials);
     localStorage.setItem('token', data.token);
-    const userData = data.user || data.data;
+    let userData = data.user || data.data;
 
     if (userData?.status !== 'active') {
       localStorage.removeItem('token');
@@ -150,7 +150,8 @@ export function AuthProvider({ children }) {
       const meData = await authService.getMe();
       setSubscription(meData.subscription || null);
       if (meData.user || meData.data) {
-        setUser(meData.user || meData.data);
+        userData = meData.user || meData.data;
+        setUser(userData);
       }
     } catch {
       // Non-critical fallback
@@ -165,14 +166,15 @@ export function AuthProvider({ children }) {
   const register = async (formData) => {
     const data = await authService.register(formData);
     localStorage.setItem('token', data.token);
-    const userData = data.user || data.data;
+    let userData = data.user || data.data;
     setUser(userData);
 
     try {
       const meData = await authService.getMe();
       setSubscription(meData.subscription || null);
       if (meData.user || meData.data) {
-        setUser(meData.user || meData.data);
+        userData = meData.user || meData.data;
+        setUser(userData);
       }
     } catch {
       // Non-critical fallback

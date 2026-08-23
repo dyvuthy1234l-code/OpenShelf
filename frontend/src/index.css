@@ -168,6 +168,16 @@ input:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* Dark auth form autofill styling */
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #0F1F35 inset !important;
+  -webkit-text-fill-color: #E2E8F0 !important;
+  caret-color: #E2E8F0 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Print Media Styles */
 @media print {
   aside, nav, .print\:hidden {

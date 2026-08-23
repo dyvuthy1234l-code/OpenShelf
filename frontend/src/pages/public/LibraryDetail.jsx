@@ -3,13 +3,14 @@ import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Building2, MapPin, Phone, Mail, Clock, ShieldAlert, BookOpen, 
-  ExternalLink, ArrowLeft, Search, X, Layers, RefreshCw, SlidersHorizontal 
+  ExternalLink, ArrowLeft, Search, X, Layers, RefreshCw, SlidersHorizontal, Star
 } from 'lucide-react';
 import publicService from '../../services/publicService';
 import BookCard from '../../components/public/BookCard';
 import Pagination from '../../components/public/Pagination';
 import ErrorState from '../../components/public/ErrorState';
 import LibraryTopRatedBooks from '../../components/public/LibraryTopRatedBooks';
+import LibraryReviews from '../../components/library/LibraryReviews';
 import getImageUrl, { getLibraryCoverUrl, getLibraryLogoUrl } from '../../utils/imageUrl';
 
 export default function LibraryDetail() {
@@ -250,6 +251,14 @@ export default function LibraryDetail() {
                 </div>
 
                 <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{library.name}</h1>
+
+                {library.reviews_count > 0 && (
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    <span className="text-sm font-bold text-slate-900">{library.average_rating}</span>
+                    <span className="text-xs text-slate-500">({library.reviews_count} reviews)</span>
+                  </div>
+                )}
 
                 {library.address && (
                   <div className="flex items-center gap-2 text-slate-600 text-xs sm:text-sm font-medium">
@@ -534,6 +543,9 @@ export default function LibraryDetail() {
 
       {/* TOP RATED BOOKS SECTION */}
       <LibraryTopRatedBooks libraryId={id} libraryName={library.name} />
+
+      {/* LIBRARY REVIEWS SECTION */}
+      <LibraryReviews libraryId={id} initialReviewsCount={library.reviews_count || 0} />
 
       {/* PART 3 — BOOKS AT THIS LIBRARY & LIBRARY-SPECIFIC CATEGORY FILTERS */}
       <div ref={booksGridRef} className="space-y-6 pt-4 border-t border-slate-200/80">

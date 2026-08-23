@@ -12,6 +12,11 @@ export const publicService = {
     return response.data;
   },
 
+  getLibraryReviews: async (id) => {
+    const response = await api.get(`/libraries/${id}/reviews`);
+    return response.data;
+  },
+
   getBooks: async (params = {}) => {
     const response = await api.get('/books', { params });
     return response.data;
@@ -28,6 +33,7 @@ export const publicService = {
   },
 
   submitBookReview: memberService.submitBookReview,
+  submitLibraryReview: memberService.submitLibraryReview,
 
   getCategories: async (params = {}) => {
     const response = await api.get('/categories', { params });
