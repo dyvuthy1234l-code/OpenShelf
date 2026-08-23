@@ -27,21 +27,15 @@ class CloudinaryStorageService
                 if ($securePath) {
                     return $securePath;
                 }
+            } else {
+                throw new \Exception("Cloudinary URL is not configured in .env");
             }
         } catch (\Throwable $e) {
-            $cloudinaryError = $e->getMessage();
-            Log::warning('Cloudinary upload exception, falling back to local disk: ' . $cloudinaryError);
+            Log::error('Cloudinary upload failed: ' . $e->getMessage());
+            throw new \RuntimeException('Cloudinary Error: ' . $e->getMessage());
         }
-
-        // Fallback to local disk storage
-        try {
-            return $file->store($folder, 'public');
-        } catch (\Throwable $e) {
-            Log::error('Local disk storage also failed: ' . $e->getMessage());
-            throw new \RuntimeException(
-                'Failed to upload file. Cloudinary: ' . ($cloudinaryError ?: 'not configured') . '. Local: ' . $e->getMessage()
-            );
-        }
+        
+        throw new \RuntimeException("Failed to retrieve secure path from Cloudinary.");
     }
 
     /**

@@ -158,7 +158,7 @@ class AuthController extends Controller
             } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Avatar upload failed: ' . $e->getMessage());
                 return response()->json([
-                    'message' => 'Failed to upload profile picture. Please try again later.',
+                    'message' => 'Upload failed: ' . $e->getMessage(),
                 ], 422);
             }
         }
