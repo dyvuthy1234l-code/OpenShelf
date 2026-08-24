@@ -14,6 +14,7 @@ export default function AdminLibrarians() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionMessage, setActionMessage] = useState('');
+  const [actionError, setActionError] = useState('');
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,7 +111,8 @@ export default function AdminLibrarians() {
       setTimeout(() => setActionMessage(''), 3500);
       setStatusModal({ open: false, type: '', librarian: null });
     } catch {
-      alert('Failed to update librarian status.');
+      setActionError('Failed to update librarian status.');
+      setTimeout(() => setActionError(''), 3500);
     } finally {
       setActionLoading(false);
     }
@@ -121,7 +123,8 @@ export default function AdminLibrarians() {
     e.preventDefault();
     if (actionLoading) return;
     if (newLib.password !== newLib.password_confirmation) {
-      alert('Password and Password Confirmation do not match.');
+      setActionError('Password and Password Confirmation do not match.');
+      setTimeout(() => setActionError(''), 3500);
       return;
     }
 
@@ -142,7 +145,8 @@ export default function AdminLibrarians() {
         status: 'active',
       });
     } catch (err) {
-      alert(err?.response?.data?.message || 'Failed to create librarian account.');
+      setActionError(err?.response?.data?.message || 'Failed to create librarian account.');
+      setTimeout(() => setActionError(''), 3500);
     } finally {
       setActionLoading(false);
     }
@@ -173,7 +177,8 @@ export default function AdminLibrarians() {
       setEditModalOpen(false);
       setSelectedLibrarian(null);
     } catch {
-      alert('Failed to update librarian details.');
+      setActionError('Failed to update librarian details.');
+      setTimeout(() => setActionError(''), 3500);
     } finally {
       setActionLoading(false);
     }
@@ -215,6 +220,19 @@ export default function AdminLibrarians() {
         <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
           <span>{actionMessage}</span>
           <button onClick={() => setActionMessage('')} className="text-emerald-600 hover:text-emerald-900 cursor-pointer">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Action Error Banner */}
+      {actionError && (
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>{actionError}</span>
+          </div>
+          <button onClick={() => setActionError('')} className="text-rose-600 hover:text-rose-900 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>

@@ -45,6 +45,7 @@ export default function AdminSubscriptions() {
 
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState('');
+  const [actionError, setActionError] = useState('');
   const [formError, setFormError] = useState('');
 
   // New/Edit Plan Form
@@ -220,7 +221,8 @@ export default function AdminSubscriptions() {
       const planRes = await adminService.getPlans();
       setPlans(planRes.data || []);
     } catch (err) {
-      alert(err?.response?.data?.message || 'Failed to archive plan.');
+      setActionError(err?.response?.data?.message || 'Failed to archive plan.');
+      setTimeout(() => setActionError(''), 3500);
     } finally {
       setActionLoading(false);
     }
@@ -307,7 +309,8 @@ export default function AdminSubscriptions() {
       setCancelingSubscription(null);
       loadData();
     } catch (err) {
-      alert(err?.response?.data?.message || 'Failed to cancel subscription.');
+      setActionError(err?.response?.data?.message || 'Failed to cancel subscription.');
+      setTimeout(() => setActionError(''), 3500);
     } finally {
       setActionLoading(false);
     }
@@ -323,7 +326,8 @@ export default function AdminSubscriptions() {
       setDeletingSubscription(null);
       loadData();
     } catch (err) {
-      alert(err?.response?.data?.message || 'Cannot delete subscription with payment history. Please cancel instead.');
+      setActionError(err?.response?.data?.message || 'Cannot delete subscription with payment history. Please cancel instead.');
+      setTimeout(() => setActionError(''), 3500);
     } finally {
       setActionLoading(false);
     }
@@ -372,6 +376,19 @@ export default function AdminSubscriptions() {
         <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
           <span>{actionMessage}</span>
           <button onClick={() => setActionMessage('')} className="text-emerald-600 hover:text-emerald-900 cursor-pointer">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Action Error Banner */}
+      {actionError && (
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>{actionError}</span>
+          </div>
+          <button onClick={() => setActionError('')} className="text-rose-600 hover:text-rose-900 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
