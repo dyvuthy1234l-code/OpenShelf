@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 
+import FocusLock from 'react-focus-lock';
+
 export default function SearchModal({ isOpen, onClose }) {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
@@ -32,7 +34,7 @@ export default function SearchModal({ isOpen, onClose }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <FocusLock>
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -46,6 +48,9 @@ export default function SearchModal({ isOpen, onClose }) {
           {/* Modal content */}
           <div className="fixed inset-0 z-[101] flex items-start justify-center pt-[15vh] px-4 pointer-events-none">
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Search"
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -91,7 +96,7 @@ export default function SearchModal({ isOpen, onClose }) {
               </div>
             </motion.div>
           </div>
-        </>
+        </FocusLock>
       )}
     </AnimatePresence>
   );

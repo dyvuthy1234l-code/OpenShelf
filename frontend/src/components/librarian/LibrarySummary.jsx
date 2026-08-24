@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Building2, MapPin, BookOpen, Users, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
+import { getLibraryLogoUrl } from '../../utils/imageUrl';
 
 export default function LibrarySummary({ library, booksCount = 0, membersCount = 0 }) {
   if (!library) {
@@ -27,13 +28,15 @@ export default function LibrarySummary({ library, booksCount = 0, membersCount =
     );
   }
 
+  const logoUrl = getLibraryLogoUrl(library.image_url || library.image || library.logo, 120);
+
   return (
     <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div className="flex items-center gap-4 min-w-0">
           <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold text-2xl overflow-hidden shrink-0 shadow-xs">
-            {library.image_url ? (
-              <img src={library.image_url} alt={library.name} className="w-full h-full object-cover" />
+            {logoUrl ? (
+              <img src={logoUrl} alt={library.name} className="w-full h-full object-cover" />
             ) : (
               <Building2 className="w-7 h-7 text-amber-600" />
             )}

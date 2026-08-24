@@ -94,6 +94,8 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
     }
   };
 
+    const [imageErr, setImageErr] = useState(false);
+
   return (
     <>
       <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all space-y-4">
@@ -101,8 +103,13 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {/* Book + Library Info */}
           <div className="flex items-center gap-4 min-w-0">
             <div className="w-12 h-16 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
-              {book.cover_image_url ? (
-                <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover" />
+              {book.cover_image_url && !imageErr ? (
+                <img 
+                  src={book.cover_image_url} 
+                  alt={book.title} 
+                  className="w-full h-full object-cover" 
+                  onError={() => setImageErr(true)}
+                />
               ) : (
                 <BookOpen className="w-6 h-6 text-slate-400" />
               )}

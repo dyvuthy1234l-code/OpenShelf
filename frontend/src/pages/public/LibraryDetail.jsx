@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { 
   Building2, MapPin, Phone, Mail, Clock, ShieldAlert, BookOpen, 
   ExternalLink, ArrowLeft, Search, X, Layers, RefreshCw, SlidersHorizontal, Star
@@ -172,8 +173,17 @@ export default function LibraryDetail() {
   const totalBooksCount = library.books_count ?? meta.total ?? 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 pb-20">
-      {/* Back button */}
+    <>
+      <Helmet>
+        <title>{library.name} | OpenShelf</title>
+        <meta name="description" content={library.description || `Explore books and collections at ${library.name}.`} />
+        <meta property="og:title" content={library.name} />
+        <meta property="og:description" content={library.description || `Explore books and collections at ${library.name}.`} />
+        {(library.image_url || library.image) && <meta property="og:image" content={library.image_url || library.image} />}
+      </Helmet>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 pb-20">
+        {/* Back button */}
       <button
         type="button"
         onClick={() => navigate(-1)}
@@ -693,6 +703,7 @@ export default function LibraryDetail() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

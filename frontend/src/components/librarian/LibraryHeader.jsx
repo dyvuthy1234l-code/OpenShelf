@@ -1,15 +1,19 @@
 import { Building2, MapPin, Edit3, ShieldCheck } from 'lucide-react';
+import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
 
 export default function LibraryHeader({ library, onEdit }) {
   if (!library) return null;
+
+  const coverUrl = getLibraryCoverUrl(library.cover_image_url || library.cover_image, 1200);
+  const logoUrl = getLibraryLogoUrl(library.image_url || library.image || library.logo, 160);
 
   return (
     <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs space-y-6">
       {/* Top Cover Image Banner */}
       <div className="relative h-48 sm:h-64 bg-slate-950 overflow-hidden">
-        {library.cover_image_url ? (
+        {coverUrl ? (
           <img
-            src={library.cover_image_url}
+            src={coverUrl}
             alt={library.name}
             className="w-full h-full object-cover object-center"
           />
@@ -27,8 +31,8 @@ export default function LibraryHeader({ library, onEdit }) {
         <div className="flex flex-col sm:flex-row sm:items-end gap-4 min-w-0">
           <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white p-1.5 shadow-xl border border-slate-200 shrink-0">
             <div className="w-full h-full rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center overflow-hidden font-extrabold text-3xl">
-              {library.image_url ? (
-                <img src={library.image_url} alt={library.name} className="w-full h-full object-cover" />
+              {logoUrl ? (
+                <img src={logoUrl} alt={library.name} className="w-full h-full object-cover" />
               ) : (
                 <Building2 className="w-10 h-10 text-amber-600" />
               )}

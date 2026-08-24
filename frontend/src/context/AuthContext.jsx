@@ -50,16 +50,7 @@ export function AuthProvider({ children }) {
 
   // Check auth on mount against backend source of truth
   const checkAuth = useCallback(async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setUser(null);
-      setSubscription(null);
-      setFavoriteBookIds([]);
-      setLoading(false);
-      setInitialCheckDone(true);
-      return;
-    }
-
+    // If we have a user in localStorage, or just generally want to verify session
     const timer = setTimeout(() => {
       setLoading(false);
       setInitialCheckDone(true);
@@ -70,7 +61,6 @@ export function AuthProvider({ children }) {
       const userData = data.user || data.data;
 
       if (!userData || userData.status !== 'active') {
-        localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
         setSubscription(null);
@@ -86,8 +76,7 @@ export function AuthProvider({ children }) {
         setFavoriteBookIds([]);
       }
     } catch {
-      // Token invalid or expired
-      localStorage.removeItem('token');
+      // Session invalid or expired
       localStorage.removeItem('user');
       setUser(null);
       setSubscription(null);
@@ -135,11 +124,9 @@ export function AuthProvider({ children }) {
 
   const login = async (credentials) => {
     const data = await authService.login(credentials);
-    localStorage.setItem('token', data.token);
     let userData = data.user || data.data;
 
     if (userData?.status !== 'active') {
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
       throw new Error('Your account is inactive. Please contact support.');
     }
@@ -165,7 +152,6 @@ export function AuthProvider({ children }) {
 
   const register = async (formData) => {
     const data = await authService.register(formData);
-    localStorage.setItem('token', data.token);
     let userData = data.user || data.data;
     setUser(userData);
 
@@ -200,7 +186,6 @@ export function AuthProvider({ children }) {
     } catch {
       // Even if logout API fails, clear local state
     } finally {
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
       setUser(null);
       setSubscription(null);

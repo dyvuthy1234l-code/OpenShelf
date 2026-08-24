@@ -139,17 +139,28 @@ body {
   }
 }
 
-/* Hide Scrollbars Globally Across All Pages & Containers (Scrollable but Invisible) */
-*, *::before, *::after {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+/* Custom Scrollbars for Accessibility and Brand Consistency */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #C8D7E6 transparent;
 }
 
 ::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  background: transparent !important;
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #C8D7E6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94A3B8;
 }
 
 /* Focus styles */

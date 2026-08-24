@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Building2, MapPin, BookOpen, ArrowRight, Sparkles } from 'lucide-react';
-import getImageUrl from '../../utils/imageUrl';
+import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
 
 export default function FeaturedLibraryCard({ library }) {
   const [coverErr, setCoverErr] = useState(false);
@@ -34,8 +34,8 @@ export default function FeaturedLibraryCard({ library }) {
     y.set(0);
   };
 
-  const logoUrl = getImageUrl(library.image_url || library.image || library.logo);
-  const coverUrl = getImageUrl(library.cover_image_url || library.cover_image);
+  const logoUrl = getLibraryLogoUrl(library.image_url || library.image || library.logo, 160);
+  const coverUrl = getLibraryCoverUrl(library.cover_image_url || library.cover_image, 600);
 
   const bookCount = library.books_count ?? (library.books ? library.books.length : 0);
 

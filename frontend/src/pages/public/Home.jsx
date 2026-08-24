@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { 
   Search, BookOpen, Building2, ArrowRight, CheckCircle2, 
   Sparkles, Library as LibraryIcon, ShieldCheck, Clock, Star, Sparkle 
@@ -134,8 +135,16 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
-      {/* 1. HERO SECTION — DEEP RICH NAVY FULL VIEWPORT */}
+    <>
+      <Helmet>
+        <title>OpenShelf | Discover & Borrow Books in Cambodia</title>
+        <meta name="description" content="Connect with community libraries, browse physical catalogue collections, and borrow books with ease across Cambodia." />
+        <meta property="og:title" content="OpenShelf" />
+        <meta property="og:description" content="Connect with community libraries, browse physical catalogue collections, and borrow books with ease across Cambodia." />
+      </Helmet>
+      
+      <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
+        {/* 1. HERO SECTION — DEEP RICH NAVY FULL VIEWPORT */}
       <section className="relative min-h-[calc(100vh-4rem)] flex items-center py-16 sm:py-24 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
         {/* Glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[50rem] h-[20rem] sm:h-[32rem] bg-[#D9A83E]/10 rounded-full blur-[130px] pointer-events-none" />
@@ -554,6 +563,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

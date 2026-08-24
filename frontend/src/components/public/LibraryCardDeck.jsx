@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Building2, MapPin, BookOpen, ChevronRight, Sparkles } from 'lucide-react';
+import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
 
 export default function LibraryCardDeck({ libraries = [] }) {
   const navigate = useNavigate();
@@ -39,8 +40,8 @@ export default function LibraryCardDeck({ libraries = [] }) {
       <AnimatePresence mode="sync">
         {visibleCards.reverse().map(({ library, stackOffset }) => {
           const isTop = stackOffset === 0;
-          const coverUrl = library.cover_image_url || library.cover_image;
-          const logoUrl = library.image_url || library.image;
+          const coverUrl = getLibraryCoverUrl(library.cover_image_url || library.cover_image, 600);
+          const logoUrl = getLibraryLogoUrl(library.image_url || library.image || library.logo, 160);
           const bookCount = library.books_count ?? (library.books ? library.books.length : 0);
 
           return (

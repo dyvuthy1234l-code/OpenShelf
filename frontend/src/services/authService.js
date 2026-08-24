@@ -1,12 +1,19 @@
 import api from '../api/axios';
 
 const authService = {
+  csrf: async () => {
+    // Need to hit the base URL, not /api
+    const url = api.defaults.baseURL.replace('/api', '');
+    await api.get(`${url}/sanctum/csrf-cookie`);
+  },
+
   /**
    * POST /api/login
    * Body: { email, password }
    * Returns: { message, token, data, user }
    */
   login: async (credentials) => {
+    await authService.csrf();
     const response = await api.post('/login', credentials);
     return response.data;
   },
@@ -17,6 +24,7 @@ const authService = {
    * Returns: { message, token, data, user }
    */
   register: async (data) => {
+    await authService.csrf();
     const response = await api.post('/register', data);
     return response.data;
   },

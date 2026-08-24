@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { 
   BookOpen, Building2, User, CheckCircle2, XCircle, ArrowLeft, Bookmark, 
   AlertCircle, LogIn, Star, MessageSquare, Send, Clock, 
@@ -276,8 +277,17 @@ export default function BookDetail() {
   const hasRating = avgRating > 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 pb-20">
-      {/* 1. Breadcrumb Navigation */}
+    <>
+      <Helmet>
+        <title>{book.title} | OpenShelf</title>
+        <meta name="description" content={book.description || `Borrow ${book.title} from OpenShelf.`} />
+        <meta property="og:title" content={book.title} />
+        <meta property="og:description" content={book.description || `Borrow ${book.title} from OpenShelf.`} />
+        {book.cover_image_url && <meta property="og:image" content={book.cover_image_url} />}
+      </Helmet>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 pb-20">
+        {/* 1. Breadcrumb Navigation */}
       <div className="flex items-center justify-between">
         <button
           type="button"
@@ -837,6 +847,7 @@ export default function BookDetail() {
           </div>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </>
   );
 }
