@@ -314,11 +314,19 @@ export default function Home() {
             <p className="text-xs text-slate-500 font-medium">Check back later when copies are returned.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <motion.div
+            key={availableBooks.length}
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+          >
             {availableBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <motion.div key={book.id} variants={itemVariants}>
+                <BookCard book={book} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </section>
 
@@ -353,6 +361,7 @@ export default function Home() {
           </div>
         ) : (
           <motion.div
+            key={recentlyAddedBooks.length}
             variants={containerVariants}
             initial="hidden"
             animate="show"
