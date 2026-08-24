@@ -6,18 +6,20 @@ import OpenShelfBrand from '../common/OpenShelfBrand';
 import getImageUrl, { getAvatarUrl } from '../../utils/imageUrl';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 
+import SearchModal from './SearchModal';
+
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const searchInputRef = useRef(null);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        searchInputRef.current?.focus();
+        setSearchModalOpen(true);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -83,22 +85,19 @@ export default function Navbar() {
 
           {/* Right Side: Search + Member Shortcuts / Guest Auth */}
           <div className="hidden lg:flex items-center gap-2.5 xl:gap-3.5">
-            {/* Search Input */}
-            <form onSubmit={handleSearchSubmit} className="relative w-48 xl:w-56">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search title, author..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#F5F8FC] border border-[#DCE6F0] focus:border-[#123A63] rounded-xl py-1.5 pl-10 pr-12 text-xs text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#123A63]/15 transition-all"
-              />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none opacity-60">
+            {/* Search Input Trigger */}
+            <button
+              onClick={() => setSearchModalOpen(true)}
+              className="relative w-48 xl:w-56 flex items-center bg-[#F5F8FC] hover:bg-[#E2E8F0] border border-[#DCE6F0] hover:border-[#CBD5E1] rounded-xl py-1.5 pl-3 pr-2 text-left transition-all"
+            >
+              <Search className="w-4 h-4 text-[#94A3B8] mr-2 shrink-0" />
+              <span className="text-xs text-[#94A3B8] flex-1">Search...</span>
+              <div className="flex items-center gap-0.5 opacity-60">
                 <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">⌘</kbd>
                 <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">K</kbd>
               </div>
-            </form>
+            </button>
+            <SearchModal isOpen={searchModalOpen} onClose={() => setSearchModalOpen(false)} />
 
             {isAuthenticated && user ? (
               <div className="flex items-center gap-2">

@@ -142,19 +142,19 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             {/* Left Content */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
               className="lg:col-span-6 space-y-5 sm:space-y-6"
             >
               {/* Eyebrow / Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D9A83E]/10 border border-[#D9A83E]/30 text-[#D9A83E] text-xs font-bold tracking-wide">
+              <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D9A83E]/10 border border-[#D9A83E]/30 text-[#D9A83E] text-xs font-bold tracking-wide">
                 <Sparkles className="w-3.5 h-3.5 text-[#D9A83E]" />
                 OPEN SHELF COLLECTION
-              </div>
+              </motion.div>
 
               {/* Editorial Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] text-white">
+              <motion.h1 variants={itemVariants} className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] text-white">
                 Discover books from libraries across{' '}
                 <span
                   className="inline-flex min-w-[9ch] text-[#D9A83E]"
@@ -163,15 +163,15 @@ export default function Home() {
                   {typedLocation}
                   <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-[#D9A83E] rounded-full animate-pulse" aria-hidden="true" />
                 </span>
-              </h1>
+              </motion.h1>
 
               {/* Supporting Text */}
-              <p className="text-[#CBD5E1] text-sm sm:text-lg max-w-xl leading-relaxed">
+              <motion.p variants={itemVariants} className="text-[#CBD5E1] text-sm sm:text-lg max-w-xl leading-relaxed">
                 Connect with community libraries, browse physical catalogue collections, and borrow books with ease. Knowledge belongs to everyone.
-              </p>
+              </motion.p>
 
               {/* Search Bar */}
-              <form onSubmit={handleHeroSearch} className="pt-2 max-w-lg">
+              <motion.form variants={itemVariants} onSubmit={handleHeroSearch} className="pt-2 max-w-lg">
                 <div className="relative flex items-center bg-[#091A30]/90 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-2xl p-1.5 sm:p-2 shadow-2xl transition-all">
                   <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#94A3B8] ml-3 shrink-0" />
                   <input
@@ -188,10 +188,10 @@ export default function Home() {
                     Search
                   </button>
                 </div>
-              </form>
+              </motion.form>
 
               {/* Category Pills */}
-              <div className="pt-3 pb-1 flex flex-wrap gap-2">
+              <motion.div variants={itemVariants} className="pt-3 pb-1 flex flex-wrap gap-2">
                 <span className="text-[#94A3B8] text-xs font-semibold self-center mr-1">Trending:</span>
                 {['Fiction', 'Technology', 'Science', 'Design'].map(cat => (
                   <Link
@@ -202,9 +202,9 @@ export default function Home() {
                     {cat}
                   </Link>
                 ))}
-              </div>
+              </motion.div>
               {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3 sm:gap-4 pt-2">
+              <motion.div variants={itemVariants} className="flex flex-wrap gap-3 sm:gap-4 pt-2">
                 <Link
                   to="/libraries"
                   className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-[#D9A83E]/20 transition-all"
@@ -219,10 +219,10 @@ export default function Home() {
                   <BookOpen className="w-4 h-4 text-[#D9A83E]" />
                   Browse Books
                 </Link>
-              </div>
+              </motion.div>
 
               {/* Trust Indicators */}
-              <div className="pt-4 sm:pt-6 border-t border-[#0D2440] flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#CBD5E1]">
+              <motion.div variants={itemVariants} className="pt-4 sm:pt-6 border-t border-[#0D2440] flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-[#CBD5E1]">
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-[#2D8A61]" />
                   <span>Verified Libraries</span>
@@ -235,7 +235,7 @@ export default function Home() {
                   <Clock className="w-4 h-4 text-[#F59E0B]" />
                   <span>Easy Pickups</span>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
 
             {/* Right Side: Responsive LibraryCardDeck */}
@@ -279,11 +279,19 @@ export default function Home() {
             No libraries currently active in the network.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             {libraries.map((lib) => (
-              <LibraryCard key={lib.id} library={lib} />
+              <motion.div key={lib.id} variants={itemVariants}>
+                <LibraryCard library={lib} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </section>
 
@@ -417,14 +425,21 @@ export default function Home() {
             <p className="text-slate-600 text-xs sm:text-sm">Borrow physical books from local libraries in 4 easy steps.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {[
               { num: '01', title: 'Search', desc: 'Browse books or physical libraries near you in Cambodia.' },
               { num: '02', title: 'Choose Library', desc: 'Select the community library holding your desired title.' },
               { num: '03', title: 'Request', desc: 'Reserve your copy online with your free member account.' },
               { num: '04', title: 'Pick Up', desc: 'Visit the library in person to collect and enjoy reading!' },
             ].map((step) => (
-              <div
+              <motion.div
+                variants={itemVariants}
                 key={step.num}
                 className="group space-y-2.5 p-5 bg-slate-50 border border-slate-200/80 rounded-2xl transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md hover:bg-white hover:border-amber-400/60"
               >
@@ -435,9 +450,9 @@ export default function Home() {
                   {step.title}
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 

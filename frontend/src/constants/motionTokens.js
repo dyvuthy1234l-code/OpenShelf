@@ -26,9 +26,9 @@ export const PAGE_MOTION_VARIANTS = {
 
 // Subtle Card Hover Token (BookCard, LibraryCard, CategoryCard)
 export const CARD_MOTION_PROPS = {
-  whileHover: { y: -3, scale: 1.008 },
-  whileTap: { scale: 0.985 },
-  transition: { duration: MOTION_DURATIONS.FAST, ease: MOTION_EASINGS.PREMIUM },
+  whileHover: { y: -6, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" },
+  whileTap: { scale: 0.98 },
+  transition: { duration: 0.3, ease: 'easeOut' },
 };
 
 // Button Press / Hover Token

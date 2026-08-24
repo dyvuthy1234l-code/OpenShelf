@@ -30,7 +30,7 @@ export default function LibraryCard({ library }) {
             loading="lazy"
             decoding="async"
             onError={() => setCoverErr(true)}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out will-change-transform opacity-90 group-hover:opacity-100"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-tr from-slate-950 via-slate-900 to-amber-950/40 flex flex-col items-center justify-center text-slate-400 p-4 text-center">

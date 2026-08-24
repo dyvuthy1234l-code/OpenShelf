@@ -80,7 +80,7 @@ export default function BookCard({ book, showDateAdded = false }) {
             loading="lazy"
             decoding="async"
             onError={() => setImageErr(true)}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out will-change-transform"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 flex flex-col items-center justify-center p-4 text-center">
@@ -108,7 +108,9 @@ export default function BookCard({ book, showDateAdded = false }) {
         )}
 
         {/* Favorite Action Button */}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.8, rotate: -5 }}
           onClick={handleFavoriteClick}
           disabled={savingFav}
           title={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
@@ -119,7 +121,7 @@ export default function BookCard({ book, showDateAdded = false }) {
           }`}
         >
           <Bookmark className={`w-4 h-4 ${isFavorited ? 'fill-slate-950' : ''}`} />
-        </button>
+        </motion.button>
 
         {/* Availability Badge */}
         <div className="absolute top-3 right-3 z-20">
