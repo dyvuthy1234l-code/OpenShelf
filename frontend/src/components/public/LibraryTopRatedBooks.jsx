@@ -24,11 +24,8 @@ export default function LibraryTopRatedBooks({ libraryId, libraryName }) {
 
       const rawList = res.data || [];
 
+      // Backend already filters by library_id — only keep rating filter
       const ratedBooks = rawList
-        .filter((b) => {
-          const bookLibId = b.library_id ?? b.library?.id;
-          return String(bookLibId) === String(libraryId);
-        })
         .filter((b) => {
           const avg = Number(b.reviews_avg_rating) || 0;
           const count = Number(b.reviews_count) || 0;
