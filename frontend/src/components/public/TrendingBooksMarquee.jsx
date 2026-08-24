@@ -152,22 +152,20 @@ export default function TrendingBooksMarquee({ books = [], loading = false, erro
             return (
               <div
                 key={`${book.id}-${idx}`}
-                className="w-64 sm:w-72 shrink-0 bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-[400px] group"
+                className="w-40 sm:w-48 md:w-56 shrink-0 bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
               >
                 {/* Book Cover */}
-                <div className="relative h-44 bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center p-3">
+                <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
                   {book.cover_image_url ? (
                     <img
                       src={book.cover_image_url}
                       alt={book.title}
-                      className="h-full w-auto max-w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                   ) : (
-                    <div className="w-24 h-32 bg-white border border-slate-200 rounded-lg shadow-xs flex flex-col items-center justify-center p-2 text-center">
-                      <BookOpen className="w-7 h-7 text-amber-600/70 mb-1" />
-                      <span className="text-[10px] text-slate-700 font-bold line-clamp-2 leading-snug">
-                        {book.title}
-                      </span>
+                    <div className="w-full h-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 flex flex-col items-center justify-center p-3 text-center">
+                      <BookOpen className="w-8 h-8 text-amber-600/70 mb-2" />
+                      <span className="text-[10px] text-slate-700 font-bold line-clamp-3 leading-snug px-2">{book.title}</span>
                     </div>
                   )}
 
