@@ -46,7 +46,7 @@ export default function MemberNotifications() {
       window.dispatchEvent(new Event('notificationsRead'));
       setTimeout(() => setActionMessage(''), 3000);
     } catch {
-      // non-critical error
+      setActionMessage('Failed to delete notification.');
     }
   };
 
@@ -59,13 +59,16 @@ export default function MemberNotifications() {
       window.dispatchEvent(new Event('notificationsRead'));
       setTimeout(() => setActionMessage(''), 3000);
     } catch {
-      // non-critical error
+      setActionMessage('Failed to clear notifications.');
     }
   };
 
   const unreadCount = notifications.filter((n) => !n.read_at).length;
-  const totalPages = meta.last_page || 1;
-  const paginatedNotifications = notifications;
+  const totalPages = Math.ceil(notifications.length / ITEMS_PER_PAGE) || 1;
+  const paginatedNotifications = notifications.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
@@ -98,15 +101,16 @@ export default function MemberNotifications() {
               onClick={handleClearAll}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200/80 transition-all cursor-pointer"
             >
-              <Trash2 className="w-4 h-4 text-rose-600" />
+              <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>
             </button>
           </div>
         )}
       </div>
 
+      {/* Action Message Banner */}
       {actionMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold">
+        <div className="px-4 py-2.5 bg-amber-50 border border-amber-200 text-amber-900 font-semibold text-xs rounded-xl shadow-xs transition-all animate-in fade-in slide-in-from-top-2">
           {actionMessage}
         </div>
       )}
@@ -131,8 +135,16 @@ export default function MemberNotifications() {
             return (
               <div
                 key={n.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => isUnread && handleMarkAsRead(n.id)}
-                className={`p-5 flex items-start justify-between gap-4 transition-colors cursor-pointer group ${
+                onKeyDown={(e) => {
+                  if ((e.key === 'Enter' || e.key === ' ') && isUnread) {
+                    e.preventDefault();
+                    handleMarkAsRead(n.id);
+                  }
+                }}
+                className={`p-5 flex items-start justify-between gap-4 transition-colors cursor-pointer group focus:outline-hidden focus:bg-slate-50 ${
                   isUnread ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-slate-50'
                 }`}
               >
@@ -163,6 +175,7 @@ export default function MemberNotifications() {
                 <button
                   onClick={(e) => handleDeleteNotification(e, n.id)}
                   title="Delete notification"
+                  aria-label="Delete notification"
                   className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all opacity-80 group-hover:opacity-100 shrink-0 cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
