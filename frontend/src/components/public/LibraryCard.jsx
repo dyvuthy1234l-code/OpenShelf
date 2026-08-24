@@ -19,7 +19,7 @@ export default function LibraryCard({ library }) {
   return (
     <motion.div
       {...CARD_MOTION_PROPS}
-      className="group bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-3xl overflow-hidden shadow-2xs hover:shadow-xl transition-all duration-300 flex flex-col h-full select-none"
+      className="group bg-white border border-slate-200/70 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full select-none"
     >
       {/* 1. COVER BANNER HEADER */}
       <div className="relative h-36 sm:h-40 bg-slate-950 overflow-hidden shrink-0">
@@ -43,18 +43,18 @@ export default function LibraryCard({ library }) {
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
           {isFeatured ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold shadow-sm uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-xs font-extrabold shadow-sm uppercase tracking-wider">
               <Star className="w-3 h-3 fill-slate-950 text-slate-950" />
               FEATURED PARTNER
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-amber-300 border border-slate-700/80 text-[10px] font-bold">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-amber-300 border border-slate-700/80 text-xs font-bold">
               <ShieldCheck className="w-3 h-3 text-amber-400" />
               Verified
             </span>
           )}
 
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold shadow-2xs">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-xs font-bold shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             ● Active
           </span>

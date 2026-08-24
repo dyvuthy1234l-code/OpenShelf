@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen, Search, X, SlidersHorizontal, RefreshCw } from 'lucide-react';
 import { useBooks } from '../../hooks/queries/useBooks';
 import { useLibraries } from '../../hooks/queries/useLibraries';
@@ -252,11 +253,25 @@ export default function BooksList() {
         ) : (
           /* Real Book Cards Grid & Server-Side Pagination Bar */
           <div className="space-y-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <motion.div 
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-50px' }}
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { staggerChildren: 0.08 } }
+              }}
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            >
               {books.map((b) => (
-                <BookCard key={b.id} book={b} />
+                <motion.div key={b.id} variants={{
+                  hidden: { opacity: 0, y: 16 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
+                }}>
+                  <BookCard book={b} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Pagination Controls Bar */}
             <Pagination

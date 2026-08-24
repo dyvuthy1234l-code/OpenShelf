@@ -8,6 +8,8 @@ import LibraryCard from '../../components/public/LibraryCard';
 import FeaturedLibraryCard from '../../components/public/FeaturedLibraryCard';
 import Pagination from '../../components/public/Pagination';
 import ErrorState from '../../components/public/ErrorState';
+import LibrarySkeleton from '../../components/common/LibrarySkeleton';
+import { motion } from 'framer-motion';
 
 export default function LibrariesList() {
   const directoryRef = useRef(null);
@@ -242,16 +244,19 @@ export default function LibrariesList() {
 
         {/* LOADING SKELETON STATE */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="h-80 bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse">
-                <div className="h-44 bg-slate-100 rounded-xl" />
-                <div className="h-5 bg-slate-100 rounded w-3/4" />
-                <div className="h-3 bg-slate-100 rounded w-1/2" />
-                <div className="h-8 bg-slate-100 rounded-xl" />
-              </div>
+          <motion.div 
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.08 } }
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {[...Array(6)].map((_, i) => (
+              <LibrarySkeleton key={`lib-skeleton-${i}`} />
             ))}
-          </div>
+          </motion.div>
         ) : error ? (
           <ErrorState message={error} onRetry={loadLibraries} />
         ) : sortedLibraries.length === 0 ? (

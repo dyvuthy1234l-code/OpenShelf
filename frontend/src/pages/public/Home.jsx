@@ -12,6 +12,8 @@ import LibraryCardDeck from '../../components/public/LibraryCardDeck';
 import HighlyRatedMarquee from '../../components/public/HighlyRatedMarquee';
 import LoadingState from '../../components/public/LoadingState';
 import ErrorState from '../../components/public/ErrorState';
+import BookSkeleton from '../../components/common/BookSkeleton';
+import LibrarySkeleton from '../../components/common/LibrarySkeleton';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -134,7 +136,7 @@ export default function Home() {
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
       {/* 1. HERO SECTION — DEEP RICH NAVY FULL VIEWPORT */}
-      <section className="relative min-h-[calc(100vh-4rem)] flex items-center py-12 sm:py-20 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
+      <section className="relative min-h-[calc(100vh-4rem)] flex items-center py-16 sm:py-24 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
         {/* Glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[50rem] h-[20rem] sm:h-[32rem] bg-[#D9A83E]/10 rounded-full blur-[130px] pointer-events-none" />
 
@@ -271,7 +273,16 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <LoadingState message="Loading community libraries..." />
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {[...Array(6)].map((_, i) => (
+              <LibrarySkeleton key={`lib-skeleton-${i}`} />
+            ))}
+          </motion.div>
         ) : error ? (
           <ErrorState message={error} />
         ) : libraries.length === 0 ? (
@@ -315,7 +326,16 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <LoadingState message="Loading book catalogue..." />
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+          >
+            {[...Array(8)].map((_, i) => (
+              <BookSkeleton key={`book-skeleton-${i}`} />
+            ))}
+          </motion.div>
         ) : availableBooks.length === 0 ? (
           <div className="py-12 text-center text-slate-500 bg-white border border-slate-200 rounded-2xl space-y-1">
             <h3 className="text-base font-extrabold text-slate-900">No books are currently available.</h3>
@@ -362,7 +382,16 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <LoadingState message="Loading recently added books..." />
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+          >
+            {[...Array(4)].map((_, i) => (
+              <BookSkeleton key={`recent-skeleton-${i}`} />
+            ))}
+          </motion.div>
         ) : recentlyAddedBooks.length === 0 ? (
           <div className="py-12 text-center text-slate-500 bg-white border border-slate-200 rounded-2xl">
             No recently added books yet.
