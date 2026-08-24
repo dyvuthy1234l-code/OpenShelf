@@ -68,6 +68,7 @@ export default function BookCard({ book, showDateAdded = false }) {
   return (
     <motion.div
       {...CARD_MOTION_PROPS}
+      onClick={() => navigate(`/books/${book.id}`)}
       className="group relative bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       {/* Cover Image Container */}
