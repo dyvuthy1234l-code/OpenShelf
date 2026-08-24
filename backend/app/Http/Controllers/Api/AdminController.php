@@ -469,7 +469,7 @@ class AdminController extends Controller
                 if ($request->input('library') === 'no_library') {
                     $query->doesntHave('borrowings');
                 } else {
-                    $query->whereHas('borrowings.library', fn ($q) => $q->where('name', $request->input('library')));
+                    $query->whereHas('borrowings.library', fn ($q) => $q->where('libraries.id', $request->input('library')));
                 }
             })
             ->when($request->filled('status') && $request->input('status') !== 'all', fn ($query) => $query->where('status', $request->input('status')))

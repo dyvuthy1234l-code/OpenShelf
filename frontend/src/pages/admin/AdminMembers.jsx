@@ -210,7 +210,7 @@ export default function AdminMembers() {
             <option value="all">All Libraries</option>
             <option value="no_library">No Library</option>
             {libraries.map((lib) => (
-              <option key={lib.id} value={lib.name}>
+              <option key={lib.id} value={lib.id}>
                 {lib.name}
               </option>
             ))}
@@ -302,7 +302,7 @@ export default function AdminMembers() {
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
                 {paginatedMembers.map((m) => {
-                  const libName = m.assigned_library_name || m.borrowings?.[0]?.library?.name || 'No Library';
+                  const libName = m.assigned_library_name || 'Unassigned';
                   const activeCount = m.active_borrowings_count || 0;
                   const overdueCount = m.overdue_borrowings_count || 0;
 
@@ -332,11 +332,11 @@ export default function AdminMembers() {
 
                       {/* Library Column */}
                       <td className="py-2.5 px-3.5 text-slate-700 font-bold max-w-[150px] truncate">
-                        {libName !== 'No Library' ? (
+                        {libName !== 'Unassigned' ? (
                           <span className="text-slate-900">{libName}</span>
                         ) : (
                           <span className="inline-block text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
-                            No Library
+                            Unassigned
                           </span>
                         )}
                       </td>
@@ -431,7 +431,7 @@ export default function AdminMembers() {
             {/* Mobile Card List View */}
             <div className="md:hidden p-2.5 space-y-2.5">
               {paginatedMembers.map((m) => {
-                const libName = m.assigned_library_name || m.borrowings?.[0]?.library?.name || 'No Library';
+                const libName = m.assigned_library_name || 'Unassigned';
                 const activeCount = m.active_borrowings_count || 0;
                 const overdueCount = m.overdue_borrowings_count || 0;
 
