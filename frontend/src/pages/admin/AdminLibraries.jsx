@@ -485,8 +485,10 @@ export default function AdminLibraries() {
                             </button>
 
                             {actionMenuId === lib.id && (
-                              <div className="absolute right-0 mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-left">
-                                <button
+                              <>
+                                <div className="fixed inset-0 z-20" onClick={() => setActionMenuId(null)} />
+                                <div className="absolute right-0 mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-left">
+                                  <button
                                   onClick={() => {
                                     setActionMenuId(null);
                                     setSelectedLibrary(lib);
@@ -561,6 +563,7 @@ export default function AdminLibraries() {
                                   </button>
                                 )}
                               </div>
+                              </>
                             )}
                           </div>
                         </div>
@@ -588,8 +591,8 @@ export default function AdminLibraries() {
 
       {/* 5. LIBRARY DETAILS & REVIEW DRAWER */}
       {drawerOpen && selectedLibrary && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-xs">
-          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white h-full shadow-2xl flex flex-col justify-between p-6 space-y-6 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-xs" onClick={() => setDrawerOpen(false)}>
+          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white h-full shadow-2xl flex flex-col justify-between p-6 space-y-6 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>

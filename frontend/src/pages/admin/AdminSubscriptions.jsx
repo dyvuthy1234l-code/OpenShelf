@@ -1269,31 +1269,34 @@ export default function AdminSubscriptions() {
                               </button>
 
                               {isMenuOpen && (
-                                <div className="absolute right-0 bottom-full mb-1 w-36 bg-white rounded-xl shadow-xl border border-slate-200 py-1 z-30 text-xs font-bold text-slate-700">
-                                  {!isArchived && (
+                                <>
+                                  <div className="fixed inset-0 z-20" onClick={() => setOpenMenuPlanId(null)} />
+                                  <div className="absolute right-0 bottom-full mb-1 w-36 bg-white rounded-xl shadow-xl border border-slate-200 py-1 z-30 text-xs font-bold text-slate-700">
+                                    {!isArchived && (
+                                      <button
+                                        onClick={() => {
+                                          setOpenMenuPlanId(null);
+                                          handleArchivePlanDirect(plan);
+                                        }}
+                                        className="w-full text-left px-3 py-1.5 hover:bg-amber-50 text-amber-800 flex items-center gap-2 cursor-pointer"
+                                      >
+                                        <Archive className="w-3.5 h-3.5" />
+                                        <span>Archive Plan</span>
+                                      </button>
+                                    )}
                                     <button
                                       onClick={() => {
                                         setOpenMenuPlanId(null);
-                                        handleArchivePlanDirect(plan);
+                                        setDeletingPlan(plan);
+                                        setDeleteError('');
                                       }}
-                                      className="w-full text-left px-3 py-1.5 hover:bg-amber-50 text-amber-800 flex items-center gap-2 cursor-pointer"
+                                      className="w-full text-left px-3 py-1.5 hover:bg-rose-50 text-rose-700 flex items-center gap-2 cursor-pointer"
                                     >
-                                      <Archive className="w-3.5 h-3.5" />
-                                      <span>Archive Plan</span>
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                      <span>Delete Plan</span>
                                     </button>
-                                  )}
-                                  <button
-                                    onClick={() => {
-                                      setOpenMenuPlanId(null);
-                                      setDeletingPlan(plan);
-                                      setDeleteError('');
-                                    }}
-                                    className="w-full text-left px-3 py-1.5 hover:bg-rose-50 text-rose-700 flex items-center gap-2 cursor-pointer"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                    <span>Delete Plan</span>
-                                  </button>
-                                </div>
+                                  </div>
+                                </>
                               )}
                             </div>
                           </div>
