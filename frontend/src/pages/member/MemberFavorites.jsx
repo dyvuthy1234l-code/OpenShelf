@@ -13,7 +13,7 @@ export default function MemberFavorites() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = 12;
   const [favorites, setFavorites] = useState([]);
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: ITEMS_PER_PAGE, total: 0 });
 

@@ -40,7 +40,7 @@ export default function LibraryDetail() {
   const [meta, setMeta] = useState({
     current_page: 1,
     last_page: 1,
-    per_page: 10,
+    per_page: 12,
     total: 0,
   });
 
@@ -82,7 +82,7 @@ export default function LibraryDetail() {
           search: search || undefined,
           sort: sort || undefined,
           page,
-          per_page: 10,
+          per_page: 12,
         });
 
         const list = res.data || [];
@@ -92,7 +92,7 @@ export default function LibraryDetail() {
           setMeta({
             current_page: Number(res.meta.current_page) || page,
             last_page: Number(res.meta.last_page) || 1,
-            per_page: Number(res.meta.per_page) || 10,
+            per_page: Number(res.meta.per_page) || 12,
             total: Number(res.meta.total) || list.length,
           });
         } else {
