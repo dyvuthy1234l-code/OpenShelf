@@ -124,8 +124,8 @@ export default function Dashboard() {
               <div key={i} className="h-[108px] bg-white rounded-2xl border border-slate-200" />
             ))}
           </div>
-          <div className="lg:h-[255px] bg-white rounded-2xl border border-slate-200" />
-          <div className="lg:h-[155px] bg-white rounded-2xl border border-slate-200" />
+          <div className="h-64 lg:h-[255px] bg-white rounded-2xl border border-slate-200" />
+          <div className="h-40 lg:h-[155px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
         <div className="flex-1 flex flex-col justify-between min-h-0 space-y-3">

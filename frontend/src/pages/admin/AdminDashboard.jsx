@@ -151,7 +151,7 @@ export default function AdminDashboard() {
               <div key={i} className="h-[100px] bg-white rounded-2xl border border-slate-200" />
             ))}
           </div>
-          <div className="flex-1 min-lg:h-[240px] bg-white rounded-2xl border border-slate-200" />
+          <div className="flex-1 h-64 lg:h-[240px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
         <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5 w-full">
