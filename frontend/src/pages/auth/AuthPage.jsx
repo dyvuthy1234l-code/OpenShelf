@@ -50,23 +50,79 @@ export default function AuthPage({ defaultTab = "login" }) {
   }, [mode]);
 
   /* ── helpers ── */
-  const set = (field, value) => {
-    setForm((p) => ({ ...p, [field]: value }));
-    if (fieldErrors[field]) {
+  const validateField = (field, value, currentState = form) => {
+    let msg = "";
+    if (field === "name" && !isLogin) {
+      if (!value.trim()) msg = "Name is required.";
+      else if (value.trim().length < 2) msg = "Name must be at least 2 characters.";
+    } else if (field === "email") {
+      if (!value.trim()) msg = "Email is required.";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) msg = "Invalid email address.";
+    } else if (field === "password") {
+      if (!value) msg = "Password is required.";
+      else if (!isLogin && value.length < 8) msg = "Password must be at least 8 characters.";
+    } else if (field === "password_confirmation" && !isLogin) {
+      if (value !== currentState.password) msg = "Passwords do not match.";
+    }
+
+    if (msg) {
+      setFieldErrors((p) => ({ ...p, [field]: msg }));
+      return false;
+    } else {
       setFieldErrors((p) => {
         const n = { ...p };
         delete n[field];
         return n;
       });
+      return true;
     }
+  };
+
+  const handleBlur = (field) => {
+    validateField(field, form[field]);
+  };
+
+  const set = (field, value) => {
+    setForm((p) => {
+      const newState = { ...p, [field]: value };
+      
+      // Live validate if it already has an error, so the error clears as they type
+      if (fieldErrors[field]) {
+        validateField(field, value, newState);
+      }
+      
+      // Special case: if password changes, and confirmation already has error, re-validate confirmation
+      if (field === "password" && fieldErrors["password_confirmation"]) {
+        validateField("password_confirmation", newState.password_confirmation, newState);
+      }
+      
+      return newState;
+    });
+    
     if (error) setError("");
   };
 
   /* ── submit ── */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate all fields before submission
+    let isValid = true;
+    if (!isLogin) {
+      const isNameValid = validateField("name", form.name);
+      const isEmailValid = validateField("email", form.email);
+      const isPassValid = validateField("password", form.password);
+      const isConfValid = validateField("password_confirmation", form.password_confirmation);
+      if (!isNameValid || !isEmailValid || !isPassValid || !isConfValid) isValid = false;
+    } else {
+      const isEmailValid = validateField("email", form.email);
+      const isPassValid = validateField("password", form.password);
+      if (!isEmailValid || !isPassValid) isValid = false;
+    }
+
+    if (!isValid) return;
+
     setError("");
-    setFieldErrors({});
     setLoading(true);
 
     try {
@@ -79,13 +135,6 @@ export default function AuthPage({ defaultTab = "login" }) {
           password: form.password,
         });
       } else {
-        // Client-side check first
-        if (form.password !== form.password_confirmation) {
-          setFieldErrors({ password_confirmation: "Passwords do not match." });
-          setLoading(false);
-          return;
-        }
-
         // POST /api/register — expects { name, email, password, password_confirmation }
         userData = await register({
           name: form.name,
@@ -227,6 +276,7 @@ export default function AuthPage({ defaultTab = "login" }) {
                     type="text"
                     value={form.name}
                     onChange={(e) => set("name", e.target.value)}
+                    onBlur={() => handleBlur("name")}
                     placeholder="Your full name"
                     required
                     className={inputBase}
@@ -247,6 +297,7 @@ export default function AuthPage({ defaultTab = "login" }) {
                   type="email"
                   value={form.email}
                   onChange={(e) => set("email", e.target.value)}
+                  onBlur={() => handleBlur("email")}
                   placeholder="you@example.com"
                   required
                   className={inputBase}
@@ -271,6 +322,7 @@ export default function AuthPage({ defaultTab = "login" }) {
                   type={showPw ? "text" : "password"}
                   value={form.password}
                   onChange={(e) => set("password", e.target.value)}
+                  onBlur={() => handleBlur("password")}
                   placeholder={isLogin ? "Enter password" : "Min. 8 characters"}
                   required
                   className={inputWithToggle}
@@ -299,6 +351,7 @@ export default function AuthPage({ defaultTab = "login" }) {
                     type={showPwConfirm ? "text" : "password"}
                     value={form.password_confirmation}
                     onChange={(e) => set("password_confirmation", e.target.value)}
+                    onBlur={() => handleBlur("password_confirmation")}
                     placeholder="Re-enter password"
                     required
                     className={inputWithToggle}
