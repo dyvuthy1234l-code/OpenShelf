@@ -91,13 +91,23 @@ export default function BookCard({ book, showDateAdded = false }) {
 
         {/* Hover Action Overlay */}
         <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px] z-10">
-          <Link
-            to={`/books/${book.id}`}
-            className="px-5 py-2.5 bg-amber-500 text-slate-950 text-xs font-extrabold rounded-xl shadow-lg hover:bg-amber-400 transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2"
-          >
-            <span>View Details</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <motion.div initial="rest" whileHover="hover">
+            <Link
+              to={`/books/${book.id}`}
+              className="px-5 py-2.5 bg-amber-500 text-slate-950 text-xs font-extrabold rounded-xl shadow-lg hover:bg-amber-400 transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2"
+            >
+              <span>View Details</span>
+              <motion.span
+                variants={{
+                  rest: { x: 0 },
+                  hover: { x: 6, transition: { type: 'spring', stiffness: 400 } }
+                }}
+                style={{ willChange: 'transform' }}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
 
         {/* Category Pill */}
@@ -124,18 +134,24 @@ export default function BookCard({ book, showDateAdded = false }) {
         </motion.button>
 
         {/* Availability Badge */}
-        <div className="absolute top-3 right-3 z-20">
-          {isAvailable ? (
-            <span className="inline-flex items-center gap-1 bg-emerald-500/90 text-white px-2.5 py-0.5 rounded-full text-xs font-bold backdrop-blur-md shadow-xs">
-              <CheckCircle2 className="w-3 h-3" />
-              {availableQty} Available
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 bg-rose-500/90 text-white px-2.5 py-0.5 rounded-full text-xs font-bold backdrop-blur-md shadow-xs">
-              <XCircle className="w-3 h-3" />
-              Borrowed
-            </span>
-          )}
+        <div className="absolute top-3 right-3 z-20 pointer-events-none">
+          <motion.div
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ willChange: 'transform' }}
+          >
+            {isAvailable ? (
+              <span className="inline-flex items-center gap-1 bg-emerald-500/90 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs">
+                <CheckCircle2 className="w-3 h-3" />
+                {availableQty} Available
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 bg-rose-500/90 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs">
+                <XCircle className="w-3 h-3" />
+                Borrowed
+              </span>
+            )}
+          </motion.div>
         </div>
       </div>
 

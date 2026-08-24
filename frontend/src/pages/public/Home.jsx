@@ -265,13 +265,17 @@ export default function Home() {
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Discover Libraries</h2>
           </div>
-          <Link
-            to="/libraries"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors"
-          >
-            <span>View all libraries</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <motion.div initial="rest" whileHover="hover" className="inline-flex">
+            <Link
+              to="/libraries"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors"
+            >
+              <span>View all libraries</span>
+              <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
 
         {loading ? (
@@ -376,13 +380,17 @@ export default function Home() {
             </p>
           </div>
 
-          <Link
-            to="/books"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
-          >
-            <span>Browse all books</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <motion.div initial="rest" whileHover="hover" className="inline-flex">
+            <Link
+              to="/books"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
+            >
+              <span>Explore catalogue</span>
+              <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </Link>
+          </motion.div>
         </div>
 
         {loading ? (
@@ -437,13 +445,17 @@ export default function Home() {
             </p>
           </div>
 
-          <Link
-            to="/books?sort=top_rated"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
-          >
-            <span>Explore rated catalogue</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <motion.div initial="rest" whileHover="hover" className="inline-flex">
+            <Link
+              to="/books?sort=top_rated"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
+            >
+              <span>Explore rated catalogue</span>
+              <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </Link>
+          </motion.div>
         </motion.div>
 
         <HighlyRatedMarquee books={highlyRatedBooks} loading={loading} error={error} />
@@ -458,34 +470,55 @@ export default function Home() {
             <p className="text-slate-600 text-xs sm:text-sm">Borrow physical books from local libraries in 4 easy steps.</p>
           </div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {[
-              { num: '01', title: 'Search', desc: 'Browse books or physical libraries near you in Cambodia.' },
-              { num: '02', title: 'Choose Library', desc: 'Select the community library holding your desired title.' },
-              { num: '03', title: 'Request', desc: 'Reserve your copy online with your free member account.' },
-              { num: '04', title: 'Pick Up', desc: 'Visit the library in person to collect and enjoy reading!' },
-            ].map((step) => (
-              <motion.div
-                variants={itemVariants}
-                key={step.num}
-                className="group space-y-2.5 p-5 bg-slate-50 border border-slate-200/80 rounded-2xl transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-md hover:bg-white hover:border-amber-400/60"
-              >
-                <span className="text-2xl sm:text-3xl font-extrabold text-amber-600 group-hover:text-amber-500 transition-colors duration-200 block">
-                  {step.num}
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-amber-950 transition-colors duration-200">
-                  {step.title}
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+          <div className="relative">
+            {/* Connecting line */}
+            <div className="hidden lg:block absolute top-[45px] left-[12%] right-[12%] h-[2px] bg-slate-100 overflow-hidden rounded-full">
+               <motion.div 
+                 initial={{ x: '-100%' }}
+                 whileInView={{ x: 0 }}
+                 viewport={{ once: true, margin: '-50px' }}
+                 transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.2 }}
+                 className="w-full h-full bg-amber-400"
+                 style={{ willChange: 'transform' }}
+               />
+            </div>
+            
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { staggerChildren: 0.2 } }
+              }}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: '-50px' }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10"
+            >
+              {[
+                { num: '01', title: 'Search', desc: 'Browse books or physical libraries near you in Cambodia.' },
+                { num: '02', title: 'Choose Library', desc: 'Select the community library holding your desired title.' },
+                { num: '03', title: 'Request', desc: 'Reserve your copy online with your free member account.' },
+                { num: '04', title: 'Pick Up', desc: 'Visit the library in person to collect and enjoy reading!' },
+              ].map((step) => (
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.9 },
+                    show: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+                  }}
+                  style={{ willChange: 'transform' }}
+                  key={step.num}
+                  className="group space-y-2.5 p-5 bg-slate-50 border border-slate-200/80 rounded-2xl transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md hover:bg-white hover:border-amber-400/60"
+                >
+                  <span className="text-2xl sm:text-3xl font-extrabold text-amber-600 group-hover:text-amber-500 transition-colors duration-200 block">
+                    {step.num}
+                  </span>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-amber-950 transition-colors duration-200">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -506,13 +539,17 @@ export default function Home() {
               </p>
             </div>
             <div className="lg:col-span-4 flex lg:justify-end">
-              <Link
-                to="/become-librarian"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-amber-500/20 transition-all"
-              >
-                <span>Become a Librarian</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <motion.div initial="rest" whileHover="hover">
+                <Link
+                  to="/become-librarian"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-amber-500/20 transition-all"
+                >
+                  <span>Become a Librarian</span>
+                  <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.span>
+                </Link>
+              </motion.div>
             </div>
           </div>
         </div>

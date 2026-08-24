@@ -1,12 +1,38 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Building2, MapPin, BookOpen, ArrowRight, Sparkles } from 'lucide-react';
 import getImageUrl from '../../utils/imageUrl';
 
 export default function FeaturedLibraryCard({ library }) {
   const [coverErr, setCoverErr] = useState(false);
   const [logoErr, setLogoErr] = useState(false);
+
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [8, -8]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-8, 8]);
+
+  const handleMouseMove = (e) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    x.set(mouseX / width - 0.5);
+    y.set(mouseY / height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   const logoUrl = getImageUrl(library.image_url || library.image || library.logo);
   const coverUrl = getImageUrl(library.cover_image_url || library.cover_image);
@@ -15,6 +41,10 @@ export default function FeaturedLibraryCard({ library }) {
 
   return (
     <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, willChange: 'transform' }}
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
       className="group bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-3xl p-4 shadow-xl hover:shadow-2xl hover:shadow-amber-900/20 transition-all duration-300 flex flex-col h-full relative select-none"
@@ -88,13 +118,22 @@ export default function FeaturedLibraryCard({ library }) {
 
         {/* Push bottom section to the end */}
         <div className="mt-auto pt-4 border-t border-slate-700/80 flex items-center justify-between">
-          <Link
-            to={`/libraries/${library.id}`}
-            className="inline-flex items-center gap-1.5 text-amber-400 font-bold text-sm hover:text-amber-300 transition-colors"
+          <motion.div
+            initial="rest"
+            whileHover="hover"
+            className="inline-flex items-center gap-1.5 text-amber-400 font-bold text-sm hover:text-amber-300 transition-colors relative z-10"
           >
             Visit Library
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+            <motion.span
+              variants={{
+                rest: { x: 0 },
+                hover: { x: 6, transition: { type: 'spring', stiffness: 400 } }
+              }}
+              style={{ willChange: 'transform' }}
+            >
+              <ArrowRight className="w-4 h-4" />
+            </motion.span>
+          </motion.div>
           <span className="text-[11px] font-semibold text-slate-500">
             OpenShelf Network
           </span>
