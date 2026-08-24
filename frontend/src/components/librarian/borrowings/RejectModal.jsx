@@ -44,6 +44,7 @@ export default function RejectModal({ borrowing, onConfirm, onClose }) {
           </div>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
           >
             <X className="w-5 h-5" />
