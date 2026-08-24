@@ -315,10 +315,10 @@ export default function Home() {
           </div>
         ) : (
           <motion.div
-            key={availableBooks.length}
             variants={containerVariants}
             initial="hidden"
-            animate="show"
+            whileInView="show"
+            viewport={{ once: true, margin: '-50px' }}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
           >
             {availableBooks.map((book) => (
@@ -361,10 +361,10 @@ export default function Home() {
           </div>
         ) : (
           <motion.div
-            key={recentlyAddedBooks.length}
             variants={containerVariants}
             initial="hidden"
-            animate="show"
+            whileInView="show"
+            viewport={{ once: true, margin: '-50px' }}
             className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
           >
             {recentlyAddedBooks.map((book) => (
@@ -380,7 +380,8 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4"
         >
