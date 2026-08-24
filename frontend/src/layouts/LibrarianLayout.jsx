@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -429,7 +429,9 @@ export default function LibrarianLayout() {
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
           <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-4 flex flex-col min-h-0">
-            <Outlet />
+            <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+              <Outlet />
+            </React.Suspense>
           </main>
         </div>
       </div>

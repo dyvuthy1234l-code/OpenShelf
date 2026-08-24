@@ -1,3 +1,4 @@
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAuthRedirect } from '../hooks/useAuthRedirect';
@@ -263,7 +264,9 @@ export default function AuthLayout() {
       {/* ═══════════════════════════════════════════════════ */}
       <div className="w-full lg:w-[45%] h-full bg-[#061426] flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
         <div className="w-full max-w-md">
-          <Outlet />
+          <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+            <Outlet />
+          </React.Suspense>
         </div>
       </div>
     </div>
