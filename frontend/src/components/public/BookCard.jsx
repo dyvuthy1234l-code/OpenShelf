@@ -72,7 +72,7 @@ export default function BookCard({ book, showDateAdded = false }) {
       className="group relative bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       {/* Cover Image Container */}
-      <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
+      <div className="relative aspect-[4/5] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
         {getBookCoverUrl(book.cover_image_url || book.cover_image, 400) && !imageErr ? (
           <img
             src={getBookCoverUrl(book.cover_image_url || book.cover_image, 400)}
