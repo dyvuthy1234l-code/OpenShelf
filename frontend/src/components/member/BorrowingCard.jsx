@@ -62,6 +62,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
   };
 
   const handleExtend = async () => {
+    if (!window.confirm('Are you sure you want to request a loan extension?')) return;
     try {
       setExtending(true);
       setActionMessage('');
@@ -77,6 +78,8 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
   };
 
   const handlePayFine = async () => {
+    const amountStr = Number(borrowing.fine_amount).toFixed(2);
+    if (!window.confirm(`Are you sure you want to pay the fine of $${amountStr}?`)) return;
     try {
       setPaying(true);
       setActionMessage('');
@@ -200,7 +203,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
             <div className="flex items-center gap-2 text-rose-800 font-semibold">
               <DollarSign className="w-4 h-4 text-rose-600" />
               <span>
-                Fine: <strong>${borrowing.fine_amount}</strong> ({borrowing.fine_status || 'unpaid'})
+                Fine: <strong>${Number(borrowing.fine_amount).toFixed(2)}</strong> ({borrowing.fine_status || 'unpaid'})
               </span>
             </div>
 
@@ -273,6 +276,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
                 </div>
                 <button
                   onClick={() => setShowReturnModal(false)}
+                  aria-label="Close"
                   className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
                 >
                   <X className="w-5 h-5" />
