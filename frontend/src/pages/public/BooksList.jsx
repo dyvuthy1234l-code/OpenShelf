@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Search, X, SlidersHorizontal, RefreshCw } from 'lucide-react';
 import { useBooks } from '../../hooks/queries/useBooks';
 import { useLibraries } from '../../hooks/queries/useLibraries';
@@ -8,7 +8,7 @@ import { useCategories } from '../../hooks/queries/useCategories';
 import useDebounce from '../../hooks/useDebounce';
 import BookCard from '../../components/public/BookCard';
 import BookSkeleton from '../../components/common/BookSkeleton';
-import Pagination from '../../components/public/Pagination';
+import AnimatedPagination from '../../components/common/AnimatedPagination';
 import ErrorState from '../../components/public/ErrorState';
 
 export default function BooksList() {
@@ -55,10 +55,13 @@ export default function BooksList() {
 
   const {
     data: booksRes,
-    isLoading: loading,
+    isLoading: initialLoading,
+    isFetching,
     isError,
     refetch: loadBooks,
   } = useBooks(queryParams);
+
+  const loading = initialLoading || isFetching;
 
   const books = booksRes?.data || [];
   const meta = {
@@ -226,61 +229,74 @@ export default function BooksList() {
 
       {/* Book Grid Container */}
       <div ref={directoryRef} className="space-y-8">
-        {loading ? (
-          <BookSkeleton count={8} />
-        ) : error ? (
-          <ErrorState message={error} onRetry={loadBooks} />
-        ) : books.length === 0 ? (
-          /* Empty Results State */
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs">
-            <div className="w-16 h-16 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center mx-auto text-amber-600">
-              <BookOpen className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-extrabold text-slate-900">No books found</h3>
-            <p className="text-xs sm:text-sm text-slate-500">
-              We couldn&apos;t find any books matching your selected filters or search query.
-            </p>
-            <div className="pt-2">
-              <button
-                onClick={handleClearFilters}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Clear filters</span>
-              </button>
-            </div>
-          </div>
-        ) : (
-          /* Real Book Cards Grid & Server-Side Pagination Bar */
-          <div className="space-y-8">
-            <motion.div 
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: '-50px' }}
-              variants={{
-                hidden: { opacity: 0 },
-                show: { opacity: 1, transition: { staggerChildren: 0.08 } }
-              }}
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="loading-skeleton"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
             >
-              {books.map((b) => (
-                <motion.div key={b.id} variants={{
-                  hidden: { opacity: 0, y: 16 },
-                  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } }
-                }}>
-                  <BookCard book={b} />
-                </motion.div>
-              ))}
+              <BookSkeleton count={10} />
             </motion.div>
+          ) : error ? (
+            <motion.div key="error-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ErrorState message={error} onRetry={loadBooks} />
+            </motion.div>
+          ) : books.length === 0 ? (
+            /* Empty Results State */
+            <motion.div
+              key="empty-state"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="bg-white border border-slate-200/90 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs"
+            >
+              <div className="w-16 h-16 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center mx-auto text-amber-600">
+                <BookOpen className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900">No books found</h3>
+              <p className="text-xs sm:text-sm text-slate-500">
+                We couldn&apos;t find any books matching your selected filters or search query.
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={handleClearFilters}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Clear filters</span>
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            /* Real Book Cards Grid & Server-Side Pagination Bar */
+            <motion.div
+              key={`page-${meta.current_page}`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="space-y-8"
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                {books.map((b) => (
+                  <div key={b.id}>
+                    <BookCard book={b} />
+                  </div>
+                ))}
+              </div>
 
-            {/* Pagination Controls Bar */}
-            <Pagination
-              currentPage={meta.current_page}
-              lastPage={meta.last_page}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        )}
+              {/* Pagination Controls Bar */}
+              <AnimatedPagination
+                currentPage={meta.current_page}
+                lastPage={meta.last_page}
+                onPageChange={handlePageChange}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
