@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Building2, User, CheckCircle2, XCircle, ArrowRight, Bookmark, Star } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import memberService from '../../services/memberService';
+import BookSkeleton from '../common/BookSkeleton';
 
 export default function TrendingBooksMarquee({ books = [], loading = false, error = null }) {
   const { isAuthenticated, user } = useAuth();
@@ -85,15 +86,8 @@ export default function TrendingBooksMarquee({ books = [], loading = false, erro
   // Loading Skeleton State
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map((n) => (
-          <div key={n} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse">
-            <div className="h-48 bg-slate-100 rounded-xl" />
-            <div className="h-4 bg-slate-100 rounded w-3/4" />
-            <div className="h-3 bg-slate-100 rounded w-1/2" />
-            <div className="h-8 bg-slate-100 rounded-xl" />
-          </div>
-        ))}
+      <div className="overflow-hidden">
+        <BookSkeleton count={5} />
       </div>
     );
   }

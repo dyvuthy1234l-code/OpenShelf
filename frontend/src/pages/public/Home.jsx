@@ -190,6 +190,19 @@ export default function Home() {
                 </div>
               </form>
 
+              {/* Category Pills */}
+              <div className="pt-3 pb-1 flex flex-wrap gap-2">
+                <span className="text-[#94A3B8] text-xs font-semibold self-center mr-1">Trending:</span>
+                {['Fiction', 'Technology', 'Science', 'Design'].map(cat => (
+                  <Link
+                    key={cat}
+                    to={`/books?search=${cat}`}
+                    className="px-3 py-1 bg-[#091A30]/80 hover:bg-[#D9A83E] text-[#CBD5E1] hover:text-[#061120] border border-[#0D2440] hover:border-[#D9A83E] rounded-full text-[10px] sm:text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    {cat}
+                  </Link>
+                ))}
+              </div>
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3 sm:gap-4 pt-2">
                 <Link

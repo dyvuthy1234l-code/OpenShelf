@@ -68,10 +68,10 @@ export default function BookCard({ book, showDateAdded = false }) {
   return (
     <motion.div
       {...CARD_MOTION_PROPS}
-      className="group bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+      className="group relative bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       {/* Cover Image Container */}
-      <div className="relative h-56 bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center p-4">
+      <div className="relative aspect-[2/3] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
         {getBookCoverUrl(book.cover_image_url || book.cover_image, 400) && !imageErr ? (
           <img
             src={getBookCoverUrl(book.cover_image_url || book.cover_image, 400)}
@@ -79,18 +79,29 @@ export default function BookCard({ book, showDateAdded = false }) {
             loading="lazy"
             decoding="async"
             onError={() => setImageErr(true)}
-            className="h-full w-auto max-w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="w-28 h-40 bg-gradient-to-tr from-slate-200 via-white to-slate-100 border border-slate-300/80 rounded-lg shadow-sm flex flex-col items-center justify-center p-3 text-center">
-            <BookOpen className="w-8 h-8 text-amber-600/70 mb-2" />
-            <span className="text-[10px] text-slate-700 font-semibold line-clamp-2 leading-snug">{book.title}</span>
+          <div className="w-full h-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 flex flex-col items-center justify-center p-4 text-center">
+            <BookOpen className="w-12 h-12 text-amber-600/70 mb-3" />
+            <span className="text-xs text-slate-700 font-bold line-clamp-3 leading-snug px-4">{book.title}</span>
           </div>
         )}
 
+        {/* Hover Action Overlay */}
+        <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px] z-10">
+          <Link
+            to={`/books/${book.id}`}
+            className="px-5 py-2.5 bg-amber-500 text-slate-950 text-xs font-extrabold rounded-xl shadow-lg hover:bg-amber-400 transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2"
+          >
+            <span>View Details</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
         {/* Category Pill */}
         {book.category?.name && (
-          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-slate-200 text-slate-800 px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-xs">
+          <div className="absolute top-3 left-3 z-20 bg-white/90 backdrop-blur-md border border-slate-200 text-slate-800 px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-xs">
             {book.category.name}
           </div>
         )}
@@ -100,7 +111,7 @@ export default function BookCard({ book, showDateAdded = false }) {
           onClick={handleFavoriteClick}
           disabled={savingFav}
           title={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
-          className={`absolute bottom-3 right-3 p-2 rounded-xl border transition-all duration-200 shadow-xs ${
+          className={`absolute bottom-3 right-3 z-20 p-2 rounded-xl border transition-all duration-200 shadow-xs ${
             isFavorited
               ? 'bg-amber-500 text-slate-950 border-amber-500'
               : 'bg-white/90 hover:bg-amber-50 text-slate-600 hover:text-amber-700 border-slate-200'
@@ -110,7 +121,7 @@ export default function BookCard({ book, showDateAdded = false }) {
         </button>
 
         {/* Availability Badge */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 z-20">
           {isAvailable ? (
             <span className="inline-flex items-center gap-1 bg-emerald-500/90 text-white px-2.5 py-0.5 rounded-full text-[11px] font-bold backdrop-blur-md shadow-xs">
               <CheckCircle2 className="w-3 h-3" />

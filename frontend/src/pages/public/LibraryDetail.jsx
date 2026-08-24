@@ -8,7 +8,9 @@ import {
 import publicService from '../../services/publicService';
 import BookCard from '../../components/public/BookCard';
 import Pagination from '../../components/public/Pagination';
+import EmptyState from '../../components/public/EmptyState';
 import ErrorState from '../../components/public/ErrorState';
+import BookSkeleton from '../../components/common/BookSkeleton';
 import LibraryTopRatedBooks from '../../components/public/LibraryTopRatedBooks';
 import LibraryReviews from '../../components/library/LibraryReviews';
 import getImageUrl, { getLibraryCoverUrl, getLibraryLogoUrl } from '../../utils/imageUrl';
@@ -635,16 +637,8 @@ export default function LibraryDetail() {
 
         {/* Book Grid Container */}
         {loadingBooks ? (
-          /* Skeleton Loading Cards (5 cols x 2 rows = 10 cards) */
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-              <div key={n} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse">
-                <div className="h-48 bg-slate-100 rounded-xl" />
-                <div className="h-4 bg-slate-100 rounded w-3/4" />
-                <div className="h-3 bg-slate-100 rounded w-1/2" />
-              </div>
-            ))}
-          </div>
+          /* Skeleton Loading Cards */
+          <BookSkeleton count={10} />
         ) : books.length === 0 ? (
           /* Empty State */
           <div className="bg-white border border-slate-200/90 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs">

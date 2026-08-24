@@ -1,24 +1,33 @@
-import { BookX } from 'lucide-react';
+import { BookX, SearchX } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function EmptyState({ 
-  title = 'No items found', 
-  description = 'Try adjusting your search criteria or filters.',
+  title = 'No results found', 
+  description = 'We couldn\'t find anything matching your search. Try adjusting your filters or keywords.',
   action = null
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="py-16 px-4 flex flex-col items-center justify-center text-center bg-white border border-slate-200/80 rounded-2xl shadow-xs"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="py-20 px-6 flex flex-col items-center justify-center text-center bg-gradient-to-b from-slate-50 to-white border border-slate-200/60 rounded-3xl shadow-sm"
     >
-      <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
-        <BookX className="w-7 h-7 text-slate-500" />
+      <div className="relative mb-6">
+        <div className="absolute inset-0 bg-amber-200/40 blur-xl rounded-full scale-150" />
+        <div className="relative w-20 h-20 bg-white border border-slate-200 rounded-3xl shadow-md flex items-center justify-center text-slate-400 rotate-3 hover:rotate-0 transition-transform duration-500">
+          <SearchX className="w-10 h-10 text-amber-500" />
+        </div>
       </div>
-      <h3 className="text-lg font-bold text-slate-900 mb-1">{title}</h3>
-      <p className="text-slate-500 text-xs sm:text-sm max-w-md mb-6">{description}</p>
-      {action}
+      <h3 className="text-xl font-extrabold text-slate-900 mb-2 tracking-tight">{title}</h3>
+      <p className="text-slate-500 text-sm max-w-sm mx-auto mb-6 leading-relaxed">
+        {description}
+      </p>
+      {action && (
+        <div className="mt-2">
+          {action}
+        </div>
+      )}
     </motion.div>
   );
 }

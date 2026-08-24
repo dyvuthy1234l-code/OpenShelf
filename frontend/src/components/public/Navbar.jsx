@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -10,6 +10,19 @@ export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,12 +87,17 @@ export default function Navbar() {
             <form onSubmit={handleSearchSubmit} className="relative w-48 xl:w-56">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
               <input
+                ref={searchInputRef}
                 type="text"
-                placeholder="Search title, author, ISBN..."
+                placeholder="Search title, author..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#F5F8FC] border border-[#DCE6F0] focus:border-[#123A63] rounded-xl py-1.5 pl-10 pr-4 text-xs text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#123A63]/15 transition-all"
+                className="w-full bg-[#F5F8FC] border border-[#DCE6F0] focus:border-[#123A63] rounded-xl py-1.5 pl-10 pr-12 text-xs text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#123A63]/15 transition-all"
               />
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none opacity-60">
+                <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">⌘</kbd>
+                <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">K</kbd>
+              </div>
             </form>
 
             {isAuthenticated && user ? (
