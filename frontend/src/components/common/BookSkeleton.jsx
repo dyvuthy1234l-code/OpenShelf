@@ -9,7 +9,7 @@ export default function BookSkeleton({ count = 8 }) {
           className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs flex flex-col h-full animate-pulse"
         >
           {/* Cover Image Placeholder */}
-          <div className="relative aspect-[3/4] w-full bg-slate-200/80 shrink-0" />
+          <div className="relative aspect-[4/5] w-full bg-slate-200/80 shrink-0" />
 
           {/* Book Info */}
           <div className="p-4 sm:p-5 flex flex-col flex-grow bg-white space-y-3">

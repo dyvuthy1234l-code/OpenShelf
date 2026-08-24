@@ -156,7 +156,7 @@ export default function MemberFavorites() {
                   key={fav.id}
                   className="bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all flex flex-col h-full group"
                 >
-                  <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
+                  <div className="relative aspect-[4/5] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
                     {book.cover_image_url ? (
                       <img
                         src={book.cover_image_url}

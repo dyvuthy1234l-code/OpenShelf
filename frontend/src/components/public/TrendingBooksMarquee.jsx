@@ -155,7 +155,7 @@ export default function TrendingBooksMarquee({ books = [], loading = false, erro
                 className="w-40 sm:w-48 md:w-56 shrink-0 bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
               >
                 {/* Book Cover */}
-                <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
+                <div className="relative aspect-[4/5] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
                   {book.cover_image_url ? (
                     <img
                       src={book.cover_image_url}
