@@ -174,18 +174,20 @@ export default function Home() {
 
               {/* Search Bar */}
               <motion.form variants={itemVariants} onSubmit={handleHeroSearch} className="pt-2 max-w-lg">
-                <div className="relative flex items-center bg-[#091A30]/90 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-2xl p-1.5 sm:p-2 shadow-2xl transition-all">
-                  <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#94A3B8] ml-3 shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Search by book title, author, or library..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-transparent px-3 py-2 text-xs sm:text-sm text-white placeholder-[#94A3B8] focus:outline-none"
-                  />
+                <div className="relative flex flex-col sm:flex-row bg-[#091A30]/90 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-2xl p-2 shadow-2xl transition-all gap-2 sm:gap-0">
+                  <div className="flex flex-1 items-center">
+                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#94A3B8] ml-2 shrink-0" />
+                    <input
+                      type="text"
+                      placeholder="Search by book title, author, or library..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-transparent px-3 py-3 h-12 sm:h-auto sm:py-2 text-xs sm:text-sm text-white placeholder-[#94A3B8] focus:outline-none"
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="px-4 sm:px-5 py-2 sm:py-2.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] text-xs font-black rounded-xl shadow-md shadow-[#D9A83E]/20 shrink-0 transition-all cursor-pointer"
+                    className="w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 h-12 sm:h-auto sm:py-2.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] text-xs font-black rounded-xl shadow-md shadow-[#D9A83E]/20 shrink-0 transition-all cursor-pointer"
                   >
                     Search
                   </button>
@@ -277,10 +279,12 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
             {[...Array(6)].map((_, i) => (
-              <LibrarySkeleton key={`lib-skeleton-${i}`} />
+              <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 snap-center shrink-0">
+                <LibrarySkeleton />
+              </div>
             ))}
           </motion.div>
         ) : error ? (
@@ -295,11 +299,11 @@ export default function Home() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
-            {libraries.map((lib) => (
-              <motion.div key={lib.id} variants={itemVariants}>
-                <LibraryCard library={lib} />
+            {libraries.map((library) => (
+              <motion.div key={library.id} variants={itemVariants} className="min-w-[85vw] sm:min-w-0 snap-center shrink-0">
+                <LibraryCard library={library} />
               </motion.div>
             ))}
           </motion.div>
@@ -330,7 +334,7 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
           >
             {[...Array(8)].map((_, i) => (
               <BookSkeleton key={`book-skeleton-${i}`} />
@@ -347,7 +351,7 @@ export default function Home() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
           >
             {availableBooks.map((book) => (
               <motion.div key={book.id} variants={itemVariants}>
@@ -386,7 +390,7 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
           >
             {[...Array(4)].map((_, i) => (
               <BookSkeleton key={`recent-skeleton-${i}`} />
@@ -402,7 +406,7 @@ export default function Home() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
           >
             {recentlyAddedBooks.map((book) => (
               <motion.div key={`recent-${book.id}`} variants={itemVariants}>

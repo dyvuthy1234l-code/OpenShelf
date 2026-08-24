@@ -261,7 +261,7 @@ export default function BooksList() {
                 hidden: { opacity: 0 },
                 show: { opacity: 1, transition: { staggerChildren: 0.08 } }
               }}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
             >
               {books.map((b) => (
                 <motion.div key={b.id} variants={{

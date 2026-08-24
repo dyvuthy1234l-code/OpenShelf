@@ -251,7 +251,7 @@ export default function LibrariesList() {
               hidden: { opacity: 0 },
               show: { opacity: 1, transition: { staggerChildren: 0.08 } }
             }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {[...Array(6)].map((_, i) => (
               <LibrarySkeleton key={`lib-skeleton-${i}`} />
@@ -299,7 +299,7 @@ export default function LibrariesList() {
         ) : (
           /* LIBRARY CARDS GRID & PAGINATION CONTROLS */
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sortedLibraries.map((lib) => (
                 <LibraryCard key={`all-${lib.id}`} library={lib} />
               ))}

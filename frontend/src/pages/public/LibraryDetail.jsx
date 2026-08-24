@@ -675,7 +675,7 @@ export default function LibraryDetail() {
         ) : (
           /* Book Cards Grid & Pagination Bar */
           <div className="space-y-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
               {books.map((b) => (
                 <BookCard
                   key={b.id}
