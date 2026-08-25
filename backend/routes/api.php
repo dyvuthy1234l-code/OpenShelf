@@ -28,6 +28,7 @@ Route::get('/libraries/{library}/reviews', [LibraryReviewController::class, 'ind
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/books/{id}', [BookController::class, 'show']);
 Route::get('/books/{id}/reviews', [ReviewController::class, 'index']);
+Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::get('/public/libraries', [LibraryController::class, 'index']);
 Route::get('/public/libraries/{id}', [LibraryController::class, 'show']);

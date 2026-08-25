@@ -13,17 +13,14 @@ export default function ProtectedRoute({ allowedRoles = [], publicWebsite = fals
 
   // 2. Public Website Routes (Guests and Members allowed, Staff redirected to workspaces)
   if (publicWebsite) {
-    if (!isAuthenticated || !user) {
-      const requestedUrl = `${location.pathname}${location.search}${location.hash}`;
-      const redirectQuery = requestedUrl !== '/' ? `?redirect=${encodeURIComponent(requestedUrl)}` : '';
-      return <Navigate to={`/login${redirectQuery}`} replace />;
-    }
-    if (user.role === 'librarian') {
-      const isSubActive = subscription && subscription.status === 'active';
-      return isSubActive ? <Navigate to="/librarian" replace /> : <Navigate to="/librarian/subscription" replace />;
-    }
-    if (user.role === 'admin') {
-      return <Navigate to="/admin" replace />;
+    if (isAuthenticated && user) {
+      if (user.role === 'librarian') {
+        const isSubActive = subscription && subscription.status === 'active';
+        return isSubActive ? <Navigate to="/librarian" replace /> : <Navigate to="/librarian/subscription" replace />;
+      }
+      if (user.role === 'admin') {
+        return <Navigate to="/admin" replace />;
+      }
     }
     return <Outlet />;
   }
