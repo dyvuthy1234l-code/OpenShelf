@@ -5,9 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
 
-  // Vite serves locally from the domain root, while GitHub Pages serves the
-  // production build from the repository subpath.
-  base: command === "serve" ? "/" : "/Front--OpenShelf/",
+  // Use relative base for production build so GitHub Pages asset paths resolve correctly
+  base: command === "serve" ? "/" : "./",
 
   // Local development only
   server: {
