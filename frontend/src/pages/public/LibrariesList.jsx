@@ -142,7 +142,7 @@ export default function LibrariesList() {
             className="flex flex-wrap justify-center gap-6"
           >
             {featuredLibraries.map((lib) => (
-              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%-0.75rem)]">
+              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="basis-full md:basis-[calc(50%-0.75rem)] grow">
                 <FeaturedLibraryCard library={lib} />
               </motion.div>
             ))}
@@ -333,7 +333,7 @@ export default function LibrariesList() {
                 className="flex flex-wrap justify-center gap-6"
               >
                 {sortedLibraries.map((lib) => (
-                  <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
+                  <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="basis-full md:basis-[calc(50%-0.75rem)] lg:basis-[calc(33.333%-1rem)] grow">
                     <LibraryCard library={lib} />
                   </motion.div>
                 ))}
@@ -352,5 +352,6 @@ export default function LibrariesList() {
     </div>
   );
 }
+
 
 

@@ -770,7 +770,7 @@ export default function BookDetail() {
             className="flex flex-wrap justify-center gap-5"
           >
             {relatedBooks.map((relBook) => (
-              <motion.div key={relBook.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(20%-1rem)]">
+              <motion.div key={relBook.id} variants={LIST_ITEM} className="basis-full sm:basis-[calc(50%-0.625rem)] md:basis-[calc(33.333%-0.833rem)] lg:basis-[calc(20%-1rem)] grow">
                 <BookCard book={relBook} />
               </motion.div>
             ))}
@@ -927,4 +927,5 @@ export default function BookDetail() {
     </>
   );
 }
+
 

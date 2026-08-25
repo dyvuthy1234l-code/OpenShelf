@@ -289,7 +289,7 @@ export default function Home() {
             className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-5 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
             {[...Array(6)].map((_, i) => (
-              <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.833rem)] snap-center shrink-0">
+              <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 sm:basis-[calc(50%-0.625rem)] lg:basis-[calc(33.333%-0.833rem)] snap-center grow">
                 <LibrarySkeleton />
               </div>
             ))}
@@ -309,7 +309,7 @@ export default function Home() {
             className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-5 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
             {libraries.map((library) => (
-              <motion.div key={library.id} variants={LIST_ITEM} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.833rem)] snap-center shrink-0">
+              <motion.div key={library.id} variants={LIST_ITEM} className="min-w-[85vw] sm:min-w-0 sm:basis-[calc(50%-0.625rem)] lg:basis-[calc(33.333%-0.833rem)] snap-center grow">
                 <LibraryCard library={library} />
               </motion.div>
             ))}
@@ -364,7 +364,7 @@ export default function Home() {
             className="flex flex-wrap justify-center gap-5"
           >
             {availableBooks.map((book) => (
-              <motion.div key={book.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(20%-1rem)]">
+              <motion.div key={book.id} variants={LIST_ITEM} className="basis-full sm:basis-[calc(50%-0.625rem)] md:basis-[calc(33.333%-0.833rem)] lg:basis-[calc(20%-1rem)] grow">
                 <BookCard book={book} />
               </motion.div>
             ))}
@@ -423,7 +423,7 @@ export default function Home() {
             className="flex flex-wrap justify-center gap-5"
           >
             {recentlyAddedBooks.map((book) => (
-              <motion.div key={`recent-${book.id}`} variants={LIST_ITEM} className="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(20%-1rem)]">
+              <motion.div key={`recent-${book.id}`} variants={LIST_ITEM} className="basis-full sm:basis-[calc(50%-0.625rem)] md:basis-[calc(33.333%-0.833rem)] lg:basis-[calc(20%-1rem)] grow">
                 <BookCard book={book} showDateAdded={true} />
               </motion.div>
             ))}
@@ -561,4 +561,6 @@ export default function Home() {
     </>
   );
 }
+
+
 

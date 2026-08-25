@@ -221,7 +221,7 @@ export default function CategoriesList() {
           /* Skeleton Loading Cards (4 columns x 3 rows = 12 cards) */
           <div className="flex flex-wrap justify-center gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
-              <div key={n} className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)] bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse h-48">
+              <div key={n} className="basis-full sm:basis-[calc(50%-0.75rem)] lg:basis-[calc(25%-1.125rem)] grow bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse h-48">
                 <div className="w-10 h-10 bg-slate-100 rounded-xl" />
                 <div className="h-4 bg-slate-100 rounded w-3/4" />
                 <div className="h-3 bg-slate-100 rounded w-1/2" />
@@ -272,7 +272,7 @@ export default function CategoriesList() {
                     variants={LIST_ITEM}
                     whileHover={{ y: -6 }}
                     transition={{ duration: 0.3, ease: 'easeOut' }}
-                    className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
+                    className="basis-full sm:basis-[calc(50%-0.75rem)] lg:basis-[calc(25%-1.125rem)] grow"
                   >
                     <Link
                       to={bookTarget}
@@ -322,4 +322,5 @@ export default function CategoriesList() {
     </div>
   );
 }
+
 
