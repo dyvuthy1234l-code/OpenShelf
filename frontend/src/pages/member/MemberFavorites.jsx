@@ -165,7 +165,7 @@ export default function MemberFavorites() {
                 <motion.div
                   key={fav.id}
                   variants={LIST_ITEM}
-                  className="os-card flex flex-col h-full group basis-full sm:basis-[calc(50%-0.625rem)] md:basis-[calc(33.333%-0.833rem)] lg:basis-[calc(25%-0.9375rem)] grow"
+                  className="os-card flex flex-col h-full group w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(25%_-_0.9375rem)]"
                 >
                   <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
                     {book.cover_image_url && !coverErrored ? (

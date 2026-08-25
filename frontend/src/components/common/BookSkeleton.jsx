@@ -6,7 +6,7 @@ export default function BookSkeleton({ count = 8 }) {
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className="basis-full sm:basis-[calc(50%-0.625rem)] md:basis-[calc(33.333%-0.833rem)] lg:basis-[calc(20%-1rem)] grow bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs flex flex-col h-full animate-pulse"
+          className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)] bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs flex flex-col h-full animate-pulse"
         >
           {/* Cover Image Placeholder */}
           <div className="relative aspect-[3/4] w-full bg-slate-200/80 shrink-0" />

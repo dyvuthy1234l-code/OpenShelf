@@ -764,7 +764,7 @@ export default function LibraryDetail() {
               className="flex flex-wrap justify-center gap-5"
             >
               {books.map((b) => (
-                <motion.div key={b.id} variants={LIST_ITEM} className="basis-full sm:basis-[calc(50%-0.625rem)] md:basis-[calc(33.333%-0.833rem)] lg:basis-[calc(20%-1rem)] grow">
+                <motion.div key={b.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)]">
                   <BookCard
                     book={{ ...b, library: { id: library.id, name: library.name } }}
                   />
