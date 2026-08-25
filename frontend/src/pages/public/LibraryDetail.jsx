@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { 
   Building2, MapPin, Phone, Mail, Clock, ShieldAlert, BookOpen, 
-  ExternalLink, ArrowLeft, Search, X, Layers, RefreshCw, SlidersHorizontal, Star
+  ExternalLink, ArrowLeft, Search, X, Layers, RefreshCw, SlidersHorizontal, Star,
+  CheckCircle2
 } from 'lucide-react';
 import publicService from '../../services/publicService';
 import BookCard from '../../components/public/BookCard';
@@ -220,6 +221,24 @@ export default function LibraryDetail() {
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-navy-950/20 to-navy-950/10 pointer-events-none" />
+
+          {/* Glass stat chips on cover */}
+          <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center gap-2 z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
+              <BookOpen className="w-3.5 h-3.5 text-gold-600" />
+              {totalBooksCount} Books
+            </span>
+            {library.reviews_count > 0 && Number(library.average_rating) > 0 && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
+                <Star className="w-3.5 h-3.5 text-gold-500 fill-gold-400" />
+                {library.average_rating} ({library.reviews_count})
+              </span>
+            )}
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
+              <Clock className="w-3.5 h-3.5 text-gold-600" />
+              {library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 - 17:00'}
+            </span>
+          </div>
         </motion.div>
 
         {/* Overlapping Logo & Identity Information */}
@@ -457,6 +476,18 @@ export default function LibraryDetail() {
                   </div>
                 </div>
 
+                {/* Embedded map */}
+                <div className="rounded-2xl overflow-hidden border border-slate-200/80 bg-slate-100">
+                  <iframe
+                    title={`${library.name} location map`}
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(library.google_maps_url || `${library.name} ${library.address || library.city || 'Phnom Penh'} Cambodia`)}&output=embed`}
+                    className="w-full h-64 sm:h-72 border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                </div>
+
                 {library.google_maps_url && (
                   <div className="pt-2">
                     <a
@@ -480,22 +511,44 @@ export default function LibraryDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.2 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs"
+                className="space-y-4"
               >
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-center space-y-1">
-                  <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider">Total Books</span>
-                  <span className="text-2xl font-extrabold text-slate-900">{totalBooksCount}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-xl bg-navy-50 text-navy-700 flex items-center justify-center mx-auto">
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider pt-1">Total Books</span>
+                    <span className="text-2xl font-extrabold text-navy-800 tabular-nums">{totalBooksCount}</span>
+                  </div>
+
+                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                    <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider pt-1">Available Now</span>
+                    <span className="text-2xl font-extrabold text-gold-600 tabular-nums">{meta.total}</span>
+                  </div>
+
+                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-xl bg-navy-50 text-navy-700 flex items-center justify-center mx-auto">
+                      <SlidersHorizontal className="w-5 h-5" />
+                    </div>
+                    <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider pt-1">Categories</span>
+                    <span className="text-2xl font-extrabold text-navy-800 tabular-nums">{categories.length}</span>
+                  </div>
                 </div>
 
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-center space-y-1">
-                  <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider">Available Books</span>
-                  <span className="text-2xl font-extrabold text-gold-600">{meta.total}</span>
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-center space-y-1">
-                  <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider">Categories</span>
-                  <span className="text-2xl font-extrabold text-slate-900">{categories.length}</span>
-                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    booksGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                  className="os-btn-gold w-full"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Browse the Collection</span>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -555,6 +608,17 @@ export default function LibraryDetail() {
               <span className="font-extrabold text-gold-600">{meta.total}</span>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              booksGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+            className="os-btn-primary w-full"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Browse Collection</span>
+          </button>
         </div>
       </motion.div>
 
