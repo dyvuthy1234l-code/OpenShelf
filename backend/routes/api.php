@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthController;
@@ -83,11 +83,6 @@ Route::middleware(['auth:sanctum', 'active.user', 'role:member'])->prefix('membe
     Route::post('/payments/checkout', [PaymentController::class, 'checkout']);
     Route::get('/payments/my-payments', [PaymentController::class, 'myPayments']);
 
-    Route::get('/notifications', [NotificationController::class, 'index']);
-    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
-    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
-    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
-    Route::delete('/notifications', [NotificationController::class, 'destroyAll']);
 });
 
 Route::middleware(['auth:sanctum', 'active.user', 'role:librarian', 'active.subscription'])->prefix('librarian')->group(function () {
