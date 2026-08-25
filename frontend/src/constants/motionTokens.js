@@ -69,3 +69,25 @@ export const SIDEBAR_SLIDE_VARIANTS = {
   exit: { x: '-100%', opacity: 0 },
   transition: { duration: MOTION_DURATIONS.SIDEBAR, ease: MOTION_EASINGS.EASE_OUT },
 };
+
+// ---------- List / Grid Stagger Tokens ----------
+// Parent container: <motion.div variants={LIST_STAGGER} initial="initial" animate="animate">
+// Children:         <motion.div variants={LIST_ITEM}>
+export const LIST_STAGGER = {
+  animate: {
+    transition: { staggerChildren: 0.05, delayChildren: 0.04 },
+  },
+};
+
+export const LIST_ITEM = {
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0, transition: { duration: MOTION_DURATIONS.NORMAL, ease: MOTION_EASINGS.PREMIUM } },
+};
+
+// Scroll-triggered reveal for public page sections
+export const REVEAL_VARIANTS = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-60px' },
+  transition: { duration: 0.45, ease: MOTION_EASINGS.PREMIUM },
+};

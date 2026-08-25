@@ -15,6 +15,7 @@ import LoadingState from '../../components/public/LoadingState';
 import ErrorState from '../../components/public/ErrorState';
 import BookSkeleton from '../../components/common/BookSkeleton';
 import LibrarySkeleton from '../../components/common/LibrarySkeleton';
+import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -122,11 +123,6 @@ export default function Home() {
   const itemVariants = {
     hidden: { opacity: 0, y: 16 },
     show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-  };
-
-  const ratedItemVariants = {
-    hidden: { opacity: 0, x: 70 },
-    show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } },
   };
 
   return (
@@ -261,18 +257,21 @@ export default function Home() {
 
       {/* 1. DISCOVER LIBRARIES — WHITE / SOFT GRAY */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
           <div>
-            <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1.5">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1.5">
               <Building2 className="w-4 h-4" />
               <span>Network Directory</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Discover Libraries</h2>
+            <h2 className="os-section-title">Discover Libraries</h2>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">
+              Community partner libraries open to readers across Cambodia.
+            </p>
           </div>
           <motion.div initial="rest" whileHover="hover" className="inline-flex">
             <Link
               to="/libraries"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gold-600 hover:text-gold-500 transition-colors"
             >
               <span>View all libraries</span>
               <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
@@ -280,14 +279,14 @@ export default function Home() {
               </motion.span>
             </Link>
           </motion.div>
-        </div>
+        </motion.div>
 
         {loading ? (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-4 sm:pb-0 snap-x scrollbar-none"
+            className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
             {[...Array(6)].map((_, i) => (
               <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 snap-center shrink-0">
@@ -303,14 +302,14 @@ export default function Home() {
           </div>
         ) : (
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-50px' }}
-            className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 pb-4 sm:pb-0 snap-x scrollbar-none"
+            variants={LIST_STAGGER}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
             {libraries.map((library) => (
-              <motion.div key={library.id} variants={itemVariants} className="min-w-[85vw] sm:min-w-0 snap-center shrink-0">
+              <motion.div key={library.id} variants={LIST_ITEM} className="min-w-[85vw] sm:min-w-0 snap-center shrink-0">
                 <LibraryCard library={library} />
               </motion.div>
             ))}
@@ -320,22 +319,25 @@ export default function Home() {
 
       {/* 2. BOOKS AVAILABLE NOW */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
           <div>
-            <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1.5">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1.5">
               <BookOpen className="w-4 h-4" />
               <span>Catalogue Highlights</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Books Available Now</h2>
+            <h2 className="os-section-title">Books Available Now</h2>
+            <p className="text-slate-500 text-xs sm:text-sm mt-1">
+              Physical copies ready to borrow right now.
+            </p>
           </div>
-          <Link
-            to="/books"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors"
-          >
-            <span>Browse all books</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
+            <Link
+              to="/books"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gold-600 hover:text-gold-500 transition-colors"
+            >
+              <span>Browse all books</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
 
         {loading ? (
           <motion.div
@@ -355,14 +357,14 @@ export default function Home() {
           </div>
         ) : (
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
+            variants={LIST_STAGGER}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
           >
             {availableBooks.map((book) => (
-              <motion.div key={book.id} variants={itemVariants}>
+              <motion.div key={book.id} variants={LIST_ITEM}>
                 <BookCard book={book} />
               </motion.div>
             ))}
@@ -372,13 +374,13 @@ export default function Home() {
 
       {/* 3. RECENTLY ADDED BOOKS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
           <div>
-            <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1.5">
-              <Sparkle className="w-4 h-4 text-amber-500" />
-              <span>RECENTLY ADDED</span>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1.5">
+              <Sparkle className="w-4 h-4 text-gold-500" />
+              <span>Recently Added</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Recently Added</h2>
+            <h2 className="os-section-title">Recently Added</h2>
             <p className="text-slate-500 text-xs sm:text-sm mt-1">
               Discover the latest books added to the OpenShelf network.
             </p>
@@ -387,7 +389,7 @@ export default function Home() {
           <motion.div initial="rest" whileHover="hover" className="inline-flex">
             <Link
               to="/books"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gold-600 hover:text-gold-500 transition-colors shrink-0"
             >
               <span>Explore catalogue</span>
               <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
@@ -395,7 +397,7 @@ export default function Home() {
               </motion.span>
             </Link>
           </motion.div>
-        </div>
+        </motion.div>
 
         {loading ? (
           <motion.div
@@ -414,14 +416,14 @@ export default function Home() {
           </div>
         ) : (
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
+            variants={LIST_STAGGER}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
           >
             {recentlyAddedBooks.map((book) => (
-              <motion.div key={`recent-${book.id}`} variants={itemVariants}>
+              <motion.div key={`recent-${book.id}`} variants={LIST_ITEM}>
                 <BookCard book={book} showDateAdded={true} />
               </motion.div>
             ))}
@@ -432,18 +434,15 @@ export default function Home() {
       {/* 4. HIGHLY RATED BOOKS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+          {...REVEAL_VARIANTS}
           className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4"
         >
           <div>
-            <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1.5">
-              <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-              <span>HIGHLY RATED</span>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1.5">
+              <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
+              <span>Highly Rated</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Highly Rated</h2>
+            <h2 className="os-section-title">Highly Rated</h2>
             <p className="text-slate-500 text-xs sm:text-sm mt-1">
               Books readers are enjoying across the OpenShelf network.
             </p>
@@ -452,7 +451,7 @@ export default function Home() {
           <motion.div initial="rest" whileHover="hover" className="inline-flex">
             <Link
               to="/books?sort=top_rated"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 transition-colors shrink-0"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gold-600 hover:text-gold-500 transition-colors shrink-0"
             >
               <span>Explore rated catalogue</span>
               <motion.span variants={{ rest: { x: 0 }, hover: { x: 6, transition: { type: 'spring', stiffness: 400 } } }} style={{ willChange: 'transform' }}>
@@ -467,11 +466,11 @@ export default function Home() {
 
       {/* 5. HOW OPENSHELF WORKS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-xs">
+        <motion.div {...REVEAL_VARIANTS} className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-xs">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Simple & Seamless</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 mb-2">How OpenShelf Works</h2>
-            <p className="text-slate-600 text-xs sm:text-sm">Borrow physical books from local libraries in 4 easy steps.</p>
+            <span className="text-xs font-bold text-gold-600 uppercase tracking-widest">Simple &amp; Seamless</span>
+            <h2 className="os-section-title mt-1 mb-2 text-center">How OpenShelf Works</h2>
+            <p className="text-slate-500 text-xs sm:text-sm">Borrow physical books from local libraries in 4 easy steps.</p>
           </div>
 
           <div className="relative">
@@ -523,12 +522,12 @@ export default function Home() {
               ))}
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* 6. BECOME A LIBRARIAN CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 text-white shadow-xl">
+        <motion.div {...REVEAL_VARIANTS} className="relative overflow-hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 text-white shadow-xl">
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <div className="lg:col-span-8 space-y-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-xs font-bold uppercase tracking-wider">
@@ -556,7 +555,7 @@ export default function Home() {
               </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
       </div>
     </>

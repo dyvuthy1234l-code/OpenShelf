@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Bell, CheckCheck, CheckCircle2, Trash2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
 import memberService from '../../services/memberService';
 import { formatNotificationTime } from '../../utils/dateUtils';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import LoadingState from '../../components/public/LoadingState';
 import EmptyState from '../../components/public/EmptyState';
 import ErrorState from '../../components/public/ErrorState';
@@ -71,7 +73,7 @@ export default function MemberNotifications() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-brand-border">
         <div>
@@ -126,15 +128,16 @@ export default function MemberNotifications() {
           description="There are no notifications in your inbox at this time."
         />
       ) : (
-        <div className="os-panel divide-y divide-slate-100 overflow-hidden">
+        <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="os-panel divide-y divide-slate-100 overflow-hidden">
           {paginatedNotifications.map((n) => {
             const isUnread = !n.read_at;
             const message = n.data?.message || n.message || 'Notification update';
             const title = n.data?.title || n.type?.split('\\').pop() || 'Notice';
 
             return (
-              <div
+              <motion.div
                 key={n.id}
+                variants={LIST_ITEM}
                 role="button"
                 tabIndex={0}
                 onClick={() => isUnread && handleMarkAsRead(n.id)}
@@ -180,10 +183,10 @@ export default function MemberNotifications() {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
 
       {!loading && !error && notifications.length > 0 && (
@@ -193,6 +196,6 @@ export default function MemberNotifications() {
           onPageChange={setCurrentPage}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

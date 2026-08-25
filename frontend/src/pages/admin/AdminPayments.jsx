@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  DollarSign, CreditCard, AlertCircle, CheckCircle2, Clock, 
-  TrendingUp, Download, Search, RotateCcw, Eye, ChevronLeft, 
-  ChevronRight, Calendar, Building2, User, BookOpen, Layers, X 
+import { motion } from 'framer-motion';
+import {
+  DollarSign, CreditCard, AlertCircle, CheckCircle2, Clock,
+  TrendingUp, Download, Search, RotateCcw, Eye, ChevronLeft,
+  ChevronRight, Calendar, Building2, User, BookOpen, Layers, X
 } from 'lucide-react';
 import adminService from '../../services/adminService';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
 
 export default function AdminPayments() {
@@ -158,7 +160,7 @@ export default function AdminPayments() {
   const finePercent = totalRevenue > 0 ? 100 - subPercent : 0;
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
       {/* 1. PAGE HEADER (CLIENT-READY FINANCIAL MANAGEMENT) */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div>
@@ -209,9 +211,9 @@ export default function AdminPayments() {
       </div>
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
+      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Revenue (Strongest Financial Card) */}
-        <div className="bg-white border border-emerald-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px] relative overflow-hidden">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-emerald-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-50 rounded-bl-full -z-0" />
           <div className="relative z-10">
             <span className="text-[9px] uppercase font-black tracking-wider text-emerald-800 block">Total Revenue</span>
@@ -221,10 +223,10 @@ export default function AdminPayments() {
           <div className="w-7.5 h-7.5 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 shadow-2xs relative z-10">
             <DollarSign className="w-4 h-4" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 2: Subscription Revenue */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Subscription Revenue</span>
             <span className="text-xl font-black text-blue-950 tracking-tight block leading-tight mt-0.5">${subscriptionRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
@@ -233,10 +235,10 @@ export default function AdminPayments() {
           <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <CreditCard className="w-3.5 h-3.5 text-blue-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 3: Fine Revenue */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Fine Revenue</span>
             <span className="text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">${fineRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
@@ -245,10 +247,10 @@ export default function AdminPayments() {
           <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 4: Pending Payments */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Pending Payments</span>
             <span className="text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">{pendingCount}</span>
@@ -257,8 +259,8 @@ export default function AdminPayments() {
           <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <Clock className="w-3.5 h-3.5 text-amber-600" />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* 3. REVENUE BREAKDOWN VISUAL COMPARISON */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs shrink-0 space-y-1.5">
@@ -375,7 +377,9 @@ export default function AdminPayments() {
           </div>
         ) : filteredPayments.length === 0 ? (
           <div className="py-8 text-center p-6 space-y-2">
-            <DollarSign className="w-10 h-10 text-slate-300 mx-auto" />
+            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto">
+              <DollarSign className="w-7 h-7 text-slate-400" />
+            </div>
             <h3 className="text-sm font-black text-slate-800">
               {searchQuery || typeFilter !== 'all' || statusFilter !== 'all' || libraryFilter !== 'all' || dateFilter !== 'all'
                 ? 'No payments match your current filters.'
@@ -441,7 +445,7 @@ export default function AdminPayments() {
                       </td>
 
                       {/* Type Column */}
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-3.5">
                         <span className={`inline-block text-[9px] uppercase font-extrabold px-2.5 py-0.5 rounded-full border ${
                           isSub
                             ? 'bg-blue-50 text-blue-800 border-blue-200'
@@ -452,26 +456,26 @@ export default function AdminPayments() {
                       </td>
 
                       {/* Library Column */}
-                      <td className="py-3 px-4 font-extrabold text-slate-800 max-w-[140px] truncate text-xs">
+                      <td className="py-2.5 px-3.5 font-extrabold text-slate-800 max-w-[140px] truncate text-xs">
                         {p.libraryName || 'Not provided'}
                       </td>
 
                       {/* Amount Column */}
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-3.5 tabular-nums">
                         <span className={`font-black text-sm block ${isPaid ? 'text-slate-900' : p.status === 'pending' ? 'text-amber-800' : 'text-rose-600'}`}>
                           ${p.amount.toFixed(2)}
                         </span>
                       </td>
 
                       {/* Date Column */}
-                      <td className="py-3 px-4 text-slate-500 text-[11px]">
+                      <td className="py-2.5 px-3.5 text-slate-500 text-[11px] tabular-nums">
                         {p.date
                           ? new Date(p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                           : 'N/A'}
                       </td>
 
                       {/* Status Column */}
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-3.5">
                         <span className={`inline-block text-[9px] uppercase font-extrabold px-2.5 py-0.5 rounded-full border ${
                           isPaid
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
@@ -513,6 +517,6 @@ export default function AdminPayments() {
           label="payments"
         />
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, X, RefreshCw, AlertCircle, DollarSign, BookOpen, User } from 'lucide-react';
+import { MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../../constants/motionTokens';
 
 export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
   const [fineStatus, setFineStatus] = useState('none');
@@ -42,14 +43,16 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
-        className="os-panel p-6 max-w-md w-full shadow-xl shadow-navy-950/10 space-y-5"
-      >
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <motion.div
+          {...BACKDROP_MOTION_VARIANTS}
+          className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm"
+        />
+        <motion.div
+          {...MODAL_MOTION_VARIANTS}
+          className="os-panel p-6 max-w-md w-full shadow-xl shadow-navy-950/10 space-y-5"
+        >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-emerald-700 font-extrabold text-base">
             <CheckCircle2 className="w-5 h-5" />
@@ -142,7 +145,8 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
             )}
           </button>
         </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
 }

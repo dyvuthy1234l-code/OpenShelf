@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import adminService from '../../services/adminService';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
 
 export default function AdminNotifications() {
@@ -185,7 +186,7 @@ export default function AdminNotifications() {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-3.5 overflow-y-auto lg:overflow-hidden h-full pr-1 pb-2 font-sans">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-3.5 overflow-y-auto lg:overflow-hidden h-full pr-1 pb-2 font-sans">
       {/* 1. PAGE HEADER */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
         <div>
@@ -243,9 +244,9 @@ export default function AdminNotifications() {
       )}
 
       {/* 2. SUMMARY CARDS (4 COMPACT CARDS ~85px) */}
-      <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
+      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
         {/* Card 1: All Notifications */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
           <div>
             <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">All Notifications</span>
             <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{countTotal}</span>
@@ -253,10 +254,10 @@ export default function AdminNotifications() {
           <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
             <Bell className="w-4 h-4" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 2: Unread Alerts */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-amber-300 transition-all">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-amber-300 transition-all">
           <div>
             <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">Unread Alerts</span>
             <span className="text-xl sm:text-2xl font-black text-amber-900 tracking-tight">{countUnread}</span>
@@ -264,10 +265,10 @@ export default function AdminNotifications() {
           <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
             <Clock className="w-4 h-4" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 3: Requires Attention */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-rose-300 transition-all">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-rose-300 transition-all">
           <div>
             <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">Requires Attention</span>
             <span className="text-xl sm:text-2xl font-black text-rose-900 tracking-tight">{countRequiresAttention}</span>
@@ -275,10 +276,10 @@ export default function AdminNotifications() {
           <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
             <ShieldAlert className="w-4 h-4" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 4: Received Today */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
           <div>
             <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">Received Today</span>
             <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">{countToday}</span>
@@ -286,8 +287,8 @@ export default function AdminNotifications() {
           <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
             <CheckCircle2 className="w-4 h-4" />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* 3. FILTER TOOLBAR (SEARCH + FILTERS) */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-2.5 shrink-0">
@@ -642,6 +643,6 @@ export default function AdminNotifications() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

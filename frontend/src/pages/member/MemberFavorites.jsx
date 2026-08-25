@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Bookmark, BookOpen, Trash2, ArrowRight, Building2, CheckCircle2, XCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import memberService from '../../services/memberService';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import Pagination from '../../components/public/Pagination';
 import EmptyState from '../../components/public/EmptyState';
 import ErrorState from '../../components/public/ErrorState';
@@ -89,7 +91,7 @@ export default function MemberFavorites() {
   const toCount = meta.total > 0 ? Math.min(meta.current_page * meta.per_page, meta.total) : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-brand-border">
         <div>
@@ -147,14 +149,15 @@ export default function MemberFavorites() {
         />
       ) : (
         <div className="space-y-8">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {favorites.map((fav) => {
               const book = fav.book || {};
               const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;
 
               return (
-                <div
+                <motion.div
                   key={fav.id}
+                  variants={LIST_ITEM}
                   className="os-card flex flex-col h-full group"
                 >
                   <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
@@ -220,10 +223,10 @@ export default function MemberFavorites() {
                       </Link>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
 
           {/* Pagination */}
           <Pagination
@@ -233,6 +236,6 @@ export default function MemberFavorites() {
           />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

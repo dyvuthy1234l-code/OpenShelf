@@ -8,6 +8,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import adminService from '../services/adminService';
 import OpenShelfBrand from '../components/common/OpenShelfBrand';
+import { SIDEBAR_SLIDE_VARIANTS, BACKDROP_MOTION_VARIANTS, DROPDOWN_MOTION_VARIANTS } from '../constants/motionTokens';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
@@ -174,19 +175,13 @@ export default function AdminLayout() {
           {mobileSidebarOpen && (
             <div className="fixed inset-0 z-50 lg:hidden flex">
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
+                {...BACKDROP_MOTION_VARIANTS}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="fixed inset-0 bg-navy-950/80 backdrop-blur-xs"
+                className="fixed inset-0 bg-navy-950/50 backdrop-blur-sm"
               />
 
               <motion.aside
-                initial={{ x: '-100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '-100%' }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                {...SIDEBAR_SLIDE_VARIANTS}
                 className="relative w-72 bg-navy-950 text-white flex flex-col h-full z-10 shadow-2xl border-r border-navy-800"
               >
                 <div className="p-5 border-b border-white/10 flex items-center justify-between shrink-0 h-[100px]">
@@ -315,8 +310,13 @@ export default function AdminLayout() {
                 </button>
 
                 {/* Popover Dropdown */}
+                <AnimatePresence>
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-[calc(100vw-24px)] md:w-80 bg-white border border-slate-200/90 rounded-2xl shadow-xl z-50 overflow-hidden text-xs">
+                  <motion.div
+                    {...DROPDOWN_MOTION_VARIANTS}
+                    style={{ transformOrigin: 'top right' }}
+                    className="absolute right-0 mt-2 w-[calc(100vw-24px)] md:w-80 bg-white border border-slate-200/90 rounded-2xl shadow-xl z-50 overflow-hidden text-xs"
+                  >
                     <div className="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                       <span className="font-extrabold text-slate-900">Unread Alerts</span>
                       {unreadCount > 0 ? (
@@ -378,8 +378,9 @@ export default function AdminLayout() {
                         View All Notifications →
                       </Link>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
+                </AnimatePresence>
               </div>
 
               {/* Header User Identity Pill */}

@@ -1,5 +1,6 @@
 import { BookOpen, Users, Clock, ArrowLeftRight, DollarSign, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 
 export default function AnalyticsKpiGrid({ reports, memberSummary }) {
   const totalBooks = reports?.total_books ?? 0;
@@ -64,7 +65,12 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 shrink-0">
+    <motion.div
+      variants={LIST_STAGGER}
+      initial="initial"
+      animate="animate"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 shrink-0"
+    >
       {kpiData.map((kpi, idx) => {
         const Icon = kpi.icon;
         const SubIcon = kpi.subIcon;
@@ -72,9 +78,7 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
         return (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2, delay: idx * 0.03 }}
+            variants={LIST_ITEM}
             className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between h-[108px] group"
           >
             <div className="flex items-center justify-between">
@@ -98,6 +102,6 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
           </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }

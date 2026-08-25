@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  Users, AlertCircle, RefreshCw, RotateCcw, 
-  ChevronLeft, ChevronRight 
+import {
+  Users, AlertCircle, RefreshCw, RotateCcw,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import librarianService from '../../services/librarianService';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import MemberTable from '../../components/librarian/members/MemberTable';
@@ -92,7 +94,7 @@ export default function MembersPage() {
   const endIndex = Math.min(meta.current_page * meta.per_page, totalItems);
 
   return (
-    <div className="space-y-2.5">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="space-y-2.5">
       {/* Header */}
       <PageHeader
         eyebrow="Member Management"
@@ -115,24 +117,24 @@ export default function MembersPage() {
       )}
 
       {/* Overview Stat Badges */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
+      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
           <span className="text-[9px] uppercase font-extrabold text-slate-400">Total Library Members</span>
-          <span className="text-lg font-extrabold text-slate-900">{summary.total_members}</span>
-        </div>
+          <span className="text-lg font-extrabold text-slate-900 tabular-nums">{summary.total_members}</span>
+        </motion.div>
 
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
           <span className="text-[9px] uppercase font-extrabold text-slate-400">Active Borrowers</span>
-          <span className="text-lg font-extrabold text-amber-700">{summary.active_borrowers}</span>
-        </div>
+          <span className="text-lg font-extrabold text-amber-700 tabular-nums">{summary.active_borrowers}</span>
+        </motion.div>
 
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex items-center justify-between">
           <span className="text-[9px] uppercase font-extrabold text-slate-400">Overdue Members</span>
-          <span className={`text-lg font-extrabold ${summary.overdue_borrowers > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
+          <span className={`text-lg font-extrabold tabular-nums ${summary.overdue_borrowers > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
             {summary.overdue_borrowers}
           </span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Search & Filter Toolbar */}
       <div>
@@ -152,8 +154,8 @@ export default function MembersPage() {
         </div>
       ) : members.length === 0 ? (
         <div className="bg-white border border-slate-200/90 rounded-2xl p-6 text-center flex flex-col items-center justify-center space-y-2.5 shadow-2xs">
-          <div className="w-12 h-12 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl flex items-center justify-center shadow-2xs">
-            <Users className="w-6 h-6" />
+          <div className="w-14 h-14 bg-navy-50 border border-brand-border text-navy-700 rounded-2xl flex items-center justify-center shadow-2xs">
+            <Users className="w-7 h-7" />
           </div>
           <div className="space-y-1">
             <h3 className="text-sm font-extrabold text-slate-900">No members found</h3>
@@ -255,6 +257,6 @@ export default function MembersPage() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

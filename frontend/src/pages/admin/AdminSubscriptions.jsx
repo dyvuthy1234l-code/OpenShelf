@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   CreditCard, CheckCircle2, Clock, AlertTriangle, XCircle, 
   DollarSign, Search, RotateCcw, Eye, ChevronLeft, ChevronRight, 
@@ -7,6 +8,7 @@ import {
   Crown, Pencil, Trash2, Archive, ArrowLeft, MoreVertical
 } from 'lucide-react';
 import adminService from '../../services/adminService';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
 
 export default function AdminSubscriptions() {
@@ -340,7 +342,7 @@ export default function AdminSubscriptions() {
   const subscriptionRevenue = summary.revenue;
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
       {/* 1. PAGE HEADER (CLIENT-READY BILLING & ACCESS) */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div>
@@ -395,9 +397,9 @@ export default function AdminSubscriptions() {
       )}
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
+      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Active Subscriptions */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Active Subscriptions</span>
             <span className="text-xl font-black text-emerald-950 tracking-tight block leading-tight mt-0.5">{countActive}</span>
@@ -406,10 +408,10 @@ export default function AdminSubscriptions() {
           <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 2: Expiring Soon */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Expiring Soon (7 Days)</span>
             <span className="text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">{countExpiring}</span>
@@ -418,10 +420,10 @@ export default function AdminSubscriptions() {
           <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <Clock className="w-3.5 h-3.5 text-amber-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 3: Expired */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Expired Subscriptions</span>
             <span className="text-xl font-black text-rose-950 tracking-tight block leading-tight mt-0.5">{countExpired}</span>
@@ -430,10 +432,10 @@ export default function AdminSubscriptions() {
           <div className="w-7.5 h-7.5 rounded-lg bg-rose-50 border border-rose-200/80 text-rose-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <XCircle className="w-3.5 h-3.5 text-rose-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 4: Subscription Revenue */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Subscription Revenue</span>
             <span className="text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">${subscriptionRevenue.toFixed(2)}</span>
@@ -442,8 +444,8 @@ export default function AdminSubscriptions() {
           <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <DollarSign className="w-3.5 h-3.5 text-blue-600" />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* 3. FILTER & SEARCH TOOLBAR */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
@@ -531,7 +533,9 @@ export default function AdminSubscriptions() {
           </div>
         ) : filteredSubscriptions.length === 0 ? (
           <div className="py-8 text-center p-6 space-y-2">
-            <CreditCard className="w-10 h-10 text-slate-300 mx-auto" />
+            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto">
+              <CreditCard className="w-7 h-7 text-slate-400" />
+            </div>
             <h3 className="text-sm font-black text-slate-800">
               {searchQuery || statusFilter !== 'all' || planFilter !== 'all' || dateFilter !== 'all'
                 ? 'No subscriptions match your current filters.'
@@ -627,7 +631,7 @@ export default function AdminSubscriptions() {
                       </td>
 
                       {/* Amount Column */}
-                      <td className="py-2.5 px-3.5 font-black text-slate-900">
+                      <td className="py-2.5 px-3.5 font-black text-slate-900 tabular-nums">
                         ${amount.toFixed(2)}
                       </td>
 
@@ -1395,6 +1399,6 @@ export default function AdminSubscriptions() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

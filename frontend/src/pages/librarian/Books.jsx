@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  Plus, AlertCircle, CheckCircle2, RefreshCw, 
-  ChevronLeft, ChevronRight, Inbox 
+import {
+  Plus, AlertCircle, CheckCircle2, RefreshCw,
+  ChevronLeft, ChevronRight, Inbox
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import librarianService from '../../services/librarianService';
 import { queryClient } from '../../query/queryClient';
 import useDebounce from '../../hooks/useDebounce';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import BookTable from '../../components/librarian/books/BookTable';
@@ -192,7 +194,7 @@ export default function BooksPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between min-h-0 space-y-3.5 overflow-y-auto lg:overflow-hidden h-full">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col justify-between min-h-0 space-y-3.5 overflow-y-auto lg:overflow-hidden h-full">
       {/* Header */}
       <PageHeader
         eyebrow="Catalogue Management"
@@ -254,7 +256,7 @@ export default function BooksPage() {
         </div>
       ) : books.length === 0 ? (
         <div className="flex-1 bg-white border border-slate-200/90 rounded-2xl p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-2xs">
-          <div className="w-14 h-14 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl flex items-center justify-center shadow-2xs">
+          <div className="w-14 h-14 bg-navy-50 border border-brand-border text-navy-700 rounded-2xl flex items-center justify-center shadow-2xs">
             <Inbox className="w-7 h-7" />
           </div>
           <div className="space-y-1">
@@ -377,6 +379,6 @@ export default function BooksPage() {
           onClose={() => setDeletingBook(null)}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

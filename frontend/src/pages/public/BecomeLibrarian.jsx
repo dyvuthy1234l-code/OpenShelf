@@ -9,6 +9,7 @@ import publicService from '../../services/publicService';
 import memberService from '../../services/memberService';
 import { useAuth } from '../../context/AuthContext';
 import LoadingState from '../../components/public/LoadingState';
+import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS, MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 export default function BecomeLibrarian() {
   const navigate = useNavigate();
@@ -80,22 +81,27 @@ export default function BecomeLibrarian() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 sm:space-y-16">
       {/* Hero Section */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+      <motion.div
+        variants={LIST_STAGGER}
+        initial="initial"
+        animate="animate"
+        className="text-center max-w-3xl mx-auto space-y-4"
+      >
+        <motion.div variants={LIST_ITEM} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-200 text-gold-600 text-xs font-bold uppercase tracking-widest">
           <Library className="w-4 h-4" />
           <span>OpenShelf for Library Owners</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+        </motion.div>
+        <motion.h1 variants={LIST_ITEM} className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
           Bring Your Physical Library Into the Digital Age
-        </h1>
-        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+        </motion.h1>
+        <motion.p variants={LIST_ITEM} className="text-slate-600 text-sm sm:text-base leading-relaxed">
           OpenShelf equips local community libraries in Cambodia with simple tools to manage book catalogues, handle member borrowing requests, and increase community reading engagement.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       {/* Active Subscription Status Banner (If User Already Has Active Plan) */}
       {isSubActive && (
-        <div className="bg-gradient-to-r from-slate-950 via-navy-950 to-slate-900 text-white border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto shadow-2xl space-y-6 text-center">
+        <motion.div {...REVEAL_VARIANTS} className="bg-gradient-to-r from-slate-950 via-navy-950 to-slate-900 text-white border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto shadow-2xl space-y-6 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 rounded-full text-xs font-extrabold">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>● Active Subscription</span>
@@ -119,7 +125,7 @@ export default function BecomeLibrarian() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Alert Messages */}
@@ -146,9 +152,10 @@ export default function BecomeLibrarian() {
       )}
 
       {/* Subscription Plans Grid */}
-      <div className="space-y-8">
+      <motion.div {...REVEAL_VARIANTS} className="space-y-8">
         <div className="text-center space-y-1">
-          <h2 className="text-2xl font-extrabold text-slate-900">Librarian Access Passes</h2>
+          <span className="text-xs font-bold uppercase tracking-widest text-gold-600 block">Pricing</span>
+          <h2 className="os-section-title text-center">Librarian Access Passes</h2>
           <p className="text-xs text-slate-500">
             {isSubActive
               ? 'Your subscription pass is active. You can review available plan tiers below.'
@@ -159,14 +166,21 @@ export default function BecomeLibrarian() {
         {loadingPlans ? (
           <LoadingState message="Loading librarian access passes..." />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center max-w-5xl mx-auto">
+          <motion.div
+            variants={LIST_STAGGER}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-center max-w-5xl mx-auto"
+          >
             {plans.map((plan) => (
-              <div
+              <motion.div
                 key={plan.id}
+                variants={LIST_ITEM}
                 className={`bg-white border rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-xs transition-all relative overflow-hidden ${
                   isSubActive && subscription.id === plan.id
-                    ? 'border-amber-500 ring-2 ring-amber-500/20'
-                    : 'border-slate-200/90 hover:border-amber-500/50 hover:shadow-xl'
+                    ? 'border-gold-500 ring-2 ring-gold-500/20'
+                    : 'border-slate-200/90 hover:border-gold-500/50 hover:shadow-xl'
                 }`}
               >
                 {/* Popular Badge */}
@@ -227,21 +241,18 @@ export default function BecomeLibrarian() {
                     </button>
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       {/* CHECKOUT CONFIRMATION MODAL */}
       <AnimatePresence>
         {showCheckoutModal && selectedPlan && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              {...MODAL_MOTION_VARIANTS}
               role="dialog"
               aria-modal="true"
               aria-labelledby="subscription-confirm-title"
@@ -308,7 +319,7 @@ export default function BecomeLibrarian() {
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, CheckCircle2, X, ArrowRight, KeyRound } from "lucide-react";
+import { MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from "../../constants/motionTokens";
 
 export default function ForgotPasswordModal({ isOpen, onClose }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,24 +27,20 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={handleClose}
-          className="absolute inset-0 bg-[#040D1A]/80 backdrop-blur-md"
-        />
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            {...BACKDROP_MOTION_VARIANTS}
+            onClick={handleClose}
+            className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm"
+          />
 
-        {/* Modal Window */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 12 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border border-[#294663] bg-[#0B1D32] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.5)] sm:p-8"
-        >
+          {/* Modal Window */}
+          <motion.div
+            {...MODAL_MOTION_VARIANTS}
+            className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border border-[#294663] bg-[#0B1D32] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.5)] sm:p-8"
+          >
           {/* Top Decorative Amber Line */}
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#F5B82E] to-transparent" />
 
@@ -129,7 +124,8 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
             </div>
           )}
         </motion.div>
-      </div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }

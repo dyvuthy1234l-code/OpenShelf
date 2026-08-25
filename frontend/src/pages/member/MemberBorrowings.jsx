@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BookOpen } from 'lucide-react';
+import { motion } from 'framer-motion';
 import memberService from '../../services/memberService';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import BorrowingCard from '../../components/member/BorrowingCard';
 import LoadingState from '../../components/public/LoadingState';
 import EmptyState from '../../components/public/EmptyState';
@@ -80,7 +82,7 @@ export default function MemberBorrowings() {
   const paginatedBorrowings = borrowings;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
       {/* Header */}
       <div className="pb-4 border-b border-brand-border">
         <div className="flex items-center gap-2 text-gold-600 text-xs font-bold uppercase tracking-wider mb-1">
@@ -125,11 +127,13 @@ export default function MemberBorrowings() {
         />
       ) : (
         <div className="space-y-5">
-          <div className="grid grid-cols-1 gap-4">
+          <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 gap-4">
           {paginatedBorrowings.map((b) => (
-            <BorrowingCard key={b.id} borrowing={b} onActionSuccess={loadBorrowings} />
+            <motion.div key={b.id} variants={LIST_ITEM}>
+              <BorrowingCard borrowing={b} onActionSuccess={loadBorrowings} />
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           <Pagination
             currentPage={currentPage}
             lastPage={totalPages}
@@ -137,6 +141,6 @@ export default function MemberBorrowings() {
           />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

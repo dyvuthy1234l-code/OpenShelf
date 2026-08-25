@@ -7,6 +7,7 @@ import {
 import publicService from '../../services/publicService';
 import Pagination from '../../components/public/Pagination';
 import ErrorState from '../../components/public/ErrorState';
+import { LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 
 export default function CategoriesList() {
   const directoryRef = useRef(null);
@@ -136,9 +137,9 @@ export default function CategoriesList() {
       <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-xs space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-              <Layers className="w-3.5 h-3.5" />
-              <span>CLASSIFICATION</span>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1">
+              <Layers className="w-4 h-4" />
+              <span>Classification</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">Book Categories</h1>
             <p className="text-slate-600 text-xs sm:text-base leading-relaxed">
@@ -250,7 +251,12 @@ export default function CategoriesList() {
         ) : (
           /* Categories Grid & Pagination Bar */
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              variants={LIST_STAGGER}
+              initial="initial"
+              animate="animate"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
               {categories.map((cat) => {
                 const targetLibraryId = libraryId || cat.library_id;
                 const bookTarget = targetLibraryId
@@ -261,8 +267,9 @@ export default function CategoriesList() {
                 return (
                   <motion.div
                     key={cat.id}
-                    whileHover={{ y: -4 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    variants={LIST_ITEM}
+                    whileHover={{ y: -6 }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
                   >
                     <Link
                       to={bookTarget}
@@ -298,7 +305,7 @@ export default function CategoriesList() {
                   </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
 
             {/* Pagination Controls Bar */}
             <Pagination

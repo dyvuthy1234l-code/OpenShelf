@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 
+import { MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../constants/motionTokens';
+
 import FocusLock from 'react-focus-lock';
 
 export default function SearchModal({ isOpen, onClose }) {
@@ -37,24 +39,18 @@ export default function SearchModal({ isOpen, onClose }) {
         <FocusLock>
           {/* Backdrop */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm"
+            {...BACKDROP_MOTION_VARIANTS}
+            className="fixed inset-0 z-[100] bg-navy-950/50 backdrop-blur-sm"
             onClick={onClose}
           />
 
           {/* Modal content */}
           <div className="fixed inset-0 z-[101] flex items-start justify-center pt-[15vh] px-4 pointer-events-none">
             <motion.div
+              {...MODAL_MOTION_VARIANTS}
               role="dialog"
               aria-modal="true"
               aria-label="Search"
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
               className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-brand-border overflow-hidden pointer-events-auto"
             >
               <form onSubmit={handleSubmit} className="relative flex items-center border-b border-brand-border/70 p-2">

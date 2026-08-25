@@ -15,6 +15,7 @@ import BookSkeleton from '../../components/common/BookSkeleton';
 import LibraryTopRatedBooks from '../../components/public/LibraryTopRatedBooks';
 import LibraryReviews from '../../components/library/LibraryReviews';
 import getImageUrl, { getLibraryCoverUrl, getLibraryLogoUrl } from '../../utils/imageUrl';
+import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 export default function LibraryDetail() {
   const { id } = useParams();
@@ -203,10 +204,13 @@ export default function LibraryDetail() {
           className="relative h-48 sm:h-64 md:h-72 lg:h-80 xl:h-96 bg-slate-950 overflow-hidden"
         >
           {getLibraryCoverUrl(library.cover_image_url || library.cover_image, 1200) ? (
-            <img
+            <motion.img
               src={getLibraryCoverUrl(library.cover_image_url || library.cover_image, 1200)}
               alt={`${library.name} Banner`}
               loading="eager"
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
               className="w-full h-full object-cover"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
@@ -305,7 +309,7 @@ export default function LibraryDetail() {
       </div>
 
       {/* PART 2 — TWO-COLUMN INFORMATION SECTION BELOW HERO */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* LEFT CARD (2/3 width) — TABBED DETAILS */}
         <div className="lg:col-span-2 bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
           {/* Compact Editorial Tab Header */}
@@ -401,7 +405,7 @@ export default function LibraryDetail() {
               >
                 {library.phone && (
                   <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                    <Phone className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+                    <Phone className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Phone Contact</span>
                       <a href={`tel:${library.phone}`} className="text-amber-700 font-bold hover:underline">{library.phone}</a>
@@ -411,7 +415,7 @@ export default function LibraryDetail() {
 
                 {library.email && (
                   <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                    <Mail className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+                    <Mail className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Email Address</span>
                       <a href={`mailto:${library.email}`} className="text-amber-700 font-bold hover:underline break-all">{library.email}</a>
@@ -420,7 +424,7 @@ export default function LibraryDetail() {
                 )}
 
                 <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <MapPin className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Province / Location</span>
                     <span className="text-slate-700 font-semibold">{library.city ? `Province: ${library.city}` : (library.address || 'Phnom Penh, Cambodia')}</span>
@@ -428,7 +432,7 @@ export default function LibraryDetail() {
                 </div>
 
                 <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <Clock className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+                  <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Opening Hours</span>
                     <span className="text-slate-700 font-semibold">{library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 AM - 05:00 PM'}</span>
@@ -447,7 +451,7 @@ export default function LibraryDetail() {
                 className="space-y-4 text-xs sm:text-sm text-slate-600"
               >
                 <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <MapPin className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                   <div className="space-y-1">
                     <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider">Physical Address</span>
                     <p className="text-slate-700 font-medium">{library.address || 'Phnom Penh, Cambodia'}</p>
@@ -553,7 +557,7 @@ export default function LibraryDetail() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* TOP RATED BOOKS SECTION */}
       <LibraryTopRatedBooks libraryId={id} libraryName={library.name} />
@@ -564,7 +568,7 @@ export default function LibraryDetail() {
       {/* PART 3 — BOOKS AT THIS LIBRARY & LIBRARY-SPECIFIC CATEGORY FILTERS */}
       <div ref={booksGridRef} className="space-y-6 pt-4 border-t border-slate-200/80">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
               <BookOpen className="w-5 h-5" />
@@ -584,7 +588,7 @@ export default function LibraryDetail() {
               <span>Clear filters</span>
             </button>
           )}
-        </div>
+        </motion.div>
 
         {/* Filter Toolbar: Search + Library-Specific Categories + Sort */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-xs">
@@ -687,14 +691,20 @@ export default function LibraryDetail() {
         ) : (
           /* Book Cards Grid & Pagination Bar */
           <div className="space-y-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <motion.div
+              variants={LIST_STAGGER}
+              initial="initial"
+              animate="animate"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
+            >
               {books.map((b) => (
-                <BookCard
-                  key={b.id}
-                  book={{ ...b, library: { id: library.id, name: library.name } }}
-                />
+                <motion.div key={b.id} variants={LIST_ITEM}>
+                  <BookCard
+                    book={{ ...b, library: { id: library.id, name: library.name } }}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Pagination Controls Bar */}
             <Pagination

@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import librarianService from '../services/librarianService';
 import { formatNotificationTime } from '../utils/dateUtils';
 import OpenShelfBrand from '../components/common/OpenShelfBrand';
+import { SIDEBAR_SLIDE_VARIANTS, BACKDROP_MOTION_VARIANTS, DROPDOWN_MOTION_VARIANTS } from '../constants/motionTokens';
 
 export default function LibrarianLayout() {
   const { user, logout } = useAuth();
@@ -195,19 +196,13 @@ export default function LibrarianLayout() {
           {mobileSidebarOpen && (
             <div className="fixed inset-0 z-50 lg:hidden flex">
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
+                {...BACKDROP_MOTION_VARIANTS}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="fixed inset-0 bg-navy-950/80 backdrop-blur-xs"
+                className="fixed inset-0 bg-navy-950/50 backdrop-blur-sm"
               />
 
               <motion.aside
-                initial={{ x: '-100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '-100%' }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                {...SIDEBAR_SLIDE_VARIANTS}
                 className="relative w-72 bg-navy-950 text-white flex flex-col h-full z-10 shadow-2xl border-r border-navy-800"
               >
                 <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
@@ -324,8 +319,11 @@ export default function LibrarianLayout() {
                 </button>
 
                 {/* Notifications Dropdown */}
+                <AnimatePresence>
                 {notifDropdownOpen && (
-                  <div
+                  <motion.div
+                    {...DROPDOWN_MOTION_VARIANTS}
+                    style={{ transformOrigin: 'top right' }}
                     className="absolute right-0 mt-2 w-[calc(100vw-24px)] md:w-80 sm:w-96 bg-white border border-slate-200/90 rounded-2xl shadow-xl p-3 z-50 space-y-2 text-xs"
                     onMouseLeave={() => setNotifDropdownOpen(false)}
                   >
@@ -405,8 +403,9 @@ export default function LibrarianLayout() {
                         View All Notifications & Messages →
                       </Link>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
+                </AnimatePresence>
               </div>
 
               {/* Header User Identity Pill - Clickable to Profile */}

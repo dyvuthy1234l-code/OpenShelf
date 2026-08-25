@@ -10,6 +10,7 @@ import BookCard from '../../components/public/BookCard';
 import BookSkeleton from '../../components/common/BookSkeleton';
 import AnimatedPagination from '../../components/common/AnimatedPagination';
 import ErrorState from '../../components/public/ErrorState';
+import { LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 
 export default function BooksList() {
   const directoryRef = useRef(null);
@@ -120,8 +121,8 @@ export default function BooksList() {
       <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-xs space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-              <BookOpen className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1">
+              <BookOpen className="w-4 h-4" />
               <span>Complete Catalogue</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">Book Catalogue</h1>
@@ -280,13 +281,18 @@ export default function BooksList() {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="space-y-8"
             >
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+              <motion.div
+                variants={LIST_STAGGER}
+                initial="initial"
+                animate="animate"
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
+              >
                 {books.map((b) => (
-                  <div key={b.id}>
+                  <motion.div key={b.id} variants={LIST_ITEM}>
                     <BookCard book={b} />
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Pagination Controls Bar */}
               <AnimatedPagination

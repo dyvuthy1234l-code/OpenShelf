@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, AlertCircle, FileText, Download, Info } from 'lucide-react';
 import librarianService from '../../services/librarianService';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import ReportFilters from '../../components/librarian/reports/ReportFilters';
@@ -98,7 +99,7 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-3.5 lg:overflow-y-auto h-full w-full pr-1 pb-4">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-3.5 lg:overflow-y-auto h-full w-full pr-1 pb-4">
       {/* 1. Header with Title & Export Actions */}
       <PageHeader
         eyebrow="DETAILED PERFORMANCE ANALYSIS"
@@ -217,6 +218,6 @@ export default function ReportsPage() {
           </div>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

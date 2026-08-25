@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ShieldCheck, CheckCircle2, XCircle, AlertCircle, Search, 
-  RotateCcw, Plus, Eye, Edit2, X, ChevronLeft, ChevronRight, 
-  Building2, Phone, Mail, UserCheck, ShieldAlert 
+import { motion } from 'framer-motion';
+import {
+  ShieldCheck, CheckCircle2, XCircle, AlertCircle, Search,
+  RotateCcw, Plus, Eye, Edit2, X, ChevronLeft, ChevronRight,
+  Building2, Phone, Mail, UserCheck, ShieldAlert
 } from 'lucide-react';
 import adminService from '../../services/adminService';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
 
 export default function AdminLibrarians() {
@@ -193,7 +195,7 @@ export default function AdminLibrarians() {
   const countUnassigned = summary.unassigned;
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
       {/* 1. PAGE HEADER (CLIENT-READY STAFF MANAGEMENT) */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div>
@@ -239,9 +241,9 @@ export default function AdminLibrarians() {
       )}
 
       {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
+      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: Total Librarians */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Total Librarians</span>
             <span className="text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">{countTotal}</span>
@@ -250,10 +252,10 @@ export default function AdminLibrarians() {
           <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 2: Active */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Active Accounts</span>
             <span className="text-xl font-black text-emerald-950 tracking-tight block leading-tight mt-0.5">{countActive}</span>
@@ -262,10 +264,10 @@ export default function AdminLibrarians() {
           <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 3: Inactive */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Inactive / Suspended</span>
             <span className="text-xl font-black text-slate-700 tracking-tight block leading-tight mt-0.5">{countInactive}</span>
@@ -274,10 +276,10 @@ export default function AdminLibrarians() {
           <div className="w-7.5 h-7.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <XCircle className="w-3.5 h-3.5 text-slate-500" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Card 4: Unassigned */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
+        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
           <div>
             <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Unassigned</span>
             <span className="text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">{countUnassigned}</span>
@@ -286,8 +288,8 @@ export default function AdminLibrarians() {
           <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
             <Building2 className="w-3.5 h-3.5 text-amber-600" />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* 3. FILTER & SEARCH TOOLBAR */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
@@ -360,7 +362,9 @@ export default function AdminLibrarians() {
           </div>
         ) : filteredLibrarians.length === 0 ? (
           <div className="py-8 text-center p-6 space-y-2">
-            <ShieldCheck className="w-10 h-10 text-slate-300 mx-auto" />
+            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto">
+              <ShieldCheck className="w-7 h-7 text-slate-400" />
+            </div>
             <h3 className="text-sm font-black text-slate-800">
               {searchQuery || statusFilter !== 'all' || libraryFilter !== 'all'
                 ? 'No librarians match your current filters.'
@@ -777,6 +781,6 @@ export default function AdminLibrarians() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

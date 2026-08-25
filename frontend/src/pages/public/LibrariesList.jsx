@@ -11,6 +11,7 @@ import AnimatedPagination from '../../components/common/AnimatedPagination';
 import ErrorState from '../../components/public/ErrorState';
 import LibrarySkeleton from '../../components/common/LibrarySkeleton';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 export default function LibrariesList() {
   const directoryRef = useRef(null);
@@ -108,9 +109,9 @@ export default function LibrariesList() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-12 pb-20">
       {/* 1. EDITORIAL PAGE HEADER */}
       <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-xs space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-          <Building2 className="w-3.5 h-3.5" />
-          <span>COMMUNITY DIRECTORY</span>
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1">
+          <Building2 className="w-4 h-4" />
+          <span>Community Directory</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
           Physical Libraries
@@ -123,37 +124,45 @@ export default function LibrariesList() {
       {/* 2. FEATURED LIBRARIES SECTION (Show near top on page 1) */}
       {page === 1 && featuredLibraries.length > 0 && (
         <section className="space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
+          <motion.div {...REVEAL_VARIANTS} className="flex items-center justify-between border-b border-slate-200/80 pb-4">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>FEATURED PARTNERS</span>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600">
+                <Sparkles className="w-4 h-4 text-gold-500" />
+                <span>Featured Partners</span>
               </div>
-              <h2 className="text-2xl font-extrabold text-slate-900">Featured Libraries</h2>
+              <h2 className="os-section-title">Featured Libraries</h2>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div
+            variants={LIST_STAGGER}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             {featuredLibraries.map((lib) => (
-              <FeaturedLibraryCard key={`featured-${lib.id}`} library={lib} />
+              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM}>
+                <FeaturedLibraryCard library={lib} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
       )}
 
       {/* 3. ALL LIBRARIES SECTION WITH SERVER-SIDE PAGINATION */}
       <section ref={directoryRef} className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600">
               <Building2 className="w-4 h-4" />
-              <span>COMPLETE DIRECTORY</span>
+              <span>Complete Directory</span>
             </div>
-            <h2 className="text-2xl font-extrabold text-slate-900">
+            <h2 className="os-section-title">
               {debouncedSearch ? `Search Results for "${debouncedSearch}"` : 'All Physical Libraries'}
             </h2>
           </div>
-        </div>
+        </motion.div>
 
         {/* TOOLBAR CARD: Search Input, 25 Cambodian Provinces Selector, & Sort Dropdown */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
@@ -319,11 +328,18 @@ export default function LibrariesList() {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="space-y-8"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <motion.div
+                variants={LIST_STAGGER}
+                initial="initial"
+                animate="animate"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
                 {sortedLibraries.map((lib) => (
-                  <LibraryCard key={`all-${lib.id}`} library={lib} />
+                  <motion.div key={`all-${lib.id}`} variants={LIST_ITEM}>
+                    <LibraryCard library={lib} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Pagination Controls Bar */}
               <AnimatedPagination

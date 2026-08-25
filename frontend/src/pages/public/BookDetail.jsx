@@ -13,6 +13,7 @@ import { useAuth } from '../../context/AuthContext';
 import BookCard from '../../components/public/BookCard';
 import LoadingState from '../../components/public/LoadingState';
 import ErrorState from '../../components/public/ErrorState';
+import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS, MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 export default function BookDetail() {
   const { id } = useParams();
@@ -311,10 +312,14 @@ export default function BookDetail() {
         <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
           <div className="w-full max-w-sm h-80 sm:h-96 bg-slate-100/90 border border-slate-200/80 rounded-2xl p-6 flex items-center justify-center shadow-md relative overflow-hidden group">
             {book.cover_image_url ? (
-              <img
+              <motion.img
                 src={book.cover_image_url}
                 alt={book.title}
-                className="h-full w-auto max-w-full object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="h-full w-auto max-w-full object-contain drop-shadow-xl"
               />
             ) : (
               <div className="w-44 h-64 bg-gradient-to-tr from-slate-200 via-white to-slate-100 border border-slate-300 rounded-xl shadow-sm flex flex-col items-center justify-center p-6 text-center space-y-3">
@@ -503,7 +508,7 @@ export default function BookDetail() {
       </div>
 
       {/* 3. BOOK OVERVIEW (DESCRIPTION + METADATA GRID) */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
+      <motion.div {...REVEAL_VARIANTS} className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
         <h3 className="text-xl font-extrabold text-slate-900 border-b border-slate-100 pb-4">
           Book Overview
         </h3>
@@ -560,11 +565,11 @@ export default function BookDetail() {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* 4. HOLDING LIBRARY INFORMATION & SPECIFIC LENDING POLICIES */}
       {book.library && (
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
+        <motion.div {...REVEAL_VARIANTS} className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="space-y-1.5 min-w-0">
               <span className="text-[10px] text-amber-700 uppercase font-extrabold tracking-wider block">Holding Library</span>
@@ -603,11 +608,11 @@ export default function BookDetail() {
               <span className="text-[10px] text-slate-500 block">Concurrent borrowing limit</span>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* 5. READER REVIEWS & RATINGS SECTION */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
+      <motion.div {...REVEAL_VARIANTS} className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-amber-600" />
@@ -732,37 +737,42 @@ export default function BookDetail() {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* 6. RELATED BOOKS ("YOU MAY ALSO LIKE") */}
       {relatedBooks.length > 0 && (
-        <div className="space-y-6 pt-4">
+        <motion.div {...REVEAL_VARIANTS} className="space-y-6 pt-4">
           <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
             <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900">
               You May Also Like
             </h3>
-            <Link to="/books" className="text-xs font-bold text-amber-700 hover:text-amber-800">
+            <Link to="/books" className="text-xs font-bold text-gold-600 hover:text-gold-500">
               View All Catalogue →
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+          <motion.div
+            variants={LIST_STAGGER}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
+          >
             {relatedBooks.map((relBook) => (
-              <BookCard key={relBook.id} book={relBook} />
+              <motion.div key={relBook.id} variants={LIST_ITEM}>
+                <BookCard book={relBook} />
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
 
       {/* BORROW CONFIRMATION MODAL */}
       <AnimatePresence>
         {showBorrowModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              {...MODAL_MOTION_VARIANTS}
               className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5"
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -846,7 +856,7 @@ export default function BookDetail() {
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
 

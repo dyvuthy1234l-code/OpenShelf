@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import librarianService from '../../services/librarianService';
+import { REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 import DashboardHeader from '../../components/librarian/DashboardHeader';
 import AnalyticsKpiGrid from '../../components/librarian/AnalyticsKpiGrid';
@@ -133,7 +135,7 @@ export default function Dashboard() {
           <AnalyticsKpiGrid reports={reports} memberSummary={memberSummary} />
 
           {/* SECTION 3: MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books ~255px) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[255px] min-h-0">
+          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[255px] min-h-0">
             <div className="lg:col-span-8 h-full min-h-0">
               <BorrowingActivityChart
                 circulationData={reports?.monthly_circulation || []}
@@ -144,17 +146,17 @@ export default function Dashboard() {
             <div className="lg:col-span-4 h-full min-h-0">
               <PopularBooksChart borrowings={reports?.borrowing_history || []} />
             </div>
-          </div>
+          </motion.div>
 
           {/* SECTION 4: BOTTOM ROW (50% Recent Requests + 50% Book Categories ~155px) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[155px] min-h-0">
+          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[155px] min-h-0">
             <div className="lg:col-span-6 h-full min-h-0">
               <RecentRequestsTable requests={recentRequests} />
             </div>
             <div className="lg:col-span-6 h-full min-h-0">
               <CategoryDistributionChart categories={categories} />
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>

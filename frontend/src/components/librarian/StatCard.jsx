@@ -15,7 +15,7 @@ export default function StatCard({ title, value, icon: Icon, description, accent
         <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
           {title}
         </span>
-        <div className={`p-2.5 rounded-xl border ${accentStyles[accentColor] || accentStyles.navy} shrink-0`}>
+        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${accentStyles[accentColor] || accentStyles.navy}`}>
           <Icon className="w-5 h-5" />
         </div>
       </div>

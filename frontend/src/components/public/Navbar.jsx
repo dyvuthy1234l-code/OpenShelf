@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import OpenShelfBrand from '../common/OpenShelfBrand';
 import { getAvatarUrl } from '../../utils/imageUrl';
 import { useNotifications } from '../../hooks/queries/useNotifications';
+import { DROPDOWN_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 import SearchModal from './SearchModal';
 
@@ -152,11 +153,14 @@ export default function Navbar() {
                     </span>
                   </button>
 
-                  {userDropdownOpen && (
-                    <div
-                      className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50"
-                      onMouseLeave={() => setUserDropdownOpen(false)}
-                    >
+                  <AnimatePresence>
+                    {userDropdownOpen && (
+                      <motion.div
+                        {...DROPDOWN_MOTION_VARIANTS}
+                        style={{ transformOrigin: 'top right' }}
+                        className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50"
+                        onMouseLeave={() => setUserDropdownOpen(false)}
+                      >
                       <div className="px-3 py-2 border-b border-slate-100 mb-1 flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
                           {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
@@ -253,8 +257,9 @@ export default function Navbar() {
                         <LogOut className="w-4 h-4" />
                         Sign Out
                       </button>
-                    </div>
-                  )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             ) : (
@@ -295,11 +300,8 @@ export default function Navbar() {
           <>
             {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] lg:hidden"
+              {...BACKDROP_MOTION_VARIANTS}
+              className="fixed inset-0 bg-navy-950/50 backdrop-blur-sm z-[60] lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
 

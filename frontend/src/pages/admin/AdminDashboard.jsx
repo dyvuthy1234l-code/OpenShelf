@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
 import { 
   Building2, ShieldCheck, Users, ArrowLeftRight, DollarSign, 
   RefreshCw, AlertCircle, CheckCircle2, ArrowRight, Activity, 
@@ -156,9 +158,14 @@ export default function AdminDashboard() {
       ) : (
         <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5 w-full">
           {/* 2. 5 MODERN SUMMARY KPI CARDS IN EQUAL HEIGHT ROW (~100px) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 shrink-0 w-full">
+          <motion.div
+            variants={LIST_STAGGER}
+            initial="initial"
+            animate="animate"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 shrink-0 w-full"
+          >
             {/* Card 1: Total Libraries */}
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-amber-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
+            <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-amber-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
               <div className="flex items-center justify-between">
                 <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">Total Libraries</span>
                 <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform">
@@ -171,10 +178,10 @@ export default function AdminDashboard() {
                   Registered branches
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 2: Active Librarians */}
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
+            <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
               <div className="flex items-center justify-between">
                 <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">Active Librarians</span>
                 <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform">
@@ -187,10 +194,10 @@ export default function AdminDashboard() {
                   Active accounts
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 3: Total Members */}
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
+            <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
               <div className="flex items-center justify-between">
                 <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">Total Members</span>
                 <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform">
@@ -203,10 +210,10 @@ export default function AdminDashboard() {
                   Registered members
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 4: Active Borrowings */}
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-emerald-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
+            <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-emerald-200 transition-all duration-200 flex flex-col justify-between h-[100px] group">
               <div className="flex items-center justify-between">
                 <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">Active Borrowings</span>
                 <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform">
@@ -219,10 +226,10 @@ export default function AdminDashboard() {
                   Books borrowed
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 5: Platform Revenue */}
-            <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between h-[100px] group">
+            <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between h-[100px] group">
               <div className="flex items-center justify-between">
                 <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">Platform Revenue</span>
                 <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform">
@@ -235,11 +242,11 @@ export default function AdminDashboard() {
                   Subscriptions + Fines
                 </span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* 3. MAIN ANALYTICS AREA (LEFT 65% / RIGHT 35%) (FLEX-1 EXPANDS TO FILL SCREEN) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch flex-1 min-lg:h-[240px] w-full">
+          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch flex-1 min-lg:h-[240px] w-full">
             {/* LEFT: PLATFORM ACTIVITY (65% / lg:col-span-8) */}
             <div className="lg:col-span-8 bg-white border border-slate-200/90 rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs h-full min-lg:h-[240px] overflow-hidden">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2 shrink-0">
@@ -387,10 +394,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* 4. BOTTOM ROW (LEFT 65% RECENT LIBRARIES / RIGHT 35% ADMIN ATTENTION) (~142px PERFECT FIT, NO CLIPPING) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 items-stretch shrink-0">
+          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-2 items-stretch shrink-0">
             {/* LEFT: RECENT LIBRARIES (65% / lg:col-span-8) */}
             <div className="lg:col-span-8 bg-white border border-slate-200/90 rounded-2xl p-2.5 pt-2 pb-2 flex flex-col justify-between shadow-2xs h-[142px] overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 pb-1 shrink-0">
@@ -505,7 +512,7 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>
