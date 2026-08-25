@@ -119,7 +119,10 @@ export default function AuthPage({ defaultTab = "login" }) {
       } else {
         setError(
           responseData?.message ||
-          err?.message ||
+          err?.friendlyMessage ||
+          (err?.code === 'ECONNABORTED'
+            ? "The server took too long to respond (it may be waking up). Please try again."
+            : err?.message) ||
           "Something went wrong. Please try again."
         );
       }
