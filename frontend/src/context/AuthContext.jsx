@@ -22,9 +22,8 @@ export function AuthProvider({ children }) {
 
   // Fetch favorite book IDs from backend for authenticated member only
   const loadFavorites = useCallback(async (role) => {
-    const token = localStorage.getItem('token');
     const targetRole = role || user?.role;
-    if (!token || targetRole !== 'member') {
+    if (targetRole !== 'member') {
       setFavoriteBookIds([]);
       return;
     }

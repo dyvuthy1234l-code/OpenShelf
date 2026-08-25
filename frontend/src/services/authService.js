@@ -1,20 +1,17 @@
 import api from '../api/axios';
 
 const authService = {
-  csrf: async () => {
-    // Need to hit the base URL, not /api
-    const url = api.defaults.baseURL.replace('/api', '');
-    await api.get(`${url}/sanctum/csrf-cookie`);
-  },
-
   /**
    * POST /api/login
    * Body: { email, password }
    * Returns: { message, token, data, user }
    */
   login: async (credentials) => {
-    await authService.csrf();
     const response = await api.post('/login', credentials);
+    // Save token to localStorage for subsequent requests
+    if (response.data?.token) {
+      localStorage.setItem('token', response.data.token);
+    }
     return response.data;
   },
 
@@ -24,8 +21,10 @@ const authService = {
    * Returns: { message, token, data, user }
    */
   register: async (data) => {
-    await authService.csrf();
     const response = await api.post('/register', data);
+    if (response.data?.token) {
+      localStorage.setItem('token', response.data.token);
+    }
     return response.data;
   },
 
@@ -36,6 +35,8 @@ const authService = {
    */
   logout: async () => {
     const response = await api.post('/logout');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     return response.data;
   },
 
