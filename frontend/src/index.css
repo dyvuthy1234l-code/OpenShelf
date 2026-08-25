@@ -49,33 +49,33 @@
   --color-amber-100: #FCF5DA;
   --color-amber-50: #FEFCF5;
 
-  /* Aliasing Slate classes to Rich Soft Blue & Crisp High-Contrast Text system */
-  --color-slate-950: #07172B;
-  --color-slate-900: #081B2E; /* Bold Deep Main Text */
-  --color-slate-800: #0F3256; /* Rich Deep Blue */
-  --color-slate-700: #143E6B;
-  --color-slate-600: #1B4B7C;
-  --color-slate-500: #475569; /* Crisp Muted Text */
-  --color-slate-400: #64748B;
-  --color-slate-300: #94A3B8;
-  --color-slate-200: #C8D7E6; /* Defined Crisp Border */
-  --color-slate-100: #E1ECF7;
-  --color-slate-50: #EEF4FA;
+  /* Aliasing Slate classes to Modern Clean Slate system */
+  --color-slate-950: #020617;
+  --color-slate-900: #0F172A; /* Crisp Deep Text */
+  --color-slate-800: #1E293B; /* Deep Slate Subtitle */
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-500: #64748B; /* Crisp Muted Text */
+  --color-slate-400: #94A3B8;
+  --color-slate-300: #CBD5E1;
+  --color-slate-200: #E2E8F0; /* Clean Defined Border */
+  --color-slate-100: #F1F5F9; /* Soft Card Surface */
+  --color-slate-50: #F8FAFC;  /* Crisp Clean Page Background */
 
   /* Bold Semantic Colors */
-  --color-emerald-700: #115E3B;
-  --color-emerald-600: #157347;
-  --color-emerald-500: #1E7E52;
-  --color-emerald-400: #2BB275;
-  --color-emerald-100: #D3EFE3;
-  --color-emerald-50: #EEF8F4;
+  --color-emerald-700: #047857;
+  --color-emerald-600: #059669;
+  --color-emerald-500: #10B981;
+  --color-emerald-400: #34D399;
+  --color-emerald-100: #D1FAE5;
+  --color-emerald-50: #ECFDF5;
 
-  --color-rose-700: #991B1B;
-  --color-rose-600: #B71C1C;
-  --color-rose-500: #D32F2F;
-  --color-rose-400: #EF5350;
-  --color-rose-100: #FCE8E8;
-  --color-rose-50: #FDF2F2;
+  --color-rose-700: #B91C1C;
+  --color-rose-600: #DC2626;
+  --color-rose-500: #EF4444;
+  --color-rose-400: #F87171;
+  --color-rose-100: #FEE2E2;
+  --color-rose-50: #FFF1F1;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -83,14 +83,14 @@
 /* Global Styles */
 html {
   scroll-behavior: smooth;
-  background-color: #EEF4FA;
-  color: #081B2E;
+  background-color: #F8FAFC;
+  color: #0F172A;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #EEF4FA;
-  color: #081B2E;
+  background-color: #F8FAFC;
+  color: #0F172A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

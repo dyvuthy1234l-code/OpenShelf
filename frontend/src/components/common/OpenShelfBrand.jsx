@@ -72,51 +72,26 @@ export default function OpenShelfBrand({ role = 'member', size = 'sm', showSubti
       </div>
 
       {showSubtitle && (
-        <motion.div
-          initial={{ opacity: 0, x: -5 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.35, delay: 0.12, ease: 'easeOut' }}
-          className="min-w-0 flex flex-col justify-center"
-        >
-          {/* Animated Vivid Brand Name Text */}
-          <motion.span
-            animate={{
-              backgroundPosition: ['0% 50%', '200% 50%', '0% 50%'],
-            }}
-            transition={{ repeat: Infinity, duration: 4.5, ease: 'linear' }}
-            style={{ backgroundSize: '200% auto' }}
-            className={`${scale.name} font-black tracking-tight block leading-none text-transparent bg-clip-text ${
-              isDark
-                ? 'bg-gradient-to-r from-white via-[#FFF5C2] via-[#FFD700] via-[#FFF5C2] to-white drop-shadow-xs'
-                : 'bg-gradient-to-r from-[#102A43] via-[#163F6B] via-[#D9A83E] via-[#163F6B] to-[#102A43]'
+        <div className="min-w-0 flex flex-col justify-center">
+          <span
+            className={`${scale.name} font-black tracking-tight block leading-none ${
+              isDark ? 'text-white' : 'text-slate-900'
             }`}
           >
-            OpenShelf
-          </motion.span>
+            Open<span className="text-amber-500">Shelf</span>
+          </span>
 
-          {/* Animated Vivid Role Subtitle Labels */}
-          {labels.map((label, index) => (
-            <motion.span
+          {labels.map((label) => (
+            <span
               key={label}
-              initial={{ opacity: 0, y: 3 }}
-              animate={{
-                opacity: [0.85, 1, 0.85],
-                filter: isDark ? ['brightness(1)', 'brightness(1.3)', 'brightness(1)'] : ['brightness(1)', 'brightness(1.15)', 'brightness(1)'],
-              }}
-              transition={{
-                opacity: { duration: 0.3, delay: 0.2 + index * 0.06 },
-                filter: { repeat: Infinity, duration: 2.8, ease: 'easeInOut' },
-              }}
-              className={`block ${scale.label} font-black tracking-widest uppercase mt-1 leading-none text-transparent bg-clip-text ${
-                isDark
-                  ? 'bg-gradient-to-r from-[#FFD700] via-[#FFF2B2] to-[#D9A83E]'
-                  : 'bg-gradient-to-r from-[#123A63] via-[#163F6B] to-[#D9A83E]'
+              className={`block ${scale.label} font-extrabold tracking-widest uppercase mt-1 leading-none ${
+                isDark ? 'text-amber-400/90' : 'text-amber-700'
               }`}
             >
               {label}
-            </motion.span>
+            </span>
           ))}
-        </motion.div>
+        </div>
       )}
     </motion.div>
   );

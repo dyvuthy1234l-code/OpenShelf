@@ -42,7 +42,7 @@ export default function LibraryCard({ library }) {
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-          <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} style={{ willChange: 'transform' }}>
+          <div>
             {isFeatured ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold shadow-sm uppercase tracking-wider">
                 <Star className="w-3 h-3 fill-slate-950 text-slate-950" />
@@ -54,14 +54,14 @@ export default function LibraryCard({ library }) {
                 Verified
               </span>
             )}
-          </motion.div>
+          </div>
 
-          <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} style={{ willChange: 'transform' }}>
+          <div>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold shadow-2xs">
               <span className="w-1 h-1 rounded-full bg-white animate-pulse" />
               Active
             </span>
-          </motion.div>
+          </div>
         </div>
 
         {/* Floating Book Count Pill */}
