@@ -368,46 +368,57 @@ export default function BookDetail() {
             <span className="text-slate-400 font-normal">({totalReviews} {totalReviews === 1 ? 'rating' : 'ratings'})</span>
           </div>
 
-          {/* Synopsis */}
+          {/* Synopsis (clamped — full text in Overview below) */}
           {book.description && (
-            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal">
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-normal line-clamp-3">
               {book.description}
             </p>
           )}
 
           {/* Availability Info & Holding Library */}
-          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="space-y-0.5">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Availability</span>
+          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-2 min-w-0">
               <div className="flex items-center gap-2">
                 {isAvailable ? (
                   <>
                     <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                     <span className="text-emerald-700 font-extrabold text-xs sm:text-sm">
-                      ✓ {availableQty} of {totalQty} copies available now
+                      {availableQty} of {totalQty} copies available now
                     </span>
                   </>
                 ) : (
                   <>
                     <XCircle className="w-5 h-5 text-rose-600 shrink-0" />
                     <span className="text-rose-700 font-extrabold text-xs sm:text-sm">
-                      × Currently unavailable (0 copies available)
+                      Currently unavailable (0 copies available)
                     </span>
                   </>
                 )}
               </div>
+
+              {/* Copies progress bar */}
+              {totalQty > 0 && (
+                <div className="h-1.5 w-full max-w-xs rounded-full bg-slate-200 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${isAvailable ? 'bg-emerald-500' : 'bg-rose-400'}`}
+                    style={{ width: `${Math.round((availableQty / totalQty) * 100)}%` }}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Holding Library Name */}
             {book.library?.name && (
               <Link
                 to={`/libraries/${book.library_id || book.library?.id}`}
-                className="flex min-h-11 items-center gap-1.5 text-xs text-amber-800 font-bold bg-amber-50 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-colors px-3 py-1.5 rounded-xl shrink-0 cursor-pointer"
+                className="inline-flex min-h-11 items-center gap-1.5 text-xs text-amber-800 font-bold bg-amber-50 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-colors px-3 py-1.5 rounded-xl shrink-0 cursor-pointer"
               >
                 <Building2 className="w-4 h-4 text-amber-600 shrink-0" />
                 <span className="truncate max-w-[200px]">{book.library.name}</span>
               </Link>
             )}
+            </div>
           </div>
 
           {/* Toast / Alert Banners */}
@@ -438,7 +449,7 @@ export default function BookDetail() {
             {!isAuthenticated ? (
               <button
                 onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`)}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                className="os-btn-gold flex-1"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign In to Request</span>
@@ -468,7 +479,7 @@ export default function BookDetail() {
             ) : isAvailable ? (
               <button
                 onClick={() => setShowBorrowModal(true)}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                className="os-btn-gold flex-1 min-h-12 text-sm"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Request to Borrow</span>
@@ -477,9 +488,9 @@ export default function BookDetail() {
               <button
                 onClick={handleWaitlistToggle}
                 disabled={processingWaitlist}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
+                className="os-btn-primary flex-1 min-h-12 text-sm"
               >
-                <Clock className="w-4 h-4 text-amber-400" />
+                <Clock className="w-4 h-4 text-gold-400" />
                 <span>
                   {processingWaitlist
                     ? 'Processing...'
@@ -494,13 +505,13 @@ export default function BookDetail() {
             <button
               onClick={handleSaveToggle}
               disabled={savingFav}
-              className={`inline-flex min-h-11 items-center justify-center gap-2 px-5 py-3.5 rounded-xl border text-xs font-extrabold transition-all shadow-xs shrink-0 ${
+              className={`inline-flex min-h-11 items-center justify-center gap-2 px-5 rounded-xl border text-xs font-extrabold transition-all shadow-xs shrink-0 ${
                 isSaved
-                  ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
-                  : 'bg-white hover:bg-amber-50 text-slate-700 border-slate-200 hover:border-amber-300'
+                  ? 'bg-gold-500 text-navy-950 border-gold-500 shadow-md shadow-gold-500/20'
+                  : 'os-btn-secondary'
               }`}
             >
-              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-slate-950 text-slate-950' : ''}`} />
+              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-navy-950 text-navy-950' : ''}`} />
               <span>{isSaved ? 'Saved' : 'Save'}</span>
             </button>
           </div>
@@ -672,14 +683,14 @@ export default function BookDetail() {
                   placeholder="Share your thoughts about this book..."
                   value={userComment}
                   onChange={(e) => setUserComment(e.target.value)}
-                  className="w-full bg-white border border-slate-200 focus:border-amber-500 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none"
+                  className="os-input h-auto py-3"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={submittingReview}
-                className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                className="os-btn-gold"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{submittingReview ? 'Submitting...' : 'Submit Review'}</span>
@@ -770,7 +781,7 @@ export default function BookDetail() {
       {/* BORROW CONFIRMATION MODAL */}
       <AnimatePresence>
         {showBorrowModal && (
-          <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/50 backdrop-blur-sm">
             <motion.div
               {...MODAL_MOTION_VARIANTS}
               className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5"
@@ -833,14 +844,14 @@ export default function BookDetail() {
                 <button
                   onClick={() => setShowBorrowModal(false)}
                   disabled={requesting}
-                  className="min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+                  className="os-btn-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmBorrowRequest}
                   disabled={requesting}
-                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="os-btn-gold"
                 >
                   {requesting ? (
                     <>
@@ -866,7 +877,7 @@ export default function BookDetail() {
             {!isAuthenticated ? (
               <button
                 onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`)}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
+                className="os-btn-gold flex-1"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign In to Request</span>
@@ -876,13 +887,13 @@ export default function BookDetail() {
                 Librarians / Admins cannot borrow
               </div>
             ) : activeBorrowing ? (
-              <Link to="/member/borrowings" className="flex-1 min-h-11 flex items-center justify-center px-2 text-center bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold rounded-xl truncate">
+              <Link to="/member/borrowings" className="flex-1 min-h-11 flex items-center justify-center px-2 text-center bg-gold-50 border border-gold-200 text-gold-600 text-xs font-bold rounded-xl truncate">
                 {activeBorrowing.status === 'pending' ? 'Request Pending' : 'Currently Borrowed'} • View Record
               </Link>
             ) : isAvailable ? (
               <button
                 onClick={() => setShowBorrowModal(true)}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-xs"
+                className="os-btn-gold flex-1"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Request to Borrow</span>
@@ -891,9 +902,9 @@ export default function BookDetail() {
               <button
                 onClick={handleWaitlistToggle}
                 disabled={processingWaitlist}
-                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 py-2.5 bg-slate-900 text-white font-extrabold text-xs rounded-xl shadow-xs"
+                className="os-btn-primary flex-1"
               >
-                <Clock className="w-4 h-4 text-amber-400" />
+                <Clock className="w-4 h-4 text-gold-400" />
                 <span>{waitlistEntry ? 'Leave Waitlist' : 'Join Waitlist'}</span>
               </button>
             )}
@@ -904,11 +915,11 @@ export default function BookDetail() {
               aria-label="Save book"
               className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xs font-extrabold transition-all shrink-0 ${
                 isSaved
-                  ? 'bg-amber-500 text-slate-950 border-amber-400'
+                  ? 'bg-gold-500 text-navy-950 border-gold-500'
                   : 'bg-white text-slate-700 border-slate-200'
               }`}
             >
-              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-slate-950 text-slate-950' : ''}`} />
+              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-navy-950 text-navy-950' : ''}`} />
             </button>
           </div>
         </div>
