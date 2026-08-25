@@ -92,14 +92,16 @@ export default function MemberBorrowings() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-200/80">
+      <div role="tablist" aria-label="Borrowing status" className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-200/80">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              role="tab"
+              aria-selected={isActive}
+              className={`min-h-11 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 isActive
                   ? 'bg-amber-500 text-slate-950 shadow-xs'
                   : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80'

@@ -137,7 +137,7 @@ export default function LibraryCard({ library }) {
           <motion.div initial="rest" whileHover="hover">
             <Link
               to={`/libraries/${library.id}`}
-              className="inline-flex items-center justify-between w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-extrabold rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
+              className="inline-flex min-h-11 items-center justify-between w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-extrabold rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
             >
               <span>Explore Library Profile</span>
               <motion.span

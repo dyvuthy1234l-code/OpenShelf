@@ -258,7 +258,7 @@ export default function BookDetail() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+          className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Previous Page</span>
@@ -286,13 +286,13 @@ export default function BookDetail() {
         {book.cover_image_url && <meta property="og:image" content={book.cover_image_url} />}
       </Helmet>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 pb-[calc(9rem+env(safe-area-inset-bottom))] md:pb-20">
         {/* 1. Breadcrumb Navigation */}
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-amber-700 transition-colors cursor-pointer"
+          className="inline-flex min-h-11 items-center gap-2 text-xs font-bold text-slate-500 hover:text-amber-700 transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back</span>
@@ -397,7 +397,7 @@ export default function BookDetail() {
             {book.library?.name && (
               <Link
                 to={`/libraries/${book.library_id || book.library?.id}`}
-                className="flex items-center gap-1.5 text-xs text-amber-800 font-bold bg-amber-50 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-colors px-3 py-1.5 rounded-xl shrink-0 cursor-pointer"
+                className="flex min-h-11 items-center gap-1.5 text-xs text-amber-800 font-bold bg-amber-50 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 transition-colors px-3 py-1.5 rounded-xl shrink-0 cursor-pointer"
               >
                 <Building2 className="w-4 h-4 text-amber-600 shrink-0" />
                 <span className="truncate max-w-[200px]">{book.library.name}</span>
@@ -433,7 +433,7 @@ export default function BookDetail() {
             {!isAuthenticated ? (
               <button
                 onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`)}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign In to Request</span>
@@ -463,7 +463,7 @@ export default function BookDetail() {
             ) : isAvailable ? (
               <button
                 onClick={() => setShowBorrowModal(true)}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Request to Borrow</span>
@@ -472,7 +472,7 @@ export default function BookDetail() {
               <button
                 onClick={handleWaitlistToggle}
                 disabled={processingWaitlist}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
+                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-md transition-all disabled:opacity-50"
               >
                 <Clock className="w-4 h-4 text-amber-400" />
                 <span>
@@ -489,7 +489,7 @@ export default function BookDetail() {
             <button
               onClick={handleSaveToggle}
               disabled={savingFav}
-              className={`inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border text-xs font-extrabold transition-all shadow-xs shrink-0 ${
+              className={`inline-flex min-h-11 items-center justify-center gap-2 px-5 py-3.5 rounded-xl border text-xs font-extrabold transition-all shadow-xs shrink-0 ${
                 isSaved
                   ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20'
                   : 'bg-white hover:bg-amber-50 text-slate-700 border-slate-200 hover:border-amber-300'
@@ -514,7 +514,7 @@ export default function BookDetail() {
           </p>
 
           {/* Book Metadata Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 pt-4 border-t border-slate-100 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-4 border-t border-slate-100 text-xs">
             {book.isbn && (
               <div>
                 <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">ISBN</span>
@@ -576,7 +576,7 @@ export default function BookDetail() {
 
             <Link
               to={`/libraries/${book.library.id}`}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all shrink-0"
+              className="inline-flex min-h-11 items-center justify-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all shrink-0"
             >
               <span>View Library Profile</span>
               <Building2 className="w-4 h-4 text-amber-600" />
@@ -644,7 +644,8 @@ export default function BookDetail() {
                       key={star}
                       type="button"
                       onClick={() => setUserRating(star)}
-                      className="p-1 hover:scale-110 transition-transform"
+                      aria-label={`Rate ${star} star${star === 1 ? '' : 's'}`}
+                      className="flex h-11 w-11 items-center justify-center hover:scale-110 transition-transform"
                     >
                       <Star
                         className={`w-6 h-6 ${
@@ -673,7 +674,7 @@ export default function BookDetail() {
               <button
                 type="submit"
                 disabled={submittingReview}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{submittingReview ? 'Submitting...' : 'Submit Review'}</span>
@@ -762,7 +763,7 @@ export default function BookDetail() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
+              className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5"
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2 text-slate-900 font-extrabold text-lg">
@@ -771,7 +772,8 @@ export default function BookDetail() {
                 </div>
                 <button
                   onClick={() => setShowBorrowModal(false)}
-                  className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                  aria-label="Close borrow request"
+                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -821,14 +823,14 @@ export default function BookDetail() {
                 <button
                   onClick={() => setShowBorrowModal(false)}
                   disabled={requesting}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+                  className="min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmBorrowRequest}
                   disabled={requesting}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
                 >
                   {requesting ? (
                     <>
@@ -849,28 +851,28 @@ export default function BookDetail() {
       </AnimatePresence>
 
         {/* Mobile Sticky Borrow Action Bar */}
-        <div className="fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 shadow-lg block md:hidden">
+        <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 pt-3 pb-3 shadow-lg block md:hidden">
           <div className="flex items-center gap-2 max-w-7xl mx-auto">
             {!isAuthenticated ? (
               <button
                 onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`)}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
+                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign In to Request</span>
               </button>
             ) : user?.role !== 'member' ? (
-              <div className="flex-1 py-2 bg-slate-100 text-slate-500 text-[11px] font-bold rounded-xl text-center">
+              <div className="flex-1 min-h-11 flex items-center justify-center px-2 bg-slate-100 text-slate-500 text-[11px] font-bold rounded-xl text-center">
                 Librarians / Admins cannot borrow
               </div>
             ) : activeBorrowing ? (
-              <Link to="/member/borrowings" className="flex-1 text-center py-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold rounded-xl truncate">
+              <Link to="/member/borrowings" className="flex-1 min-h-11 flex items-center justify-center px-2 text-center bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold rounded-xl truncate">
                 {activeBorrowing.status === 'pending' ? 'Request Pending' : 'Currently Borrowed'} • View Record
               </Link>
             ) : isAvailable ? (
               <button
                 onClick={() => setShowBorrowModal(true)}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-xs"
+                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-xs"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Request to Borrow</span>
@@ -879,7 +881,7 @@ export default function BookDetail() {
               <button
                 onClick={handleWaitlistToggle}
                 disabled={processingWaitlist}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-slate-900 text-white font-extrabold text-xs rounded-xl shadow-xs"
+                className="flex-1 inline-flex min-h-11 items-center justify-center gap-2 py-2.5 bg-slate-900 text-white font-extrabold text-xs rounded-xl shadow-xs"
               >
                 <Clock className="w-4 h-4 text-amber-400" />
                 <span>{waitlistEntry ? 'Leave Waitlist' : 'Join Waitlist'}</span>
@@ -890,7 +892,7 @@ export default function BookDetail() {
               onClick={handleSaveToggle}
               disabled={savingFav}
               aria-label="Save book"
-              className={`p-2.5 rounded-xl border text-xs font-extrabold transition-all shrink-0 ${
+              className={`flex h-11 w-11 items-center justify-center rounded-xl border text-xs font-extrabold transition-all shrink-0 ${
                 isSaved
                   ? 'bg-amber-500 text-slate-950 border-amber-400'
                   : 'bg-white text-slate-700 border-slate-200'

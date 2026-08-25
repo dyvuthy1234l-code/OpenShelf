@@ -140,7 +140,7 @@ export default function Home() {
       
       <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
         {/* 1. HERO SECTION — DEEP RICH NAVY FULL VIEWPORT */}
-      <section className="relative min-h-[calc(100vh-4rem)] flex items-center py-16 sm:py-24 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
+      <section className="relative min-h-[calc(100dvh-3.5rem)] sm:min-h-[calc(100dvh-4rem)] flex items-center py-16 sm:py-24 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
         {/* Glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] sm:w-[50rem] h-[20rem] sm:h-[32rem] bg-[#D9A83E]/10 rounded-full blur-[130px] pointer-events-none" />
 

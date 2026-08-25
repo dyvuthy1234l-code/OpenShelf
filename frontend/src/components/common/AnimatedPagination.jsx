@@ -17,11 +17,12 @@ export default function AnimatedPagination({ currentPage, lastPage, onPageChange
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2 mt-8">
+    <nav aria-label="Pagination" className="flex items-center justify-center gap-1 sm:gap-2 mt-8">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
+        aria-label="Previous page"
+        className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -32,7 +33,8 @@ export default function AnimatedPagination({ currentPage, lastPage, onPageChange
           <button
             key={p}
             onClick={() => onPageChange(p)}
-            className={`relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs sm:text-sm font-bold transition-colors shadow-sm ${
+            aria-current={isActive ? 'page' : undefined}
+            className={`relative flex items-center justify-center w-11 h-11 rounded-xl text-xs sm:text-sm font-bold transition-colors shadow-sm ${
               isActive ? 'text-amber-950 border border-amber-400' : 'text-slate-600 bg-white hover:bg-slate-50 border border-slate-200'
             }`}
           >
@@ -51,10 +53,11 @@ export default function AnimatedPagination({ currentPage, lastPage, onPageChange
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === lastPage}
-        className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
+        aria-label="Next page"
+        className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
       >
         <ChevronRight className="w-4 h-4" />
       </button>
-    </div>
+    </nav>
   );
 }

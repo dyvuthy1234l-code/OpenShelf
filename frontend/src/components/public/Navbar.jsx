@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import OpenShelfBrand from '../common/OpenShelfBrand';
-import getImageUrl, { getAvatarUrl } from '../../utils/imageUrl';
+import { getAvatarUrl } from '../../utils/imageUrl';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 
 import SearchModal from './SearchModal';
@@ -65,7 +65,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          <nav className="hidden lg:flex items-center gap-1 lg:gap-2">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -85,15 +85,16 @@ export default function Navbar() {
           </nav>
 
           {/* Right Side: Search + Member Shortcuts / Guest Auth */}
-          <div className="hidden lg:flex items-center gap-2.5 xl:gap-3.5">
+          <div className="hidden md:flex items-center gap-2 lg:gap-2.5 xl:gap-3.5">
             {/* Search Input Trigger */}
             <button
               onClick={() => setSearchModalOpen(true)}
-              className="relative w-48 xl:w-56 h-12 md:h-9 flex items-center bg-[#F5F8FC] hover:bg-[#E2E8F0] border border-[#DCE6F0] hover:border-[#CBD5E1] rounded-xl pl-3 pr-2 text-left transition-all"
+              aria-label="Search books and libraries"
+              className="relative w-11 lg:w-44 xl:w-56 h-11 lg:h-9 flex items-center justify-center lg:justify-start bg-[#F5F8FC] hover:bg-[#E2E8F0] border border-[#DCE6F0] hover:border-[#CBD5E1] rounded-xl lg:pl-3 lg:pr-2 text-left transition-all"
             >
-              <Search className="w-4 h-4 text-[#94A3B8] mr-2 shrink-0" />
-              <span className="text-xs text-[#94A3B8] flex-1">Search...</span>
-              <div className="hidden md:flex items-center gap-0.5 opacity-60">
+              <Search className="w-4 h-4 text-[#94A3B8] lg:mr-2 shrink-0" />
+              <span className="hidden lg:block text-xs text-[#94A3B8] flex-1">Search...</span>
+              <div className="hidden xl:flex items-center gap-0.5 opacity-60">
                 <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">⌘</kbd>
                 <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">K</kbd>
               </div>
@@ -106,7 +107,7 @@ export default function Navbar() {
                 <Link
                   to="/member/favorites"
                   title="My Favorites"
-                  className="p-2 text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors"
+                  className="flex h-11 w-11 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors lg:h-9 lg:w-9"
                 >
                   <Bookmark className="w-4 h-4" />
                 </Link>
@@ -115,7 +116,7 @@ export default function Navbar() {
                 <Link
                   to="/member/notifications"
                   title="Notifications"
-                  className="relative p-2 text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors"
+                  className="relative flex h-11 w-11 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors lg:h-9 lg:w-9"
                 >
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
@@ -129,7 +130,9 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className="flex items-center gap-2 p-1 pr-2.5 bg-slate-100/80 border border-slate-200 hover:border-amber-500/50 rounded-xl transition-all"
+                    aria-label="Open profile menu"
+                    aria-expanded={userDropdownOpen}
+                    className="flex min-h-11 min-w-11 items-center justify-center gap-2 px-2.5 bg-slate-100/80 border border-slate-200 hover:border-amber-500/50 rounded-xl transition-all lg:min-h-0 lg:min-w-0 lg:p-1 lg:pr-2.5"
                   >
                     <div className="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
                       {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
@@ -144,7 +147,7 @@ export default function Navbar() {
                         user.name ? user.name[0].toUpperCase() : 'U'
                       )}
                     </div>
-                    <span className="text-xs font-semibold text-slate-800 max-w-[100px] truncate">
+                    <span className="hidden lg:block text-xs font-semibold text-slate-800 max-w-[100px] truncate">
                       {user.name}
                     </span>
                   </button>
@@ -258,13 +261,13 @@ export default function Navbar() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 transition-colors"
+                  className="px-2 lg:px-4 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 transition-colors whitespace-nowrap"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-xl shadow-md shadow-amber-500/20 transition-all"
+                  className="px-3 lg:px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-xl shadow-md shadow-amber-500/20 transition-all whitespace-nowrap"
                 >
                   Register
                 </Link>
@@ -273,10 +276,12 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Hamburger Button */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 text-slate-700 hover:text-slate-900 bg-slate-100 rounded-xl border border-slate-200"
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileMenuOpen}
+              className="flex h-11 w-11 items-center justify-center text-slate-700 hover:text-slate-900 bg-slate-100 rounded-xl border border-slate-200"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -294,7 +299,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] md:hidden"
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
 
@@ -304,13 +309,17 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[280px] bg-white shadow-2xl z-[70] md:hidden flex flex-col overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              className="fixed top-0 right-0 h-[100dvh] w-[min(20rem,calc(100vw-1.25rem))] bg-white shadow-2xl z-[70] lg:hidden flex flex-col overflow-y-auto"
             >
               <div className="flex items-center justify-between p-4 border-b border-slate-100">
                 <span className="font-extrabold text-slate-800 text-sm">Menu</span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 text-slate-500 hover:text-slate-800 bg-slate-100 rounded-full"
+                  aria-label="Close navigation menu"
+                  className="flex h-11 w-11 items-center justify-center text-slate-500 hover:text-slate-800 bg-slate-100 rounded-full"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -325,6 +334,7 @@ export default function Navbar() {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    aria-label="Search books"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500"
                   />
                 </form>

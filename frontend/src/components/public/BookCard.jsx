@@ -102,8 +102,9 @@ export default function BookCard({ book, showDateAdded = false }) {
           whileTap={{ scale: 0.8, rotate: -5 }}
           onClick={handleFavoriteClick}
           disabled={savingFav}
+          aria-label={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
           title={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
-          className={`absolute bottom-3 right-3 z-20 p-2 rounded-xl border transition-all duration-200 shadow-xs ${
+          className={`absolute bottom-3 right-3 z-20 flex h-11 w-11 items-center justify-center rounded-xl border transition-all duration-200 shadow-xs ${
             isFavorited
               ? 'bg-amber-500 text-slate-950 border-amber-500'
               : 'bg-white/90 hover:bg-amber-50 text-slate-600 hover:text-amber-700 border-slate-200'

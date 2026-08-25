@@ -171,7 +171,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
         </div>
 
         {/* Dates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
           <div>
             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Requested</span>
             <span className="font-bold text-slate-800">
@@ -232,7 +232,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
               <button
                 onClick={handlePayFine}
                 disabled={paying}
-                className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all"
+                className="min-h-11 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all"
               >
                 {paying ? 'Processing...' : 'Pay Fine'}
               </button>
@@ -260,7 +260,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
             <button
               onClick={handleExtend}
               disabled={extending}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50"
+              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${extending ? 'animate-spin' : ''}`} />
               <span>{extending ? 'Extending...' : 'Extend Loan'}</span>
@@ -270,7 +270,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {isEligibleForReturn && (
             <button
               onClick={() => setShowReturnModal(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
             >
               <ArrowRightLeft className="w-3.5 h-3.5" />
               <span>Request Return</span>
@@ -284,21 +284,25 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
         {showReturnModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="return-request-title"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
+              className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5"
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2 text-slate-900 font-extrabold text-lg">
                   <ArrowRightLeft className="w-5 h-5 text-amber-600" />
-                  <h3>Request Book Return</h3>
+                  <h3 id="return-request-title">Request Book Return</h3>
                 </div>
                 <button
                   onClick={() => setShowReturnModal(false)}
                   aria-label="Close"
-                  className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                  aria-label="Close return request"
+                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -331,14 +335,14 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
                 <button
                   onClick={() => setShowReturnModal(false)}
                   disabled={requestingReturn}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+                  className="min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleRequestReturnSubmit}
                   disabled={requestingReturn}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
                 >
                   {requestingReturn ? (
                     <>

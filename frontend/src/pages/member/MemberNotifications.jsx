@@ -90,7 +90,7 @@ export default function MemberNotifications() {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="inline-flex items-center gap-2 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
+                className="inline-flex min-h-11 items-center gap-2 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
               >
                 <CheckCheck className="w-4 h-4" />
                 <span>Mark All as Read</span>
@@ -99,7 +99,7 @@ export default function MemberNotifications() {
 
             <button
               onClick={handleClearAll}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200/80 transition-all cursor-pointer"
+              className="inline-flex min-h-11 items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200/80 transition-all cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>
@@ -176,7 +176,7 @@ export default function MemberNotifications() {
                   onClick={(e) => handleDeleteNotification(e, n.id)}
                   title="Delete notification"
                   aria-label="Delete notification"
-                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all opacity-80 group-hover:opacity-100 shrink-0 cursor-pointer"
+                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all opacity-80 group-hover:opacity-100 shrink-0 cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

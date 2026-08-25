@@ -62,6 +62,7 @@ export default function SearchModal({ isOpen, onClose }) {
                 <input
                   ref={inputRef}
                   type="text"
+                  aria-label="Search catalogue"
                   placeholder="Search for books, authors, or libraries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -70,7 +71,8 @@ export default function SearchModal({ isOpen, onClose }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="p-2 mr-1 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
+                  aria-label="Close search"
+                  className="flex h-11 w-11 items-center justify-center mr-1 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>

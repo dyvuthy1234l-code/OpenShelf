@@ -131,7 +131,7 @@ export default function BecomeLibrarian() {
           </div>
           <Link
             to="/librarian"
-            className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shrink-0"
+            className="inline-flex min-h-11 items-center px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shrink-0"
           >
             Go to Librarian Dashboard →
           </Link>
@@ -206,14 +206,14 @@ export default function BecomeLibrarian() {
                   {isSubActive ? (
                     <button
                       onClick={() => navigate('/librarian')}
-                      className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs text-center rounded-xl transition-all shadow-md"
+                      className="w-full min-h-11 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs text-center rounded-xl transition-all shadow-md"
                     >
                       Open Dashboard
                     </button>
                   ) : !isAuthenticated ? (
                     <button
                       onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`)}
-                      className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs text-center rounded-xl transition-all shadow-md shadow-amber-500/20 inline-flex items-center justify-center gap-2"
+                      className="w-full min-h-11 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs text-center rounded-xl transition-all shadow-md shadow-amber-500/20 inline-flex items-center justify-center gap-2"
                     >
                       <LogIn className="w-4 h-4" />
                       <span>Sign In to Subscribe</span>
@@ -221,7 +221,7 @@ export default function BecomeLibrarian() {
                   ) : (
                     <button
                       onClick={() => handleOpenCheckout(plan)}
-                      className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs text-center rounded-xl transition-all shadow-md shadow-amber-500/20"
+                      className="w-full min-h-11 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs text-center rounded-xl transition-all shadow-md shadow-amber-500/20"
                     >
                       Get Started Now
                     </button>
@@ -242,16 +242,20 @@ export default function BecomeLibrarian() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="subscription-confirm-title"
               className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2 text-slate-900 font-extrabold text-lg">
                   <ShieldCheck className="w-5 h-5 text-amber-600" />
-                  <h3>Confirm Subscription</h3>
+                  <h3 id="subscription-confirm-title">Confirm Subscription</h3>
                 </div>
                 <button
                   onClick={() => setShowCheckoutModal(false)}
-                  className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                  aria-label="Close subscription confirmation"
+                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -280,7 +284,7 @@ export default function BecomeLibrarian() {
                 <button
                   onClick={() => setShowCheckoutModal(false)}
                   disabled={purchasing}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+                  className="min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
                 >
                   Cancel
                 </button>
@@ -288,7 +292,7 @@ export default function BecomeLibrarian() {
                 <button
                   onClick={handleConfirmPurchase}
                   disabled={purchasing}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
                 >
                   {purchasing ? (
                     <>

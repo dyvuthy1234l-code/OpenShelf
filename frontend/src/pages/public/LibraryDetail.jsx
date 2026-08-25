@@ -309,7 +309,7 @@ export default function LibraryDetail() {
         {/* LEFT CARD (2/3 width) — TABBED DETAILS */}
         <div className="lg:col-span-2 bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
           {/* Compact Editorial Tab Header */}
-          <div className="flex items-center gap-6 border-b border-slate-100 overflow-x-auto no-scrollbar">
+          <div role="tablist" aria-label="Library information" className="flex items-center gap-4 sm:gap-6 border-b border-slate-100 overflow-x-auto no-scrollbar">
             {[
               { id: 'about', label: 'About' },
               { id: 'contact', label: 'Contact' },
@@ -321,7 +321,9 @@ export default function LibraryDetail() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`pb-3 text-sm font-semibold transition-all duration-200 border-b-2 whitespace-nowrap ${
+                  role="tab"
+                  aria-selected={isActive}
+                  className={`min-h-11 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 whitespace-nowrap ${
                     isActive
                       ? 'text-amber-700 border-amber-500 font-bold'
                       : 'text-slate-500 hover:text-slate-800 border-transparent'
@@ -576,7 +578,7 @@ export default function LibraryDetail() {
           {(search || categoryId || sort !== 'latest' || page > 1) && (
             <button
               onClick={handleClearFilters}
-              className="inline-flex items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 font-semibold px-3 py-1.5 bg-rose-50 border border-rose-200 rounded-xl transition-colors shrink-0"
+              className="inline-flex min-h-11 items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 font-semibold px-3 py-1.5 bg-rose-50 border border-rose-200 rounded-xl transition-colors shrink-0"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Clear filters</span>
@@ -594,7 +596,7 @@ export default function LibraryDetail() {
               placeholder="Search title, author, ISBN..."
               value={search}
               onChange={(e) => updateFilters({ search: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
             />
             {search && (
               <button
@@ -611,7 +613,7 @@ export default function LibraryDetail() {
             <select
               value={categoryId}
               onChange={(e) => updateFilters({ category_id: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
             >
               <option value="">All Categories in this library</option>
               {categories.map((c) => (
@@ -627,7 +629,7 @@ export default function LibraryDetail() {
             <select
               value={sort}
               onChange={(e) => updateFilters({ sort: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
             >
               <option value="latest">Newest Added</option>
               <option value="top_rated">Highest Rated</option>

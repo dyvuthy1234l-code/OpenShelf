@@ -151,7 +151,7 @@ export default function BooksList() {
               placeholder="Search title, author..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
             />
             {searchInput && (
               <button
@@ -168,7 +168,7 @@ export default function BooksList() {
             <select
               value={libraryId}
               onChange={(e) => updateFilters({ library_id: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
             >
               <option value="">All Libraries</option>
               {libraries.map((l) => (
@@ -184,7 +184,7 @@ export default function BooksList() {
             <select
               value={categoryId}
               onChange={(e) => updateFilters({ category_id: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
             >
               <option value="">
                 {libraryId ? 'All Categories in selected library' : 'All Categories'}
@@ -202,7 +202,7 @@ export default function BooksList() {
             <select
               value={sort}
               onChange={(e) => updateFilters({ sort: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
             >
               <option value="">Default (Newest)</option>
               <option value="top_rated">Highest Rated First</option>

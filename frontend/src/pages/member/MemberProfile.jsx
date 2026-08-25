@@ -13,7 +13,6 @@ export default function MemberProfile() {
 
   const [profileForm, setProfileForm] = useState({
     name: user?.name || '',
-    email: user?.email || '',
     phone: user?.phone || '',
   });
 
@@ -205,7 +204,8 @@ export default function MemberProfile() {
           <button
             onClick={() => fileInputRef.current?.click()}
             title="Upload Profile Picture"
-            className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center border-2 border-white shadow-md hover:bg-amber-500 hover:text-slate-950 transition-colors"
+            aria-label="Upload profile picture"
+            className="absolute bottom-0 right-0 w-11 h-11 rounded-full bg-slate-900 text-white flex items-center justify-center border-2 border-white shadow-md hover:bg-amber-500 hover:text-slate-950 transition-colors"
           >
             <Camera className="w-4 h-4" />
           </button>
@@ -223,7 +223,7 @@ export default function MemberProfile() {
             {user?.avatar_url && (
               <button
                 onClick={() => setShowRemoveModal(true)}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 border border-rose-200 rounded-xl transition-colors shrink-0"
+                className="inline-flex min-h-11 items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 border border-rose-200 rounded-xl transition-colors shrink-0"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Remove Photo</span>
@@ -273,44 +273,48 @@ export default function MemberProfile() {
         <form onSubmit={handleProfileSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 block">Full Name</label>
+              <label htmlFor="member-name" className="text-xs font-semibold text-slate-700 block">Full Name</label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
+                  id="member-name"
                   required
                   value={profileForm.name}
                   onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
+                  className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 block">Email Address</label>
+              <label htmlFor="member-email" className="text-xs font-semibold text-slate-700 block">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="email"
-                  required
-                  value={profileForm.email}
-                  onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
+                  id="member-email"
+                  value={user?.email || ''}
+                  readOnly
+                  aria-describedby="member-email-help"
+                  className="w-full min-h-11 bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-600 cursor-not-allowed"
                 />
               </div>
+              <p id="member-email-help" className="text-[11px] text-slate-500">Email changes are not available from this profile form.</p>
             </div>
           </div>
 
           <div className="space-y-1.5 max-w-sm">
-            <label className="text-xs font-semibold text-slate-700 block">Phone Number</label>
+            <label htmlFor="member-phone" className="text-xs font-semibold text-slate-700 block">Phone Number</label>
             <div className="relative">
               <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
-                type="text"
+                  type="text"
+                  id="member-phone"
                 placeholder="012 345 678"
                 value={profileForm.phone}
                 onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
+                className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
               />
             </div>
           </div>
@@ -319,7 +323,7 @@ export default function MemberProfile() {
             <button
               type="submit"
               disabled={updatingProfile}
-              className="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+              className="w-full sm:w-auto min-h-11 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
             >
               {updatingProfile ? 'Saving Changes...' : 'Save Profile Changes'}
             </button>
@@ -350,39 +354,42 @@ export default function MemberProfile() {
 
         <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-lg">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700 block">Current Password</label>
+            <label htmlFor="member-current-password" className="text-xs font-semibold text-slate-700 block">Current Password</label>
             <input
               type="password"
+              id="member-current-password"
               required
               placeholder="••••••••"
               value={passwordForm.current_password}
               onChange={(e) => setPasswordForm({ ...passwordForm, current_password: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 px-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 px-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 block">New Password</label>
+              <label htmlFor="member-new-password" className="text-xs font-semibold text-slate-700 block">New Password</label>
               <input
                 type="password"
+                id="member-new-password"
                 required
                 placeholder="••••••••"
                 value={passwordForm.password}
                 onChange={(e) => setPasswordForm({ ...passwordForm, password: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 px-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
+                className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 px-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 block">Confirm New Password</label>
+              <label htmlFor="member-confirm-password" className="text-xs font-semibold text-slate-700 block">Confirm New Password</label>
               <input
                 type="password"
+                id="member-confirm-password"
                 required
                 placeholder="••••••••"
                 value={passwordForm.password_confirmation}
                 onChange={(e) => setPasswordForm({ ...passwordForm, password_confirmation: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 px-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
+                className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 px-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white"
               />
             </div>
           </div>
@@ -391,7 +398,7 @@ export default function MemberProfile() {
             <button
               type="submit"
               disabled={updatingPassword}
-              className="w-full sm:w-auto px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="w-full sm:w-auto min-h-11 px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {updatingPassword ? 'Updating Password...' : 'Update Password'}
             </button>
@@ -408,7 +415,7 @@ export default function MemberProfile() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-5 text-center"
+              className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 text-center"
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="font-extrabold text-slate-900 text-base">Preview Profile Photo</h3>
@@ -419,7 +426,8 @@ export default function MemberProfile() {
                     setPreviewUrl(null);
                     if (fileInputRef.current) fileInputRef.current.value = '';
                   }}
-                  className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                  aria-label="Close photo preview"
+                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -444,7 +452,7 @@ export default function MemberProfile() {
                     if (fileInputRef.current) fileInputRef.current.value = '';
                   }}
                   disabled={uploadingAvatar}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+                  className="w-full sm:w-auto min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
                 >
                   Cancel
                 </button>
@@ -452,7 +460,7 @@ export default function MemberProfile() {
                 <button
                   onClick={handleSavePhoto}
                   disabled={uploadingAvatar}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
                 >
                   {uploadingAvatar ? (
                     <>
@@ -481,7 +489,7 @@ export default function MemberProfile() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="bg-white border border-slate-200 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-5 text-center"
+              className="max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 text-center"
             >
               <div className="w-12 h-12 bg-rose-50 border border-rose-200 text-rose-600 rounded-2xl flex items-center justify-center mx-auto">
                 <Trash2 className="w-6 h-6" />
@@ -498,7 +506,7 @@ export default function MemberProfile() {
                 <button
                   onClick={() => setShowRemoveModal(false)}
                   disabled={removingAvatar}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+                  className="w-full sm:w-auto min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
                 >
                   Cancel
                 </button>
@@ -506,7 +514,7 @@ export default function MemberProfile() {
                 <button
                   onClick={handleRemovePhoto}
                   disabled={removingAvatar}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
                 >
                   {removingAvatar ? (
                     <>

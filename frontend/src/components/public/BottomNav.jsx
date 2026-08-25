@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Building2, Bell, User, LogIn } from "lucide-react";
+import { Home, BookOpen, Building2, Bell, User, LogIn, Clock } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useNotifications } from "../../hooks/queries/useNotifications";
 
@@ -20,7 +20,7 @@ export default function BottomNav() {
     ? [
         { icon: Home, label: "Home", path: "/" },
         { icon: BookOpen, label: "Books", path: "/books" },
-        { icon: Building2, label: "Libraries", path: "/libraries" },
+        { icon: Clock, label: "Loans", path: "/member/borrowings" },
         { icon: Bell, label: "Alerts", path: "/member/notifications", badge: unreadCount },
         { icon: User, label: "Profile", path: "/member/profile" },
       ]
@@ -32,8 +32,8 @@ export default function BottomNav() {
       ];
 
   return (
-    <nav className="block md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-      <div className="flex items-stretch justify-around pb-4 pt-1">
+    <nav aria-label="Member mobile navigation" className="block md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+      <div className="flex h-[calc(4.5rem+env(safe-area-inset-bottom))] items-stretch justify-around pt-1 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         {tabs.map((tab) => {
           const active = isActive(tab.path);
           const Icon = tab.icon;
@@ -41,7 +41,8 @@ export default function BottomNav() {
             <Link
               key={tab.path}
               to={tab.path}
-              className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative transition-colors ${
+              aria-current={active ? "page" : undefined}
+              className={`flex min-h-14 flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative transition-colors ${
                 active ? "text-amber-500" : "text-slate-400"
               }`}
             >

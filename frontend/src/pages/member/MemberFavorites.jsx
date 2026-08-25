@@ -7,6 +7,7 @@ import Pagination from '../../components/public/Pagination';
 import EmptyState from '../../components/public/EmptyState';
 import ErrorState from '../../components/public/ErrorState';
 import BookSkeleton from '../../components/common/BookSkeleton';
+import { getBookCoverUrl } from '../../utils/imageUrl';
 
 export default function MemberFavorites() {
   const { toggleFavorite } = useAuth();
@@ -159,7 +160,7 @@ export default function MemberFavorites() {
                   <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
                     {book.cover_image_url ? (
                       <img
-                        src={book.cover_image_url}
+                        src={getBookCoverUrl(book.cover_image_url, 400)}
                         alt={book.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -174,7 +175,8 @@ export default function MemberFavorites() {
                       onClick={() => handleRemove(fav.id, book.id, book.title)}
                       disabled={removingId === fav.id}
                       title="Remove from favorites"
-                      className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 rounded-xl transition-colors shadow-xs"
+                      aria-label={`Remove ${book.title || 'book'} from favorites`}
+                      className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center bg-white/90 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 rounded-xl transition-colors shadow-xs"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

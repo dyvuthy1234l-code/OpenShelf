@@ -175,12 +175,13 @@ export default function LibrariesList() {
                   placeholder="Search library name, address, or location..."
                   value={searchInput}
                   onChange={handleSearchChange}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2 pl-10 pr-9 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all font-medium"
+                  className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2 pl-10 pr-11 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all font-medium"
                 />
                 {searchInput && (
                   <button
                     onClick={() => { setSearchInput(''); setSelectedProvince(''); setPage(1); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    aria-label="Clear library search"
+                    className="absolute right-1.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -191,7 +192,7 @@ export default function LibrariesList() {
             {/* Selectors: All 25 Provinces of Cambodia & Sort Dropdown */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
               {/* 25 Cambodian Provinces Dropdown */}
-              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+              <div className="flex min-h-11 items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
                 <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                 <span className="text-slate-500 font-semibold">Province:</span>
                 <select
@@ -229,7 +230,7 @@ export default function LibrariesList() {
               </div>
 
               {/* Sort Dropdown */}
-              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+              <div className="flex min-h-11 items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
                 <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-slate-500 font-semibold">Sort:</span>
                 <select
@@ -293,7 +294,7 @@ export default function LibrariesList() {
                 {selectedProvince && selectedProvince !== 'Phnom Penh' && (
                   <button
                     onClick={() => handleProvinceChange('Phnom Penh')}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                    className="inline-flex min-h-11 items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
                   >
                     <Building2 className="w-4 h-4" />
                     <span>View Phnom Penh Libraries</span>
@@ -301,7 +302,7 @@ export default function LibrariesList() {
                 )}
                 <button
                   onClick={handleClearFilters}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all cursor-pointer"
+                  className="inline-flex min-h-11 items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>All Provinces</span>

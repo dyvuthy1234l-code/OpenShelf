@@ -167,7 +167,7 @@ export default function CategoriesList() {
               placeholder="Search category name or description..."
               value={search}
               onChange={(e) => updateFilters({ search: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
             />
             {search && (
               <button
@@ -184,7 +184,7 @@ export default function CategoriesList() {
             <select
               value={libraryId}
               onChange={(e) => updateFilters({ library_id: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
             >
               <option value="">All Libraries</option>
               {libraries.map((l) => (
@@ -216,7 +216,7 @@ export default function CategoriesList() {
       <div ref={directoryRef} className="space-y-8">
         {loading ? (
           /* Skeleton Loading Cards (4 columns x 3 rows = 12 cards) */
-          <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
               <div key={n} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse h-48">
                 <div className="w-10 h-10 bg-slate-100 rounded-xl" />
@@ -250,7 +250,7 @@ export default function CategoriesList() {
         ) : (
           /* Categories Grid & Pagination Bar */
           <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((cat) => {
                 const targetLibraryId = libraryId || cat.library_id;
                 const bookTarget = targetLibraryId
