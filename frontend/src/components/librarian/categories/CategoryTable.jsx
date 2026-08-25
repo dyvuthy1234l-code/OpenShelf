@@ -3,11 +3,11 @@ import { Tag, Eye, Edit3, Trash2, BookOpen } from 'lucide-react';
 
 export default function CategoryTable({ categories = [], onEdit, onDelete }) {
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
+    <div className="os-panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-full max-w-[800px] text-left text-xs">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+            <tr className="bg-navy-50/60 border-b border-brand-border/60 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
               <th className="py-4 px-6">Category</th>
               <th className="py-4 px-4">Description</th>
               <th className="py-4 px-4 text-center">Books Count</th>
@@ -16,18 +16,18 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+          <tbody className="font-medium text-slate-800">
             {categories.map((cat) => (
-              <tr key={cat.id} className="hover:bg-slate-50/80 transition-colors">
+              <tr key={cat.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                 {/* Category Name & Icon */}
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-gold-100 border border-gold-200 text-gold-600 flex items-center justify-center font-bold shrink-0">
                       <Tag className="w-4 h-4" />
                     </div>
                     <Link
                       to={`/librarian/categories/${cat.id}`}
-                      className="font-extrabold text-slate-900 hover:text-amber-700 transition-colors truncate max-w-[180px] block"
+                      className="font-extrabold text-slate-900 hover:text-gold-600 transition-colors truncate max-w-[180px] block"
                     >
                       {cat.name}
                     </Link>
@@ -43,18 +43,18 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
 
                 {/* Books Count */}
                 <td className="py-4 px-4 text-center font-bold">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs">
-                    <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="os-badge-info">
+                    <BookOpen className="w-3.5 h-3.5 text-gold-600" />
                     <span>{cat.books_count ?? 0} Books</span>
                   </span>
                 </td>
 
                 {/* Status */}
                 <td className="py-4 px-4">
-                  <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold capitalize px-2.5 py-0.5 rounded-full border ${
+                  <span className={`capitalize ${
                     (cat.status || 'active') === 'active'
-                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                      : 'text-slate-600 bg-slate-100 border-slate-200'
+                      ? 'os-badge-success'
+                      : 'os-badge-info'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${
                       (cat.status || 'active') === 'active' ? 'bg-emerald-500' : 'bg-slate-400'
@@ -73,7 +73,7 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
                   <Link
                     to={`/librarian/categories/${cat.id}`}
                     title="View Books in Category"
-                    className="inline-block p-1.5 text-slate-500 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-colors"
+                    className="os-btn-ghost h-8 w-8 px-2"
                   >
                     <Eye className="w-4 h-4" />
                   </Link>
@@ -81,7 +81,7 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
                   <button
                     onClick={() => onEdit(cat)}
                     title="Edit Category"
-                    className="p-1.5 text-slate-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors"
+                    className="os-btn-ghost h-8 w-8 px-2"
                   >
                     <Edit3 className="w-4 h-4" />
                   </button>
@@ -89,7 +89,7 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
                   <button
                     onClick={() => onDelete(cat)}
                     title="Delete Category"
-                    className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                    className="os-btn-ghost h-8 w-8 px-2 hover:!text-rose-600"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

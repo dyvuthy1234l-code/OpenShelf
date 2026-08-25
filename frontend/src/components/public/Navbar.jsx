@@ -56,7 +56,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#DCE6F0] shadow-xs">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-brand-border shadow-xs">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Brand Logo */}
@@ -74,8 +74,8 @@ export default function Navbar() {
                   to={link.path}
                   className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'text-[#123A63] bg-[#F5F8FC] font-extrabold border border-[#DCE6F0]'
-                      : 'text-[#64748B] hover:text-[#102A43] hover:bg-[#F5F8FC]'
+                      ? 'text-navy-800 bg-navy-50 font-extrabold border border-brand-border'
+                      : 'text-slate-500 hover:text-navy-800 hover:bg-navy-50'
                   }`}
                 >
                   {link.name}
@@ -90,10 +90,10 @@ export default function Navbar() {
             <button
               onClick={() => setSearchModalOpen(true)}
               aria-label="Search books and libraries"
-              className="relative w-11 lg:w-44 xl:w-56 h-11 lg:h-9 flex items-center justify-center lg:justify-start bg-[#F5F8FC] hover:bg-[#E2E8F0] border border-[#DCE6F0] hover:border-[#CBD5E1] rounded-xl lg:pl-3 lg:pr-2 text-left transition-all"
+              className="relative w-11 lg:w-44 xl:w-56 h-11 lg:h-9 flex items-center justify-center lg:justify-start bg-white hover:bg-navy-50 border border-brand-border hover:border-navy-600/50 rounded-xl lg:pl-3 lg:pr-2 text-left transition-all shadow-xs"
             >
-              <Search className="w-4 h-4 text-[#94A3B8] lg:mr-2 shrink-0" />
-              <span className="hidden lg:block text-xs text-[#94A3B8] flex-1">Search...</span>
+              <Search className="w-4 h-4 text-navy-200 lg:mr-2 shrink-0" />
+              <span className="hidden lg:block text-xs text-navy-200 flex-1">Search...</span>
               <div className="hidden xl:flex items-center gap-0.5 opacity-60">
                 <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">⌘</kbd>
                 <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">K</kbd>
@@ -261,13 +261,13 @@ export default function Navbar() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-2 lg:px-4 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 transition-colors whitespace-nowrap"
+                  className="os-btn-ghost px-3 lg:px-4 text-xs font-semibold whitespace-nowrap"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 lg:px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-xl shadow-md shadow-amber-500/20 transition-all whitespace-nowrap"
+                  className="os-btn-gold px-3 lg:px-4 text-xs whitespace-nowrap"
                 >
                   Register
                 </Link>
@@ -281,7 +281,7 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
-              className="flex h-11 w-11 items-center justify-center text-slate-700 hover:text-slate-900 bg-slate-100 rounded-xl border border-slate-200"
+               className="os-btn-secondary h-11 w-11 px-0 items-center justify-center"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -335,7 +335,7 @@ export default function Navbar() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     aria-label="Search books"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-amber-500"
+                     className="os-input h-12 pl-10"
                   />
                 </form>
 
@@ -348,8 +348,8 @@ export default function Navbar() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`px-4 flex items-center h-12 rounded-xl text-sm font-medium ${
                         location.pathname === link.path
-                          ? 'text-amber-700 bg-amber-50 font-bold'
-                          : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
+                          ? 'text-navy-800 bg-navy-50 font-bold'
+                          : 'text-slate-600 hover:text-navy-800 hover:bg-navy-50'
                       }`}
                     >
                       {link.name}
@@ -361,45 +361,45 @@ export default function Navbar() {
                 <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
                   {isAuthenticated && user ? (
                     <>
-                      <Link
-                        to="/member/borrowings"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-4 flex items-center h-12 bg-slate-50 text-slate-800 text-sm font-semibold rounded-xl border border-slate-200"
-                      >
-                        My Borrowings
-                      </Link>
-                      <Link
-                        to="/member/favorites"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-4 flex items-center h-12 bg-slate-50 text-slate-800 text-sm font-semibold rounded-xl border border-slate-200"
-                      >
-                        Favorites
-                      </Link>
-                      <Link
-                        to="/member/notifications"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-4 flex items-center justify-between h-12 bg-slate-50 text-slate-800 text-sm font-semibold rounded-xl border border-slate-200"
-                      >
+                       <Link
+                         to="/member/borrowings"
+                         onClick={() => setMobileMenuOpen(false)}
+                         className="os-btn-secondary px-4 flex items-center justify-start h-12 text-sm font-semibold"
+                       >
+                         My Borrowings
+                       </Link>
+                       <Link
+                         to="/member/favorites"
+                         onClick={() => setMobileMenuOpen(false)}
+                         className="os-btn-secondary px-4 flex items-center justify-start h-12 text-sm font-semibold"
+                       >
+                         Favorites
+                       </Link>
+                       <Link
+                         to="/member/notifications"
+                         onClick={() => setMobileMenuOpen(false)}
+                         className="os-btn-secondary px-4 flex items-center justify-between h-12 text-sm font-semibold"
+                       >
                         <span>Notifications</span>
                         {unreadCount > 0 && (
                           <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full text-xs">{unreadCount}</span>
                         )}
                       </Link>
-                      <Link
-                        to="/member/profile"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="px-4 flex items-center h-12 bg-slate-50 text-slate-800 text-sm font-semibold rounded-xl border border-slate-200"
-                      >
-                        My Profile
-                      </Link>
-                      <button
-                        onClick={async () => {
-                          setMobileMenuOpen(false);
-                          await logout();
-                          navigate('/login');
-                        }}
-                        className="w-full flex items-center justify-center h-12 bg-rose-50 text-rose-600 font-bold text-sm rounded-xl border border-rose-200 mt-2"
-                      >
+                       <Link
+                         to="/member/profile"
+                         onClick={() => setMobileMenuOpen(false)}
+                         className="os-btn-secondary px-4 flex items-center justify-start h-12 text-sm font-semibold"
+                       >
+                         My Profile
+                       </Link>
+                       <button
+                         onClick={async () => {
+                           setMobileMenuOpen(false);
+                           await logout();
+                           navigate('/login');
+                         }}
+                         className="os-btn-danger w-full h-12 font-bold text-sm mt-2"
+                       >
                         Sign Out
                       </button>
                     </>

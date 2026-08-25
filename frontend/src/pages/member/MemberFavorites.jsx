@@ -91,19 +91,19 @@ export default function MemberFavorites() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-brand-border">
         <div>
-          <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-gold-600 text-xs font-bold uppercase tracking-wider mb-1">
             <Bookmark className="w-4 h-4" />
             <span>Saved Wishlist</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Your Favorite Books</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900">Your Favorite Books</h1>
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Books you saved for future reading</p>
         </div>
 
         <Link
           to="/books"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all shrink-0"
+          className="os-btn-gold shrink-0"
         >
           <BookOpen className="w-4 h-4" />
           <span>Browse Catalogue</span>
@@ -111,7 +111,7 @@ export default function MemberFavorites() {
       </div>
 
       {toastMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold">
+        <div className="bg-emerald-50 border border-emerald-200/70 text-emerald-700 p-3 rounded-xl text-xs font-semibold">
           {toastMessage}
         </div>
       )}
@@ -138,7 +138,7 @@ export default function MemberFavorites() {
           action={
             <Link
               to="/books"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md transition-all"
+              className="os-btn-gold"
             >
               <span>Browse Catalogue</span>
               <ArrowRight className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function MemberFavorites() {
               return (
                 <div
                   key={fav.id}
-                  className="bg-white border border-slate-200/90 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all flex flex-col h-full group"
+                  className="os-card flex flex-col h-full group"
                 >
                   <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
                     {book.cover_image_url ? (
@@ -166,7 +166,7 @@ export default function MemberFavorites() {
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 flex flex-col items-center justify-center p-4 text-center">
-                        <BookOpen className="w-12 h-12 text-amber-600/70 mb-3" />
+                        <BookOpen className="w-12 h-12 text-gold-600/70 mb-3" />
                         <span className="text-xs text-slate-700 font-bold line-clamp-3 leading-snug px-4">{book.title}</span>
                       </div>
                     )}
@@ -176,22 +176,22 @@ export default function MemberFavorites() {
                       disabled={removingId === fav.id}
                       title="Remove from favorites"
                       aria-label={`Remove ${book.title || 'book'} from favorites`}
-                      className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center bg-white/90 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 rounded-xl transition-colors shadow-xs"
+                      className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center bg-white/90 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-brand-border rounded-xl transition-colors shadow-xs"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
                   <div className="p-5 flex flex-col flex-grow bg-white">
-                    <h3 className="text-base font-bold text-slate-900 group-hover:text-amber-800 transition-colors line-clamp-1 mb-1">
+                    <h3 className="text-base font-bold text-navy-900 group-hover:text-gold-600 transition-colors line-clamp-1 mb-1">
                       {book.title || 'Book Title'}
                     </h3>
 
                     <p className="text-xs text-slate-500 mb-3 line-clamp-1">{book.author || 'Author'}</p>
 
                     {book.library?.name && (
-                      <div className="flex items-center gap-1.5 text-xs text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-xl mb-4">
-                        <Building2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <div className="flex items-center gap-1.5 text-xs text-navy-800 bg-navy-50 border border-brand-border px-3 py-1.5 rounded-xl mb-4">
+                        <Building2 className="w-3.5 h-3.5 text-gold-600 shrink-0" />
                         <span className="line-clamp-1 font-semibold">{book.library.name}</span>
                       </div>
                     )}
@@ -199,12 +199,12 @@ export default function MemberFavorites() {
                     <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
                       <div>
                         {isAvailable ? (
-                          <span className="inline-flex items-center gap-1 text-emerald-700 text-[11px] font-bold">
+                          <span className="os-badge-success">
                             <CheckCircle2 className="w-3 h-3" />
                             Available
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-rose-600 text-[11px] font-bold">
+                          <span className="os-badge-danger">
                             <XCircle className="w-3 h-3" />
                             Borrowed
                           </span>
@@ -213,7 +213,7 @@ export default function MemberFavorites() {
 
                       <Link
                         to={`/books/${book.id}`}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-800"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-gold-600 hover:text-gold-500"
                       >
                         <span>View</span>
                         <ArrowRight className="w-3.5 h-3.5" />

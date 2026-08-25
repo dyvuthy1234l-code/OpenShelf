@@ -50,11 +50,11 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
-        className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6"
+        className="os-panel p-6 sm:p-8 max-w-lg w-full shadow-xl shadow-navy-950/10 space-y-6"
       >
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2">
-            <Tag className="w-5 h-5 text-amber-600" />
+            <Tag className="w-5 h-5 text-gold-600" />
             <h3 className="text-xl font-extrabold text-slate-900">
               {isEditing ? 'Edit Category' : 'Add New Category'}
             </h3>
@@ -76,7 +76,7 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
+            <label className="os-label">
               Category Name <span className="text-rose-500">*</span>
             </label>
             <input
@@ -86,7 +86,7 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
               onChange={handleChange}
               placeholder="e.g. Programming & Software"
               required
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
             {errors.name && (
               <p className="text-[11px] font-semibold text-rose-600">{errors.name[0]}</p>
@@ -94,14 +94,14 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Description</label>
+            <label className="os-label">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows={3}
               placeholder="Provide a brief summary of what books belong in this category..."
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
             {errors.description && (
               <p className="text-[11px] font-semibold text-rose-600">{errors.description[0]}</p>
@@ -110,12 +110,12 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
 
           {isEditing && (
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">Status</label>
+              <label className="os-label">Status</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -128,7 +128,7 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+              className="os-btn-secondary"
             >
               Cancel
             </button>
@@ -136,7 +136,7 @@ export default function CategoryForm({ initialData = null, onSave, onClose }) {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+              className="os-btn-gold"
             >
               {saving ? (
                 <>

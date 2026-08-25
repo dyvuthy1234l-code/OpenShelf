@@ -32,7 +32,7 @@ export default function BottomNav() {
       ];
 
   return (
-    <nav aria-label="Member mobile navigation" className="block md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+    <nav aria-label="Member mobile navigation" className="block md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-brand-border shadow-[0_-4px_20px_rgba(7,23,43,0.08)]">
       <div className="flex h-[calc(4.5rem+env(safe-area-inset-bottom))] items-stretch justify-around pt-1 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         {tabs.map((tab) => {
           const active = isActive(tab.path);
@@ -43,11 +43,11 @@ export default function BottomNav() {
               to={tab.path}
               aria-current={active ? "page" : undefined}
               className={`flex min-h-14 flex-col items-center justify-center gap-0.5 flex-1 py-1.5 relative transition-colors ${
-                active ? "text-amber-500" : "text-slate-400"
+                active ? "text-navy-800" : "text-slate-400"
               }`}
             >
               {active && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-amber-500 rounded-full" />
+                <span className="absolute top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gold-500 rounded-full" />
               )}
               <div className="relative">
                 <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
@@ -57,7 +57,7 @@ export default function BottomNav() {
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] font-bold leading-none ${active ? "text-amber-500" : "text-slate-400"}`}>
+              <span className={`text-[10px] font-bold leading-none ${active ? "text-navy-800" : "text-slate-400"}`}>
                 {tab.label}
               </span>
             </Link>

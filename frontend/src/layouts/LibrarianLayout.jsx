@@ -107,12 +107,12 @@ export default function LibrarianLayout() {
   const pageTitle = currentNav?.name || 'Workspace';
 
   return (
-    <div className="h-screen w-full bg-slate-100 flex overflow-hidden font-sans text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950">
+    <div className="h-screen w-full bg-slate-100 flex overflow-hidden font-sans text-slate-900 antialiased selection:bg-gold-400 selection:text-slate-950">
       <div className="flex flex-1 w-full h-full relative overflow-hidden">
         {/* DESKTOP FIXED SIDEBAR */}
-        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#07172B] text-white border-r border-[#0F3256] shrink-0 select-none z-20 overflow-hidden">
+        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-navy-950 text-white border-r border-navy-800 shrink-0 select-none z-20 overflow-hidden">
           {/* Brand Header */}
-          <div className="p-4 border-b border-[#0F3256] flex items-center gap-3 shrink-0">
+          <div className="p-4 border-b border-white/10 flex items-center gap-3 shrink-0">
             <Link to="/librarian" className="shrink-0">
               <OpenShelfBrand role="librarian" size="md" dark />
             </Link>
@@ -130,14 +130,14 @@ export default function LibrarianLayout() {
                   to={item.path}
                   className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
                     isActive
-                      ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-extrabold translate-x-0.5'
-                      : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70 hover:translate-x-0.5'
+                      ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-extrabold translate-x-0.5'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5 hover:translate-x-0.5'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
                   <span className="flex-1 truncate transition-all duration-200">{item.name}</span>
                   {item.badge > 0 && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-transform duration-200 group-hover:scale-105 ${isActive ? 'bg-[#07172B] text-[#F0B429]' : 'bg-[#F0B429] text-[#07172B]'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-transform duration-200 group-hover:scale-105 ${isActive ? 'bg-navy-950 text-gold-500' : 'bg-gold-500 text-navy-950'}`}>
                       {item.badge > 99 ? '99+' : item.badge}
                     </span>
                   )}
@@ -152,19 +152,19 @@ export default function LibrarianLayout() {
               to="/librarian/profile"
               className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
                 location.pathname === '/librarian/profile'
-                  ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-extrabold translate-x-0.5'
-                  : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70 hover:translate-x-0.5'
+                  ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-extrabold translate-x-0.5'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5 hover:translate-x-0.5'
               }`}
             >
-              <UserCircle className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'}`} />
+              <UserCircle className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
               <span>My Profile</span>
             </Link>
           </div>
 
           {/* Sidebar Footer User Card */}
-          <div className="p-3 border-t border-[#0F3256] bg-[#07172B] shrink-0">
-            <div className="group flex items-center gap-2.5 p-2 bg-[#0F3256]/70 border border-[#0F3256] rounded-xl transition-all duration-200 ease-out hover:bg-[#0F3256]/90">
-              <div className="w-8 h-8 rounded-xl bg-[#F0B429] text-[#07172B] font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03]">
+          <div className="p-3 border-t border-white/10 bg-navy-950 shrink-0">
+            <div className="group flex items-center gap-2.5 p-2 bg-navy-800/70 border border-navy-800 rounded-xl transition-all duration-200 ease-out hover:bg-navy-800/90">
+              <div className="w-8 h-8 rounded-xl bg-gold-500 text-navy-950 font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03]">
                 {user?.avatar_url ? (
                   <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
@@ -173,8 +173,8 @@ export default function LibrarianLayout() {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-white truncate group-hover:text-[#F0B429] transition-colors duration-200">{user?.name || 'Librarian'}</p>
-                <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-[#F0B429]">
+                <p className="text-xs font-bold text-white truncate group-hover:text-gold-500 transition-colors duration-200">{user?.name || 'Librarian'}</p>
+                <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-gold-500">
                   {user?.role || 'LIBRARIAN'}
                 </span>
               </div>
@@ -182,7 +182,7 @@ export default function LibrarianLayout() {
               <button
                 onClick={handleLogout}
                 title="Log Out"
-                className="p-1.5 text-[#94A3B8] hover:text-[#D32F2F] hover:bg-[#D32F2F]/10 rounded-xl transition-all duration-200 group/logout shrink-0 cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-600/10 rounded-xl transition-all duration-200 group/logout shrink-0 cursor-pointer"
               >
                 <LogOut className="w-4 h-4 transition-transform duration-200 group-hover/logout:translate-x-0.5" />
               </button>
@@ -200,7 +200,7 @@ export default function LibrarianLayout() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="fixed inset-0 bg-[#07172B]/80 backdrop-blur-xs"
+                className="fixed inset-0 bg-navy-950/80 backdrop-blur-xs"
               />
 
               <motion.aside
@@ -208,16 +208,16 @@ export default function LibrarianLayout() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative w-72 bg-[#07172B] text-white flex flex-col h-full z-10 shadow-2xl border-r border-[#0F3256]"
+                className="relative w-72 bg-navy-950 text-white flex flex-col h-full z-10 shadow-2xl border-r border-navy-800"
               >
-                <div className="p-4 border-b border-[#0F3256] flex items-center justify-between shrink-0">
+                <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
                   <Link to="/librarian" onClick={() => setMobileSidebarOpen(false)} className="shrink-0">
                     <OpenShelfBrand role="librarian" size="md" dark />
                   </Link>
 
                   <button
                     onClick={() => setMobileSidebarOpen(false)}
-                    className="p-1 text-[#94A3B8] hover:text-white rounded-lg transition-colors cursor-pointer"
+                    className="p-1 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -235,14 +235,14 @@ export default function LibrarianLayout() {
                         onClick={() => setMobileSidebarOpen(false)}
                         className={`group flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ease-out ${
                           isActive
-                            ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-bold'
-                            : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70'
+                            ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-bold'
+                            : 'text-slate-300 hover:text-white hover:bg-white/5'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-[#94A3B8]'}`} />
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                         <span className="flex-1">{item.name}</span>
                         {item.badge > 0 && (
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-[#07172B] text-[#F0B429]' : 'bg-[#F0B429] text-[#07172B]'}`}>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-navy-950 text-gold-500' : 'bg-gold-500 text-navy-950'}`}>
                             {item.badge > 99 ? '99+' : item.badge}
                           </span>
                         )}
@@ -258,19 +258,19 @@ export default function LibrarianLayout() {
                     onClick={() => setMobileSidebarOpen(false)}
                     className={`group flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ease-out ${
                       location.pathname === '/librarian/profile'
-                        ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-bold'
-                        : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70'
+                        ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-bold'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
                   >
-                    <UserCircle className={`w-4 h-4 shrink-0 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-[#94A3B8]'}`} />
+                    <UserCircle className={`w-4 h-4 shrink-0 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-slate-400'}`} />
                     <span>My Profile</span>
                   </Link>
                 </div>
 
-                <div className="p-4 border-t border-[#0F3256] bg-[#07172B]">
+                <div className="p-4 border-t border-white/10 bg-navy-950">
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#D32F2F]/10 hover:bg-[#D32F2F]/20 border border-[#D32F2F]/30 text-[#D32F2F] font-bold text-xs rounded-xl transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-600/10 hover:bg-rose-600/20 border border-rose-600/30 text-rose-600 font-bold text-xs rounded-xl transition-all cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Log Out</span>
@@ -282,23 +282,23 @@ export default function LibrarianLayout() {
         </AnimatePresence>
 
         {/* MAIN WORKSPACE WRAPPER */}
-        <div className="flex-1 flex flex-col min-w-0 bg-[#EEF4FA] overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#F7FAFD] overflow-hidden">
           {/* LIBRARIAN TOP HEADER */}
-          <header className="h-16 bg-white border-b border-[#C8D7E6] px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
+          <header className="h-16 bg-white border-b border-brand-border px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
             {/* Left Header Info + Mobile Menu Trigger */}
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setMobileSidebarOpen(true)}
-                className="lg:hidden p-2 text-[#081B2E] hover:bg-[#EEF4FA] rounded-xl transition-colors"
+                className="lg:hidden p-2 text-navy-500 hover:bg-navy-50 rounded-xl transition-colors"
                 title="Toggle Navigation Menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center gap-2 text-xs font-bold text-[#475569] truncate">
-                <span className="hidden sm:inline text-[#0F3256] font-extrabold">Librarian</span>
-                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-[#94A3B8]" />
-                <span className="text-[#081B2E] font-black truncate">{pageTitle}</span>
+              <div className="flex items-center gap-2 text-xs font-bold text-navy-400 truncate">
+                <span className="hidden sm:inline text-navy-800 font-extrabold">Librarian</span>
+                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-slate-400" />
+                <span className="text-navy-500 font-black truncate">{pageTitle}</span>
               </div>
             </div>
 
@@ -317,7 +317,7 @@ export default function LibrarianLayout() {
                 >
                   <Bell className="w-4 h-4" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold flex items-center justify-center shadow-2xs">
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gold-500 text-slate-950 text-[10px] font-extrabold flex items-center justify-center shadow-2xs">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
@@ -334,7 +334,7 @@ export default function LibrarianLayout() {
                       {unreadCount > 0 && (
                         <button
                           onClick={handleMarkAllNotifsRead}
-                          className="text-[11px] font-bold text-amber-600 hover:underline"
+                          className="text-[11px] font-bold text-gold-600 hover:underline"
                         >
                           Mark all as read
                         </button>
@@ -368,12 +368,12 @@ export default function LibrarianLayout() {
                                 setNotifDropdownOpen(false);
                               }}
                               className={`py-2.5 px-2 rounded-xl transition-colors cursor-pointer flex items-start justify-between gap-2 group ${
-                                isUnread ? 'bg-amber-50/70 hover:bg-amber-50' : 'hover:bg-slate-50'
+                                isUnread ? 'bg-gold-100/60 hover:bg-gold-100' : 'hover:bg-slate-50'
                               }`}
                             >
                               <div className="min-w-0 space-y-0.5 flex-1">
                                 <div className="flex items-center justify-between gap-2">
-                                  <span className={`font-extrabold text-xs truncate ${isUnread ? 'text-amber-900' : 'text-slate-900'}`}>
+                                  <span className={`font-extrabold text-xs truncate ${isUnread ? 'text-gold-600' : 'text-slate-900'}`}>
                                     {title}
                                   </span>
                                   <span className="text-[9px] text-slate-400 shrink-0">
@@ -400,7 +400,7 @@ export default function LibrarianLayout() {
                       <Link
                         to="/librarian/notifications"
                         onClick={() => setNotifDropdownOpen(false)}
-                        className="text-[11px] font-extrabold text-amber-600 hover:text-amber-700 hover:underline block py-1"
+                        className="text-[11px] font-extrabold text-gold-600 hover:text-gold-600 hover:underline block py-1"
                       >
                         View All Notifications & Messages →
                       </Link>
@@ -411,7 +411,7 @@ export default function LibrarianLayout() {
 
               {/* Header User Identity Pill - Clickable to Profile */}
               <Link to="/librarian/profile" className="flex items-center gap-2 pl-2 border-l border-slate-200/80 hover:opacity-80 transition-opacity">
-                <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-xs">
+                <div className="w-8 h-8 rounded-xl bg-gold-500 text-slate-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-xs">
                   {user?.avatar_url ? (
                     <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -421,7 +421,7 @@ export default function LibrarianLayout() {
 
                 <div className="hidden md:block text-left">
                   <p className="text-xs font-bold text-slate-900 leading-tight truncate max-w-[120px]">{user?.name || 'Librarian'}</p>
-                  <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">LIBRARIAN</span>
+                  <span className="text-[10px] font-bold text-gold-600 uppercase tracking-wider block">LIBRARIAN</span>
                 </div>
               </Link>
             </div>
@@ -429,7 +429,7 @@ export default function LibrarianLayout() {
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
           <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-4 flex flex-col min-h-0">
-            <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+            <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
               <Outlet />
             </React.Suspense>
           </main>

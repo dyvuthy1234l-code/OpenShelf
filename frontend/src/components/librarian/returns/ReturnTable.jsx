@@ -5,16 +5,16 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'return_requested':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 border border-amber-300">🟡 Return Requested</span>;
+        return <span className="os-badge-warning uppercase">🟡 Return Requested</span>;
       case 'overdue':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-50 text-rose-700 border border-rose-200">🔴 Overdue</span>;
+        return <span className="os-badge-danger uppercase">🔴 Overdue</span>;
       case 'borrowed':
       case 'picked_up':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">🟢 Borrowed</span>;
+        return <span className="os-badge-success uppercase">🟢 Borrowed</span>;
       case 'returned':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 text-slate-700 border border-slate-200">⚪ Returned</span>;
+        return <span className="os-badge-info uppercase">⚪ Returned</span>;
       default:
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 text-slate-700">{status}</span>;
+        return <span className="os-badge-info uppercase">{status}</span>;
     }
   };
 
@@ -24,20 +24,20 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
     }
     const fmt = `$${parseFloat(amount).toFixed(2)}`;
     if (fineStatus === 'paid') {
-      return <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">{fmt} (Paid)</span>;
+      return <span className="os-badge-success uppercase">{fmt} (Paid)</span>;
     }
     if (fineStatus === 'waived') {
-      return <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 text-slate-700 border border-slate-200">{fmt} (Waived)</span>;
+      return <span className="os-badge-info uppercase">{fmt} (Waived)</span>;
     }
-    return <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-50 text-rose-700 border border-rose-200">{fmt} (Unpaid)</span>;
+    return <span className="os-badge-danger uppercase">{fmt} (Unpaid)</span>;
   };
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
+    <div className="os-panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-full max-w-[800px] text-left text-xs">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+            <tr className="bg-navy-50/60 border-b border-brand-border/60 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
               <th className="py-4 px-6">Member</th>
               <th className="py-4 px-4">Book</th>
               <th className="py-4 px-4">Borrowed Date</th>
@@ -47,16 +47,16 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+          <tbody className="font-medium text-slate-800">
             {borrowings.map((req) => {
               const canReturn = req.status !== 'returned';
 
               return (
-                <tr key={req.id} className="hover:bg-slate-50/80 transition-colors">
+                <tr key={req.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                   {/* Member */}
                   <td className="py-4 px-6 font-bold text-slate-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200">
+                      <div className="w-8 h-8 rounded-full bg-gold-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200">
                         {req.user?.avatar_url || req.user?.avatar ? (
                           <img src={req.user.avatar_url || req.user.avatar} alt={req.user?.name} className="w-full h-full object-cover" />
                         ) : (
@@ -73,11 +73,11 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
                   {/* Book */}
                   <td className="py-4 px-4 font-semibold text-slate-900">
                     <div className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-amber-600 shrink-0" />
+                      <BookOpen className="w-4 h-4 text-gold-600 shrink-0" />
                       <div>
                         <Link
                           to={`/librarian/returns/${req.id}`}
-                          className="hover:text-amber-700 transition-colors truncate max-w-[170px] block font-extrabold"
+                          className="hover:text-gold-600 transition-colors truncate max-w-[170px] block font-extrabold"
                         >
                           {req.book?.title || 'Book Title'}
                         </Link>
@@ -111,7 +111,7 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
                     {canReturn && (
                       <button
                         onClick={() => onConfirmReturn(req)}
-                        className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg shadow-xs transition-colors"
+                        className="os-btn-primary h-8 px-3 text-[11px] font-bold"
                       >
                         Confirm Return
                       </button>
@@ -119,7 +119,7 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
 
                     <Link
                       to={`/librarian/returns/${req.id}`}
-                      className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] rounded-lg transition-colors inline-block"
+                      className="os-btn-secondary h-8 px-3 text-[11px] font-bold"
                     >
                       Review
                     </Link>

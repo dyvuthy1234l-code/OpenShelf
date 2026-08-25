@@ -109,11 +109,11 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.2 }}
-          className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 w-full shadow-2xl space-y-6 my-8 max-h-[90vh] overflow-y-auto"
+          className="os-panel p-6 sm:p-8 w-full shadow-xl shadow-navy-950/10 space-y-6 my-8 max-h-[90vh] overflow-y-auto"
         >
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-amber-600" />
+              <BookOpen className="w-5 h-5 text-gold-600" />
               <h3 className="text-xl font-extrabold text-slate-900">
                 {isEditing ? 'Edit Book' : 'Add New Book'}
               </h3>
@@ -136,8 +136,8 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Cover Image Upload */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 block">Book Cover Image</label>
-            <div className="relative h-40 bg-slate-100 border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all group">
+            <label className="os-label">Book Cover Image</label>
+            <div className="relative h-40 bg-slate-100 border-2 border-dashed border-slate-300 hover:border-gold-500 rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all group">
               {coverPreview ? (
                 <>
                   <img src={coverPreview} alt="Cover Preview" className="h-full object-contain" />
@@ -150,7 +150,7 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
                 </>
               ) : (
                 <label className="cursor-pointer text-center p-4">
-                  <Upload className="w-6 h-6 text-slate-400 mx-auto mb-1 group-hover:text-amber-600 transition-colors" />
+                  <Upload className="w-6 h-6 text-slate-400 mx-auto mb-1 group-hover:text-gold-600 transition-colors" />
                   <span className="text-xs font-bold text-slate-600 block">Upload Cover Image</span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">JPG, PNG, WEBP up to 5MB</span>
                   <input type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
@@ -164,27 +164,27 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">
+              <label className="os-label">
                 Book Title <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 {...register('title')}
                 placeholder="e.g. Advanced Laravel Development"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               />
               {errors.title && <p className="text-[11px] font-semibold text-rose-600">{errors.title.message}</p>}
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">
+              <label className="os-label">
                 Author <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 {...register('author')}
                 placeholder="e.g. Jane Doe"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               />
               {errors.author && <p className="text-[11px] font-semibold text-rose-600">{errors.author.message}</p>}
             </div>
@@ -192,12 +192,12 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">
+              <label className="os-label">
                 Category <span className="text-rose-500">*</span>
               </label>
               <select
                 {...register('category_id')}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               >
                 {categories.length === 0 && <option value="">No categories created yet</option>}
                 {categories.map((cat) => (
@@ -210,14 +210,14 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">
+              <label className="os-label">
                 Total Quantity / Copies <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
                 min="1"
                 {...register('quantity')}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               />
               {errors.quantity && <p className="text-[11px] font-semibold text-rose-600">{errors.quantity.message}</p>}
             </div>
@@ -225,43 +225,43 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">ISBN</label>
+              <label className="os-label">ISBN</label>
               <input
                 type="text"
                 {...register('isbn')}
                 placeholder="e.g. 9781234567890"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               />
               {errors.isbn && <p className="text-[11px] font-semibold text-rose-600">{errors.isbn.message}</p>}
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">Publisher</label>
+              <label className="os-label">Publisher</label>
               <input
                 type="text"
                 {...register('publisher')}
                 placeholder="e.g. OpenShelf Publishing"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               />
               {errors.publisher && <p className="text-[11px] font-semibold text-rose-600">{errors.publisher.message}</p>}
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">Publication Year</label>
+              <label className="os-label">Publication Year</label>
               <input
                 type="number"
                 {...register('publication_year')}
                 placeholder="e.g. 2024"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               />
               {errors.publication_year && <p className="text-[11px] font-semibold text-rose-600">{errors.publication_year.message}</p>}
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700">Status</label>
+              <label className="os-label">Status</label>
               <select
                 {...register('status')}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                className="os-input"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -272,12 +272,12 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Description / Synopsis</label>
+            <label className="os-label">Description / Synopsis</label>
             <textarea
               {...register('description')}
               rows={3}
               placeholder="Brief description or synopsis of the book..."
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
             {errors.description && <p className="text-[11px] font-semibold text-rose-600">{errors.description.message}</p>}
           </div>
@@ -287,7 +287,7 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all cursor-pointer"
+              className="os-btn-secondary"
             >
               Cancel
             </button>
@@ -295,7 +295,7 @@ export default function BookForm({ initialData = null, categories = [], onSave, 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
+              className="os-btn-gold"
             >
               {isSubmitting ? (
                 <>

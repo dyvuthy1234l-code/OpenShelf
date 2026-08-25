@@ -5,31 +5,31 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
   const getStatusBadge = (status) => {
     switch (status) {
       case 'pending':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-50 text-amber-800 border border-amber-300">🟡 Pending</span>;
+        return <span className="os-badge-warning uppercase">🟡 Pending</span>;
       case 'approved':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-50 text-blue-700 border border-blue-200">🔵 Approved</span>;
+        return <span className="os-badge-info uppercase">🔵 Approved</span>;
       case 'borrowed':
       case 'picked_up':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">🟢 Borrowed</span>;
+        return <span className="os-badge-success uppercase">🟢 Borrowed</span>;
       case 'overdue':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-50 text-rose-700 border border-rose-200">🔴 Overdue</span>;
+        return <span className="os-badge-danger uppercase">🔴 Overdue</span>;
       case 'return_requested':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-900 border border-amber-300">🟡 Return Requested</span>;
+        return <span className="os-badge-warning uppercase">🟡 Return Requested</span>;
       case 'returned':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 text-slate-700 border border-slate-200">⚪ Returned</span>;
+        return <span className="os-badge-info uppercase">⚪ Returned</span>;
       case 'rejected':
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-50 text-rose-600 border border-rose-100">❌ Rejected</span>;
+        return <span className="os-badge-danger uppercase">❌ Rejected</span>;
       default:
-        return <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 text-slate-700">{status}</span>;
+        return <span className="os-badge-info uppercase">{status}</span>;
     }
   };
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
+    <div className="os-panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-full max-w-[800px] text-left text-xs">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+            <tr className="bg-navy-50/60 border-b border-brand-border/60 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
               <th className="py-4 px-6">Member</th>
               <th className="py-4 px-4">Book</th>
               <th className="py-4 px-4">Requested Date</th>
@@ -39,16 +39,16 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+          <tbody className="font-medium text-slate-800">
             {borrowings.map((req) => {
               const isAvailable = (req.book?.available_quantity ?? 0) > 0;
 
               return (
-                <tr key={req.id} className="hover:bg-slate-50/80 transition-colors">
+                <tr key={req.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                   {/* Member */}
                   <td className="py-4 px-6 font-bold text-slate-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200">
+                      <div className="w-8 h-8 rounded-full bg-gold-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200">
                         {req.user?.avatar_url || req.user?.avatar ? (
                           <img src={req.user.avatar_url || req.user.avatar} alt={req.user?.name} className="w-full h-full object-cover" />
                         ) : (
@@ -65,11 +65,11 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                   {/* Book */}
                   <td className="py-4 px-4 font-semibold text-slate-900">
                     <div className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-amber-600 shrink-0" />
+                      <BookOpen className="w-4 h-4 text-gold-600 shrink-0" />
                       <div>
                         <Link
                           to={`/librarian/borrow-requests/${req.id}`}
-                          className="hover:text-amber-700 transition-colors truncate max-w-[170px] block font-extrabold"
+                          className="hover:text-gold-600 transition-colors truncate max-w-[170px] block font-extrabold"
                         >
                           {req.book?.title || 'Book Title'}
                         </Link>
@@ -96,11 +96,7 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                   {/* Copy Availability */}
                   <td className="py-4 px-4 text-center">
                     <span
-                      className={`inline-flex items-center gap-1 font-bold text-[11px] px-2.5 py-0.5 rounded-full ${
-                        isAvailable
-                          ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
-                          : 'text-rose-700 bg-rose-50 border border-rose-200'
-                      }`}
+                      className={`os-badge-${isAvailable ? 'success' : 'danger'}`}
                     >
                       {req.book?.available_quantity ?? 0} left
                     </span>
@@ -112,13 +108,13 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                       <>
                         <button
                           onClick={() => onApprove(req)}
-                          className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] rounded-lg shadow-xs transition-colors"
+                          className="os-btn-gold h-8 px-3 text-[11px] font-bold"
                         >
                           Approve
                         </button>
                         <button
                           onClick={() => onReject(req)}
-                          className="px-3 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-[11px] rounded-lg transition-colors"
+                          className="os-btn-danger h-8 px-3 text-[11px] font-bold"
                         >
                           Reject
                         </button>
@@ -128,7 +124,7 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                     {req.status === 'approved' && (
                       <button
                         onClick={() => onPickup(req)}
-                        className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg shadow-xs transition-colors"
+                        className="os-btn-primary h-8 px-3 text-[11px] font-bold"
                       >
                         Confirm Pickup
                       </button>
@@ -136,7 +132,7 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
 
                     <Link
                       to={`/librarian/borrow-requests/${req.id}`}
-                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] rounded-lg transition-colors inline-block"
+                      className="os-btn-secondary h-8 px-3 text-[11px] font-bold"
                     >
                       View
                     </Link>

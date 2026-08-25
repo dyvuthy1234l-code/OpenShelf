@@ -36,10 +36,8 @@ const registerSchema = z.object({
 });
 
 /* ─── reusable input classes ─── */
-const inputBase =
-  "auth-input h-10 w-full rounded-lg border border-[#1E3A5F]/80 bg-[#0B1A2D] pl-9 pr-4 text-sm text-slate-200 outline-none transition-all placeholder:text-[#475569] focus:border-[#F5B82E]/50 focus:ring-1 focus:ring-[#F5B82E]/20";
-const inputWithToggle =
-  "auth-input h-10 w-full rounded-lg border border-[#1E3A5F]/80 bg-[#0B1A2D] pl-9 pr-10 text-sm text-slate-200 outline-none transition-all placeholder:text-[#475569] focus:border-[#F5B82E]/50 focus:ring-1 focus:ring-[#F5B82E]/20";
+const inputBase = "os-input h-10 pl-9 pr-4";
+const inputWithToggle = "os-input h-10 pl-9 pr-10";
 
 export default function AuthPage({ defaultTab = "login" }) {
   const [mode, setMode] = useState(defaultTab);
@@ -135,7 +133,7 @@ export default function AuthPage({ defaultTab = "login" }) {
     const msg = errors[name]?.message;
     if (!msg) return null;
     return (
-      <p className="mt-1 text-[11px] font-medium text-rose-400">{msg}</p>
+      <p className="mt-1 text-[11px] font-medium text-rose-600">{msg}</p>
     );
   };
 
@@ -147,24 +145,24 @@ export default function AuthPage({ defaultTab = "login" }) {
     >
       {/* ── Mobile logo ── */}
       <div className="mb-6 flex items-center gap-2 lg:hidden">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD15A] to-[#E7A90C]">
-          <BookOpen className="h-4 w-4 text-[#061426]" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gold-400 to-gold-600">
+          <BookOpen className="h-4 w-4 text-navy-950" />
         </div>
         <div>
-          <span className="text-sm font-black text-white block leading-none">OpenShelf</span>
-          <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#F5B82E]/80">Library Network</span>
+          <span className="text-sm font-black text-navy-900 block leading-none">OpenShelf</span>
+          <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-gold-600">Library Network</span>
         </div>
       </div>
 
       {/* ── Card ── */}
-      <div className="rounded-2xl border border-[#1E3A5F]/50 bg-[#0A1929]/90 p-5 sm:p-6 backdrop-blur-sm">
+      <div className="os-panel p-8 sm:p-12">
 
         {/* Header */}
-        <div className="mb-5">
-          <h2 className="text-lg font-bold text-white sm:text-xl">
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-navy-900 sm:text-xl">
             {isLogin ? "Sign in to your account" : "Create your account"}
           </h2>
-          <p className="mt-1 text-xs text-[#94A3B8]">
+          <p className="mt-1 text-xs text-slate-500">
             {isLogin
               ? "Welcome back! Enter your credentials to continue."
               : "Join OpenShelf and start discovering great books."}
@@ -180,10 +178,10 @@ export default function AuthPage({ defaultTab = "login" }) {
               exit={{ opacity: 0, height: 0 }}
               className="mb-4 overflow-hidden"
             >
-              <div className="flex items-start gap-2 rounded-lg border border-rose-500/25 bg-rose-500/10 px-3 py-2.5 text-xs text-rose-300">
-                <AlertCircle className="mt-px h-3.5 w-3.5 shrink-0 text-rose-400" />
+              <div className="flex items-start gap-2 rounded-lg border border-rose-200/70 bg-rose-50 px-3 py-2.5 text-xs text-rose-700">
+                <AlertCircle className="mt-px h-3.5 w-3.5 shrink-0 text-rose-600" />
                 <span className="flex-1">{error}</span>
-                <button onClick={() => setError("")} className="shrink-0 text-rose-400/70 hover:text-rose-300">
+                <button onClick={() => setError("")} className="shrink-0 text-rose-400 hover:text-rose-600">
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -192,16 +190,16 @@ export default function AuthPage({ defaultTab = "login" }) {
         </AnimatePresence>
 
         {/* Mode tabs */}
-        <div className="mb-5 flex rounded-lg bg-[#061426] p-0.5">
+        <div className="mb-6 flex rounded-xl border border-brand-border bg-navy-50 p-0.5">
           {["login", "register"].map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setMode(m)}
-              className={`flex-1 rounded-md py-2 text-xs font-semibold transition-all ${
+              className={`flex-1 rounded-lg py-2 text-xs font-semibold transition-all ${
                 mode === m
-                  ? "bg-[#0F2744] text-white shadow-sm"
-                  : "text-[#64748B] hover:text-slate-400"
+                  ? "bg-white text-navy-900 shadow-sm"
+                  : "text-slate-500 hover:text-navy-800"
               }`}
             >
               {m === "login" ? "Sign In" : "Create Account"}
@@ -223,11 +221,11 @@ export default function AuthPage({ defaultTab = "login" }) {
             {/* Name — register only */}
             {!isLogin && (
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-400">
+                <label className="os-label">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
+                  <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     {...formRegister("name")}
@@ -241,11 +239,11 @@ export default function AuthPage({ defaultTab = "login" }) {
 
             {/* Email */}
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-400">
+              <label className="os-label">
                 Email
               </label>
               <div className="relative">
-                <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
+                <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="email"
                   {...formRegister("email")}
@@ -259,15 +257,15 @@ export default function AuthPage({ defaultTab = "login" }) {
             {/* Password */}
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <label className="text-xs font-medium text-slate-400">Password</label>
+                <label className="os-label">Password</label>
                 {isLogin && (
-                  <button type="button" onClick={() => setShowForgotModal(true)} className="text-[11px] font-medium text-[#F5B82E]/70 hover:text-[#F5B82E] transition-colors cursor-pointer">
+                  <button type="button" onClick={() => setShowForgotModal(true)} className="text-[11px] font-semibold text-gold-600 hover:text-gold-500 transition-colors cursor-pointer">
                     Forgot password?
                   </button>
                 )}
               </div>
               <div className="relative">
-                <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
+                <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type={showPw ? "text" : "password"}
                   {...formRegister("password")}
@@ -289,11 +287,11 @@ export default function AuthPage({ defaultTab = "login" }) {
             {/* Confirm password — register only */}
             {!isLogin && (
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-400">
+                <label className="os-label">
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" />
+                  <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type={showPwConfirm ? "text" : "password"}
                     {...formRegister("password_confirmation")}
@@ -319,9 +317,9 @@ export default function AuthPage({ defaultTab = "login" }) {
                 <input
                   type="checkbox"
                   {...formRegister("remember")}
-                  className="h-3.5 w-3.5 rounded border-[#1E3A5F] accent-[#F5B82E]"
+                  className="h-3.5 w-3.5 rounded border-brand-border accent-gold-500"
                 />
-                <span className="text-xs text-[#94A3B8]">Remember me</span>
+                <span className="text-xs text-slate-600">Remember me</span>
               </label>
             )}
 
@@ -329,11 +327,11 @@ export default function AuthPage({ defaultTab = "login" }) {
             <button
               type="submit"
               disabled={loading}
-              className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#F5B82E] to-[#D9A23E] text-sm font-bold text-[#0B1F3A] transition-all hover:brightness-110 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+              className="os-btn-gold w-full"
             >
               {loading ? (
                 <>
-                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#0B1F3A]/20 border-t-[#0B1F3A]" />
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-navy-950/20 border-t-navy-950" />
                   Processing...
                 </>
               ) : (
@@ -347,12 +345,12 @@ export default function AuthPage({ defaultTab = "login" }) {
         </AnimatePresence>
 
         {/* Toggle */}
-        <p className="mt-4 text-center text-xs text-[#94A3B8]">
+        <p className="mt-4 text-center text-xs text-slate-500">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button
             type="button"
             onClick={() => setMode(isLogin ? "register" : "login")}
-            className="font-semibold text-[#F5B82E] hover:text-[#FFD15A] transition-colors cursor-pointer"
+            className="font-semibold text-gold-600 hover:text-gold-500 transition-colors cursor-pointer"
           >
             {isLogin ? "Create one" : "Sign in"}
           </button>

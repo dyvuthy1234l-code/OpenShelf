@@ -95,12 +95,12 @@ export default function AdminLayout() {
   const pageTitle = location.pathname === '/admin/profile' ? 'My Profile' : (currentNav?.name || 'Workspace');
 
   return (
-    <div className="h-screen w-full bg-slate-100 flex overflow-hidden font-sans text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950">
+    <div className="h-screen w-full bg-slate-100 flex overflow-hidden font-sans text-slate-900 antialiased selection:bg-gold-400 selection:text-slate-950">
       <div className="flex flex-1 w-full h-full relative overflow-hidden">
         {/* DESKTOP FIXED SIDEBAR */}
-        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-[#07172B] text-white border-r border-[#0F3256] shrink-0 select-none z-20 overflow-hidden">
+        <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-navy-950 text-white border-r border-navy-800 shrink-0 select-none z-20 overflow-hidden">
           {/* Brand Header (~100px) */}
-          <div className="p-5 border-b border-[#0F3256] flex items-center justify-between shrink-0 h-[100px]">
+          <div className="p-5 border-b border-white/10 flex items-center justify-between shrink-0 h-[100px]">
             <Link to="/admin" className="shrink-0">
               <OpenShelfBrand role="admin" size="md" dark />
             </Link>
@@ -110,7 +110,7 @@ export default function AdminLayout() {
           <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto min-h-0 scrollbar-none">
             {navSections.map((section) => (
               <div key={section.title} className="space-y-1">
-                <div className="px-3 pt-1 pb-1 text-[10px] font-black tracking-widest text-[#94A3B8] uppercase">
+                <div className="px-3 pt-1 pb-1 text-[10px] font-black tracking-widest text-slate-400 uppercase">
                   {section.title}
                 </div>
                 {section.items.map((item) => {
@@ -125,11 +125,11 @@ export default function AdminLayout() {
                       to={item.path}
                       className={`group relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
                         isActive
-                          ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-extrabold translate-x-0.5'
-                          : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70 hover:translate-x-0.5'
+                          ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-extrabold translate-x-0.5'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5 hover:translate-x-0.5'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-[#94A3B8] group-hover:text-white'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
                       <span className="flex-1 truncate transition-all duration-200">{item.name}</span>
                     </Link>
                   );
@@ -139,10 +139,10 @@ export default function AdminLayout() {
           </nav>
 
           {/* Sidebar Footer User Card */}
-          <div className="p-4 border-t border-[#0F3256] bg-[#07172B] shrink-0">
-            <div className="flex items-center justify-between gap-2 p-2.5 bg-[#0F3256]/70 border border-[#0F3256] rounded-xl">
+          <div className="p-4 border-t border-white/10 bg-navy-950 shrink-0">
+            <div className="flex items-center justify-between gap-2 p-2.5 bg-navy-800/70 border border-navy-800 rounded-xl">
               <Link to="/admin/profile" className="flex items-center gap-2.5 min-w-0 flex-1 group">
-                <div className="w-9 h-9 rounded-xl bg-[#F0B429] text-[#07172B] font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03]">
+                <div className="w-9 h-9 rounded-xl bg-gold-500 text-navy-950 font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20 transition-transform duration-200 group-hover:scale-[1.03]">
                   {user?.avatar_url ? (
                     <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -151,8 +151,8 @@ export default function AdminLayout() {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold text-white truncate group-hover:text-[#F0B429] transition-colors duration-200">{user?.name || 'Administrator'}</p>
-                  <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-[#F0B429]">
+                  <p className="text-xs font-bold text-white truncate group-hover:text-gold-500 transition-colors duration-200">{user?.name || 'Administrator'}</p>
+                  <span className="inline-block text-[9px] uppercase tracking-widest font-extrabold text-gold-500">
                     SYSTEM ADMIN
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export default function AdminLayout() {
               <button
                 onClick={handleLogout}
                 title="Log Out"
-                className="p-1.5 text-[#94A3B8] hover:text-[#D32F2F] hover:bg-[#D32F2F]/10 rounded-lg transition-all duration-200 group/logout shrink-0 cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-600/10 rounded-lg transition-all duration-200 group/logout shrink-0 cursor-pointer"
               >
                 <LogOut className="w-4 h-4 transition-transform duration-200 group-hover/logout:translate-x-0.5" />
               </button>
@@ -179,7 +179,7 @@ export default function AdminLayout() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="fixed inset-0 bg-[#07172B]/80 backdrop-blur-xs"
+                className="fixed inset-0 bg-navy-950/80 backdrop-blur-xs"
               />
 
               <motion.aside
@@ -187,16 +187,16 @@ export default function AdminLayout() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="relative w-72 bg-[#07172B] text-white flex flex-col h-full z-10 shadow-2xl border-r border-[#0F3256]"
+                className="relative w-72 bg-navy-950 text-white flex flex-col h-full z-10 shadow-2xl border-r border-navy-800"
               >
-                <div className="p-5 border-b border-[#0F3256] flex items-center justify-between shrink-0 h-[100px]">
+                <div className="p-5 border-b border-white/10 flex items-center justify-between shrink-0 h-[100px]">
                   <Link to="/admin" onClick={() => setMobileSidebarOpen(false)} className="shrink-0">
                     <OpenShelfBrand role="admin" size="md" dark />
                   </Link>
 
                   <button
                     onClick={() => setMobileSidebarOpen(false)}
-                    className="p-1.5 text-[#94A3B8] hover:text-white hover:bg-[#0F3256] rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-white hover:bg-navy-800 rounded-lg transition-colors cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -205,7 +205,7 @@ export default function AdminLayout() {
                 <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto">
                   {navSections.map((section) => (
                     <div key={section.title} className="space-y-1">
-                      <div className="px-3 pt-1 pb-1 text-[10px] font-bold tracking-widest text-[#94A3B8] uppercase">
+                      <div className="px-3 pt-1 pb-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
                         {section.title}
                       </div>
                       {section.items.map((item) => {
@@ -221,11 +221,11 @@ export default function AdminLayout() {
                             onClick={() => setMobileSidebarOpen(false)}
                             className={`group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ease-out ${
                               isActive
-                                ? 'bg-[#0F3256] text-white border-l-4 border-[#F0B429] shadow-sm font-bold'
-                                : 'text-[#CBD5E1] hover:text-white hover:bg-[#0F3256]/70'
+                                ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-bold'
+                                : 'text-slate-300 hover:text-white hover:bg-white/5'
                             }`}
                           >
-                            <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-[#94A3B8]'}`} />
+                            <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                             <span className="flex-1 truncate">{item.name}</span>
                           </Link>
                         );
@@ -234,14 +234,14 @@ export default function AdminLayout() {
                   ))}
                 </nav>
 
-                <div className="p-4 border-t border-[#0F3256] bg-[#07172B] shrink-0">
-                  <div className="flex items-center justify-between gap-2 p-2.5 bg-[#0F3256]/70 border border-[#0F3256] rounded-xl">
+                <div className="p-4 border-t border-white/10 bg-navy-950 shrink-0">
+                  <div className="flex items-center justify-between gap-2 p-2.5 bg-navy-800/70 border border-navy-800 rounded-xl">
                     <Link
                       to="/admin/profile"
                       onClick={() => setMobileSidebarOpen(false)}
                       className="flex items-center gap-2.5 min-w-0 flex-1 group"
                     >
-                      <div className="w-9 h-9 rounded-xl bg-[#F0B429] text-[#07172B] font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
+                      <div className="w-9 h-9 rounded-xl bg-gold-500 text-navy-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white/20">
                         {user?.avatar_url ? (
                           <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -253,7 +253,7 @@ export default function AdminLayout() {
                         <p className="text-xs font-bold text-white truncate">
                           {user?.name || 'Administrator'}
                         </p>
-                        <span className="text-[9px] uppercase tracking-widest font-extrabold text-[#F0B429] block">
+                        <span className="text-[9px] uppercase tracking-widest font-extrabold text-gold-500 block">
                           SYSTEM ADMIN
                         </span>
                       </div>
@@ -265,7 +265,7 @@ export default function AdminLayout() {
                         handleLogout();
                       }}
                       title="Log Out"
-                      className="p-1.5 text-[#94A3B8] hover:text-[#D32F2F] hover:bg-[#D32F2F]/10 rounded-lg transition-all cursor-pointer"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-600/10 rounded-lg transition-all cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                     </button>
@@ -277,23 +277,23 @@ export default function AdminLayout() {
         </AnimatePresence>
 
         {/* MAIN WORKSPACE WRAPPER */}
-        <div className="flex-1 flex flex-col min-w-0 bg-[#EEF4FA] overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#F7FAFD] overflow-hidden">
           {/* ADMIN TOP HEADER */}
-          <header className="h-14 bg-white border-b border-[#C8D7E6] px-4 sm:px-5 lg:px-6 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
+          <header className="h-14 bg-white border-b border-brand-border px-4 sm:px-5 lg:px-6 flex items-center justify-between gap-4 shrink-0 shadow-xs z-10">
             {/* Left Header Info + Mobile Menu Trigger */}
             <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setMobileSidebarOpen(true)}
-                className="lg:hidden p-2 text-[#081B2E] hover:bg-[#EEF4FA] rounded-xl transition-colors"
+                className="lg:hidden p-2 text-navy-500 hover:bg-navy-50 rounded-xl transition-colors"
                 title="Toggle Navigation Menu"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center gap-2 text-xs font-bold text-[#475569] truncate">
-                <span className="hidden sm:inline text-[#0F3256] font-extrabold">Administrator</span>
-                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-[#94A3B8]" />
-                <span className="text-[#081B2E] font-black truncate">{pageTitle}</span>
+              <div className="flex items-center gap-2 text-xs font-bold text-navy-400 truncate">
+                <span className="hidden sm:inline text-navy-800 font-extrabold">Administrator</span>
+                <ChevronRight className="hidden sm:inline w-3.5 h-3.5 text-slate-400" />
+                <span className="text-navy-500 font-black truncate">{pageTitle}</span>
               </div>
             </div>
 
@@ -320,7 +320,7 @@ export default function AdminLayout() {
                     <div className="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                       <span className="font-extrabold text-slate-900">Unread Alerts</span>
                       {unreadCount > 0 ? (
-                        <span className="text-[10px] bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] bg-gold-100 text-gold-600 font-extrabold px-2 py-0.5 rounded-full">
                           {unreadCount} new
                         </span>
                       ) : (
@@ -352,7 +352,7 @@ export default function AdminLayout() {
                                 }
                               }
                             }}
-                            className="p-3 flex items-start gap-2.5 hover:bg-slate-50 transition-colors block bg-amber-50/20"
+                            className="p-3 flex items-start gap-2.5 hover:bg-slate-50 transition-colors block bg-gold-100/30"
                           >
                             <span className="text-base shrink-0">
                               {n.type === 'library' ? '🏛️' : n.type === 'subscription' ? '⏳' : n.type === 'payment' ? '💳' : '🔔'}
@@ -360,7 +360,7 @@ export default function AdminLayout() {
                             <div className="min-w-0 flex-1 space-y-0.5">
                               <div className="flex items-center justify-between gap-1">
                                 <p className="font-bold text-slate-900 truncate">{n.title}</p>
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-gold-500 shrink-0" />
                               </div>
                               <p className="text-[11px] text-slate-500 line-clamp-2">{n.message}</p>
                             </div>
@@ -373,7 +373,7 @@ export default function AdminLayout() {
                       <Link
                         to="/admin/notifications"
                         onClick={() => setNotifOpen(false)}
-                        className="text-xs font-extrabold text-amber-700 hover:text-amber-800 transition-colors"
+                        className="text-xs font-extrabold text-gold-600 hover:underline transition-colors"
                       >
                         View All Notifications →
                       </Link>
@@ -384,7 +384,7 @@ export default function AdminLayout() {
 
               {/* Header User Identity Pill */}
               <Link to="/admin/profile" className="flex items-center gap-2 pl-2 border-l border-slate-200/80 hover:opacity-80 transition-opacity">
-                <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-xs">
+                <div className="w-8 h-8 rounded-xl bg-gold-500 text-slate-950 font-extrabold text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-xs">
                   {user?.avatar_url ? (
                     <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -394,7 +394,7 @@ export default function AdminLayout() {
 
                 <div className="hidden md:block text-left">
                   <p className="text-xs font-bold text-slate-900 leading-tight truncate max-w-[120px]">{user?.name || 'Administrator'}</p>
-                  <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">Administrator</span>
+                  <span className="text-[10px] font-bold text-gold-600 uppercase tracking-wider block">Administrator</span>
                 </div>
               </Link>
             </div>
@@ -411,7 +411,7 @@ export default function AdminLayout() {
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                 className="flex-1 flex flex-col min-h-0 h-full w-full"
               >
-                <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+                <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
                   <Outlet />
                 </React.Suspense>
               </motion.div>

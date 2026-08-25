@@ -73,13 +73,13 @@ export default function MemberNotifications() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-brand-border">
         <div>
-          <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-gold-600 text-xs font-bold uppercase tracking-wider mb-1">
             <Bell className="w-4 h-4" />
             <span>Activity Inbox</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Notifications</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900">Notifications</h1>
           <p className="text-slate-500 text-xs sm:text-sm mt-1">
             Updates on borrowing requests, due dates, and library activity
           </p>
@@ -90,7 +90,7 @@ export default function MemberNotifications() {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="inline-flex min-h-11 items-center gap-2 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
+                className="os-btn-primary min-h-11"
               >
                 <CheckCheck className="w-4 h-4" />
                 <span>Mark All as Read</span>
@@ -99,7 +99,7 @@ export default function MemberNotifications() {
 
             <button
               onClick={handleClearAll}
-              className="inline-flex min-h-11 items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200/80 transition-all cursor-pointer"
+              className="os-btn-danger min-h-11"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>
@@ -110,7 +110,7 @@ export default function MemberNotifications() {
 
       {/* Action Message Banner */}
       {actionMessage && (
-        <div className="px-4 py-2.5 bg-amber-50 border border-amber-200 text-amber-900 font-semibold text-xs rounded-xl shadow-xs transition-all animate-in fade-in slide-in-from-top-2">
+        <div className="px-4 py-2.5 bg-navy-50 border border-brand-border text-navy-800 font-semibold text-xs rounded-xl shadow-xs transition-all animate-in fade-in slide-in-from-top-2">
           {actionMessage}
         </div>
       )}
@@ -126,7 +126,7 @@ export default function MemberNotifications() {
           description="There are no notifications in your inbox at this time."
         />
       ) : (
-        <div className="bg-white border border-slate-200/90 rounded-2xl divide-y divide-slate-100 overflow-hidden shadow-2xs">
+        <div className="os-panel divide-y divide-slate-100 overflow-hidden">
           {paginatedNotifications.map((n) => {
             const isUnread = !n.read_at;
             const message = n.data?.message || n.message || 'Notification update';
@@ -144,15 +144,15 @@ export default function MemberNotifications() {
                     handleMarkAsRead(n.id);
                   }
                 }}
-                className={`p-5 flex items-start justify-between gap-4 transition-colors cursor-pointer group focus:outline-hidden focus:bg-slate-50 ${
-                  isUnread ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-slate-50'
+                className={`p-5 flex items-start justify-between gap-4 transition-colors cursor-pointer group focus:outline-hidden focus:bg-navy-50 ${
+                  isUnread ? 'bg-gold-100/50 hover:bg-gold-100/70' : 'hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-start gap-4 min-w-0 flex-1">
                   {/* Unread indicator */}
                   <div className="mt-1 shrink-0">
                     {isUnread ? (
-                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-gold-500 animate-pulse" />
                     ) : (
                       <CheckCircle2 className="w-4 h-4 text-slate-400" />
                     )}
@@ -160,7 +160,7 @@ export default function MemberNotifications() {
 
                   <div className="min-w-0 space-y-1 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className={`text-xs font-bold ${isUnread ? 'text-amber-800' : 'text-slate-900'}`}>
+                      <h4 className={`text-xs font-bold ${isUnread ? 'text-gold-600' : 'text-navy-900'}`}>
                         {title}
                       </h4>
                       <span className="text-[10px] text-slate-400 shrink-0">

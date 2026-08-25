@@ -69,10 +69,10 @@ export default function BookCard({ book, showDateAdded = false }) {
     <motion.div
       {...CARD_MOTION_PROPS}
       onClick={() => navigate(`/books/${book.id}`)}
-      className="group relative bg-white border border-slate-200/70 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full cursor-pointer"
+      className="os-card group relative rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       {/* Cover Image Container */}
-      <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden shrink-0 flex items-center justify-center group/cover">
+      <div className="relative aspect-[3/4] w-full bg-navy-50 overflow-hidden shrink-0 rounded-t-2xl flex items-center justify-center group/cover">
         {getBookCoverUrl(book.cover_image_url || book.cover_image, 400) && !imageErr ? (
           <img
             src={getBookCoverUrl(book.cover_image_url || book.cover_image, 400)}
@@ -121,12 +121,12 @@ export default function BookCard({ book, showDateAdded = false }) {
             style={{ willChange: 'transform' }}
           >
             {isAvailable ? (
-              <span className="inline-flex items-center gap-1 bg-emerald-500/90 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs">
+              <span className="os-badge-success backdrop-blur-md shadow-xs">
                 <CheckCircle2 className="w-3 h-3" />
                 {availableQty} Available
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 bg-rose-500/90 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs">
+              <span className="os-badge-danger backdrop-blur-md shadow-xs">
                 <XCircle className="w-3 h-3" />
                 Borrowed
               </span>
@@ -136,9 +136,9 @@ export default function BookCard({ book, showDateAdded = false }) {
       </div>
 
       {/* Book Info */}
-      <div className="p-5 flex flex-col flex-grow bg-white space-y-2">
+      <div className="p-5 flex flex-col flex-grow space-y-2">
         <div>
-          <h3 className="text-base font-bold text-slate-900 group-hover:text-amber-700 transition-colors line-clamp-1">
+          <h3 className="text-base font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-1">
             {book.title}
           </h3>
 

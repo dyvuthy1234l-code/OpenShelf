@@ -28,7 +28,7 @@ export default function ApproveModal({ borrowing, onConfirm, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
       <motion.div
         {...MODAL_MOTION_VARIANTS}
-        className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
+        className="os-panel p-6 max-w-md w-full shadow-xl shadow-navy-950/10 space-y-5"
       >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-emerald-700 font-extrabold text-base">
@@ -78,7 +78,7 @@ export default function ApproveModal({ borrowing, onConfirm, onClose }) {
           <button
             onClick={onClose}
             disabled={approving}
-            className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+            className="os-btn-secondary"
           >
             Cancel
           </button>
@@ -86,7 +86,7 @@ export default function ApproveModal({ borrowing, onConfirm, onClose }) {
           <button
             onClick={handleConfirm}
             disabled={approving || avail <= 0}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+            className="os-btn-primary"
           >
             {approving ? (
               <>

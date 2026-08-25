@@ -52,7 +52,7 @@ export default function AuthLayout() {
 
   if (loading || !initialCheckDone) {
     return (
-      <div className="min-h-screen bg-[#061426] flex items-center justify-center">
+      <div className="min-h-screen bg-navy-950 flex items-center justify-center">
         <OpenShelfLoader message="Checking your session..." />
       </div>
     );
@@ -74,12 +74,12 @@ export default function AuthLayout() {
   ];
 
   return (
-    <div className="h-screen w-full bg-[#061426] text-white flex overflow-hidden font-sans select-none">
+    <div className="h-screen w-full bg-navy-950 text-white flex overflow-hidden font-sans select-none">
 
       {/* ═══════════════════════════════════════════════════ */}
       {/* LEFT — HERO PANEL                                  */}
       {/* ═══════════════════════════════════════════════════ */}
-      <div className="hidden lg:flex lg:w-[55%] h-full relative overflow-hidden bg-[#07182B]">
+      <div className="hidden lg:flex lg:w-[55%] h-full relative overflow-hidden bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800">
 
         {/* ── Background Image (Full Width) ── */}
         <div className="absolute inset-0 z-0">
@@ -89,13 +89,16 @@ export default function AuthLayout() {
           />
         </div>
 
+        {/* ── Subtle gold radial glow ── */}
+        <div className="absolute -bottom-32 right-[15%] z-[2] h-96 w-96 rounded-full bg-gold-500/20 blur-3xl pointer-events-none" />
+
         {/* ── Premium Glassmorphism Wave Mask ── */}
         {/* Dark overlay that covers left side and softly fades into the wave */}
         <div className="absolute inset-0 z-[1] pointer-events-none flex">
           {/* Solid dark on the left half */}
-          <div className="w-[50%] h-full bg-[#07182B]" />
+          <div className="w-[50%] h-full bg-navy-950" />
           {/* Gradient transition area */}
-          <div className="w-[30%] h-full bg-gradient-to-r from-[#07182B] via-[#07182B]/80 to-transparent" />
+          <div className="w-[30%] h-full bg-gradient-to-r from-navy-950 via-navy-950/80 to-transparent" />
         </div>
 
         {/* ── The Sharp Elegant Wave ── */}
@@ -110,7 +113,7 @@ export default function AuthLayout() {
             {/* The primary dark solid body creating the sharp cut */}
             <path
               d="M0,0 L65,0 C80,25 75,45 70,65 C65,85 75,95 70,100 L0,100 Z"
-              fill="#061426"
+              fill="#07172B"
             />
             
             {/* The single, sharp gold accent stroke following the edge */}
@@ -126,7 +129,7 @@ export default function AuthLayout() {
             <path
               d="M64.7,0 C79.7,25 74.7,45 69.7,65 C64.7,85 74.7,95 69.7,100"
               fill="none"
-              stroke="#07182B"
+              stroke="#07172B"
               strokeWidth="0.8"
             />
 
@@ -143,8 +146,8 @@ export default function AuthLayout() {
         </div>
 
         {/* ── Ambient Vignettes ── */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#061426] to-transparent z-[3] pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#061426]/90 to-transparent z-[3] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-navy-950 to-transparent z-[3] pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-navy-950/90 to-transparent z-[3] pointer-events-none" />
 
         {/* ── Content layer ── */}
         <div className="relative z-10 flex flex-col justify-between p-8 xl:p-12 w-full h-full max-w-[65%]">
@@ -166,9 +169,9 @@ export default function AuthLayout() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15, duration: 0.35 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-[#F5B82E]/10 to-transparent border-l-2 border-[#F5B82E]"
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-gold-500/10 to-transparent border-l-2 border-gold-500"
             >
-              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#F5B82E]">
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-gold-500">
                 More Books, Brighter Communities
               </span>
             </motion.div>
@@ -176,12 +179,12 @@ export default function AuthLayout() {
             {/* Heading */}
             <h1 className="text-4xl xl:text-[2.75rem] font-black text-white leading-[1.1] tracking-tight">
               Your gateway to<br/>
-              <span className="text-[#F5B82E] relative inline-block mt-1">
+              <span className="text-gold-500 relative inline-block mt-1">
                 endless knowledge
                 <motion.span
                   animate={{ opacity: [1, 0, 1] }}
                   transition={{ repeat: Infinity, duration: 1, ease: 'steps(2)' }}
-                  className="absolute -right-3 bottom-1 w-1 h-[70%] bg-[#F5B82E]"
+                  className="absolute -right-3 bottom-1 w-1 h-[70%] bg-gold-500"
                 />
               </span>
             </h1>
@@ -201,8 +204,8 @@ export default function AuthLayout() {
                   transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#F5B82E]/20 to-[#F5B82E]/5 border border-[#F5B82E]/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(245,184,46,0.1)]">
-                    <Icon className="w-4 h-4 text-[#F5B82E]" />
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-500/20 to-gold-500/5 border border-gold-500/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(245,184,46,0.1)]">
+                    <Icon className="w-4 h-4 text-gold-500" />
                   </div>
                   <div className="leading-tight">
                     <span className="text-[13px] font-bold text-white block">{label}</span>
@@ -217,7 +220,7 @@ export default function AuthLayout() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-[#0B1A2D]/80 border border-[#203A59]/60 rounded-xl backdrop-blur-md shadow-lg mt-4"
+              className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-navy-900/80 border border-navy-600/40 rounded-xl backdrop-blur-md shadow-lg mt-4"
             >
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -242,7 +245,7 @@ export default function AuthLayout() {
                     <span className="text-2xl font-black text-white block leading-none tracking-tight">
                       {statsLoaded ? fmt(value) : '—'}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F5B82E] mt-1.5 block">{label}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gold-500 mt-1.5 block">{label}</span>
                   </div>
                 </div>
               ))}
@@ -252,7 +255,7 @@ export default function AuthLayout() {
           {/* Footer */}
           <footer className="shrink-0 mb-4">
             <div className="flex items-center gap-2 text-[11px] font-semibold text-[#64748B] uppercase tracking-widest">
-              <BookOpen className="w-3 h-3 text-[#F5B82E]/40" />
+              <BookOpen className="w-3 h-3 text-gold-500/40" />
               <span>Empowering communities</span>
             </div>
           </footer>
@@ -262,9 +265,9 @@ export default function AuthLayout() {
       {/* ═══════════════════════════════════════════════════ */}
       {/* RIGHT — AUTH FORM                                  */}
       {/* ═══════════════════════════════════════════════════ */}
-      <div className="w-full lg:w-[45%] h-full bg-[#061426] flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <div className="w-full lg:w-[45%] h-full bg-[#F7FAFD] flex items-center justify-center p-6 sm:p-8 lg:p-12 overflow-y-auto">
         <div className="w-full max-w-md">
-          <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+          <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
             <Outlet />
           </React.Suspense>
         </div>

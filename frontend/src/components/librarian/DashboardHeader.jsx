@@ -36,17 +36,17 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80 shrink-0 min-h-[75px]">
       <div className="space-y-0.5 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] uppercase font-extrabold tracking-widest text-amber-700 block">
+          <span className="text-[10px] uppercase font-extrabold tracking-widest text-gold-600 block">
             EXECUTIVE ANALYTICS DASHBOARD
           </span>
           {library?.name && (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/80 truncate">
-              <Building2 className="w-3 h-3 text-amber-600 shrink-0" />
+              <Building2 className="w-3 h-3 text-gold-600 shrink-0" />
               <span className="truncate max-w-[160px]">{library.name}</span>
             </span>
           )}
         </div>
-        <h1 className="text-xl font-extrabold text-slate-900 tracking-tight leading-tight truncate">
+        <h1 className="text-xl font-extrabold text-navy-800 tracking-tight leading-tight truncate">
           Welcome back, {user?.name || 'Librarian'}
         </h1>
         <p className="text-xs text-slate-500 font-medium truncate">
@@ -79,8 +79,8 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
               onClick={() => handlePresetSelect(item.key)}
               className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                 activePreset === item.key
-                  ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-navy-800 text-white shadow-2xs'
+                : 'text-slate-500 hover:text-navy-800 hover:bg-navy-100/60'
               }`}
             >
               {item.label}

@@ -82,17 +82,17 @@ export default function MemberBorrowings() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 pb-16">
       {/* Header */}
-      <div className="pb-4 border-b border-slate-200/80">
-        <div className="flex items-center gap-2 text-amber-600 text-xs font-bold uppercase tracking-wider mb-1">
+      <div className="pb-4 border-b border-brand-border">
+        <div className="flex items-center gap-2 text-gold-600 text-xs font-bold uppercase tracking-wider mb-1">
           <BookOpen className="w-4 h-4" />
           <span>Reading Records</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">My Borrowings</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900">My Borrowings</h1>
         <p className="text-slate-500 text-xs sm:text-sm mt-1">Track physical book loans, status, and due dates</p>
       </div>
 
       {/* Filter Tabs */}
-      <div role="tablist" aria-label="Borrowing status" className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-200/80">
+      <div role="tablist" aria-label="Borrowing status" className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-brand-border">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -103,8 +103,8 @@ export default function MemberBorrowings() {
               aria-selected={isActive}
               className={`min-h-11 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 isActive
-                  ? 'bg-amber-500 text-slate-950 shadow-xs'
-                  : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80'
+                  ? 'bg-navy-800 text-white shadow-xs'
+                  : 'os-btn-secondary'
               }`}
             >
               {tab}

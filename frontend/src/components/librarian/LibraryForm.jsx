@@ -108,7 +108,7 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-8 shadow-xs max-w-4xl mx-auto">
+    <form onSubmit={handleSubmit} className="os-panel p-6 sm:p-8 space-y-8 max-w-4xl mx-auto">
       <div className="flex items-center justify-between border-b border-slate-100 pb-5">
         <div>
           <h2 className="text-2xl font-extrabold text-slate-900">
@@ -139,15 +139,15 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
 
       {/* 1. IMAGES SECTION */}
       <div className="space-y-4">
-        <h3 className="text-xs font-extrabold uppercase tracking-widest text-amber-700">
+        <h3 className="text-xs font-extrabold uppercase tracking-widest text-gold-600">
           Library Images
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Cover Banner Image */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 block">Library Cover / Banner</label>
-            <div className="relative h-36 bg-slate-100 border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all group">
+            <label className="os-label">Library Cover / Banner</label>
+            <div className="relative h-36 bg-slate-100 border-2 border-dashed border-slate-300 hover:border-gold-500 rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all group">
               {coverPreview ? (
                 <>
                   <img src={coverPreview} alt="Cover Preview" className="w-full h-full object-cover" />
@@ -160,7 +160,7 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
                 </>
               ) : (
                 <label className="cursor-pointer text-center p-4">
-                  <Upload className="w-6 h-6 text-slate-400 mx-auto mb-1 group-hover:text-amber-600 transition-colors" />
+                  <Upload className="w-6 h-6 text-slate-400 mx-auto mb-1 group-hover:text-gold-600 transition-colors" />
                   <span className="text-xs font-bold text-slate-600 block">Upload Cover Image</span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">JPG, PNG, WEBP up to 5MB</span>
                   <input type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
@@ -174,8 +174,8 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
 
           {/* Logo / Avatar Image */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 block">Library Logo / Avatar</label>
-            <div className="relative h-36 bg-slate-100 border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all group">
+            <label className="os-label">Library Logo / Avatar</label>
+            <div className="relative h-36 bg-slate-100 border-2 border-dashed border-slate-300 hover:border-gold-500 rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all group">
               {logoPreview ? (
                 <>
                   <img src={logoPreview} alt="Logo Preview" className="w-24 h-24 object-cover rounded-2xl shadow-xs" />
@@ -188,7 +188,7 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
                 </>
               ) : (
                 <label className="cursor-pointer text-center p-4">
-                  <Building2 className="w-6 h-6 text-slate-400 mx-auto mb-1 group-hover:text-amber-600 transition-colors" />
+                  <Building2 className="w-6 h-6 text-slate-400 mx-auto mb-1 group-hover:text-gold-600 transition-colors" />
                   <span className="text-xs font-bold text-slate-600 block">Upload Logo Image</span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">JPG, PNG, WEBP up to 5MB</span>
                   <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
@@ -204,13 +204,13 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
 
       {/* 2. BASIC INFORMATION */}
       <div className="space-y-4">
-        <h3 className="text-xs font-extrabold uppercase tracking-widest text-amber-700">
+        <h3 className="text-xs font-extrabold uppercase tracking-widest text-gold-600">
           Basic Details
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">
+            <label className="os-label">
               Library Name <span className="text-rose-500">*</span>
             </label>
             <input
@@ -220,45 +220,45 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
               onChange={handleChange}
               placeholder="e.g. OpenShelf Community Library"
               required
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
             {errors.name && <p className="text-[11px] font-semibold text-rose-600">{errors.name[0]}</p>}
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Opening Hours</label>
+            <label className="os-label">Opening Hours</label>
             <input
               type="text"
               name="opening_hours"
               value={formData.opening_hours}
               onChange={handleChange}
               placeholder="e.g. Mon–Sat: 8:00 AM – 5:00 PM"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
           </div>
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-700">Description</label>
+          <label className="os-label">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
             rows={3}
             placeholder="Provide a brief summary about your library's history, collections, and mission..."
-            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+            className="os-input"
           />
         </div>
       </div>
 
       {/* 3. LOCATION & CONTACT */}
       <div className="space-y-4">
-        <h3 className="text-xs font-extrabold uppercase tracking-widest text-amber-700">
+        <h3 className="text-xs font-extrabold uppercase tracking-widest text-gold-600">
           Location & Contact
         </h3>
 
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-700">
+          <label className="os-label">
             Address / Location <span className="text-rose-500">*</span>
           </label>
           <input
@@ -268,52 +268,52 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
             onChange={handleChange}
             placeholder="e.g. Street 2004, Phnom Penh, Cambodia"
             required
-            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+            className="os-input"
           />
           {errors.address && <p className="text-[11px] font-semibold text-rose-600">{errors.address[0]}</p>}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Phone Number</label>
+            <label className="os-label">Phone Number</label>
             <input
               type="text"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               placeholder="e.g. +855 12 345 678"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Email Address</label>
+            <label className="os-label">Email Address</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="e.g. contact@openshelflibrary.com"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
           </div>
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-700">Google Maps URL</label>
+          <label className="os-label">Google Maps URL</label>
           <input
             type="url"
             name="google_maps_url"
             value={formData.google_maps_url}
             onChange={handleChange}
             placeholder="https://maps.google.com/..."
-            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+            className="os-input"
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Latitude</label>
+            <label className="os-label">Latitude</label>
             <input
               type="number"
               step="any"
@@ -321,12 +321,12 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
               value={formData.latitude}
               onChange={handleChange}
               placeholder="e.g. 11.5564"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Longitude</label>
+            <label className="os-label">Longitude</label>
             <input
               type="number"
               step="any"
@@ -334,7 +334,7 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
               value={formData.longitude}
               onChange={handleChange}
               placeholder="e.g. 104.9282"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             />
           </div>
         </div>
@@ -342,19 +342,19 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
 
       {/* 4. BORROWING POLICY */}
       <div className="space-y-4">
-        <h3 className="text-xs font-extrabold uppercase tracking-widest text-amber-700">
+        <h3 className="text-xs font-extrabold uppercase tracking-widest text-gold-600">
           Borrowing Guidelines
         </h3>
 
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-700">Borrowing Rules / Policies</label>
+          <label className="os-label">Borrowing Rules / Policies</label>
           <textarea
             name="borrowing_rules"
             value={formData.borrowing_rules}
             onChange={handleChange}
             rows={3}
             placeholder="Detail borrowing policies, loan pickup guidelines, return rules, and fine rates..."
-            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+            className="os-input"
           />
         </div>
       </div>
@@ -366,7 +366,7 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
             type="button"
             onClick={onCancel}
             disabled={saving}
-            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+            className="os-btn-secondary"
           >
             Cancel
           </button>
@@ -375,7 +375,7 @@ export default function LibraryForm({ initialData = null, onSave, onCancel }) {
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 transition-all disabled:opacity-50"
+          className="os-btn-gold"
         >
           {saving ? (
             <>

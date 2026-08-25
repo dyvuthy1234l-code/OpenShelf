@@ -6,7 +6,7 @@ import PageTransition from '../common/PageTransition';
 
 export default function PublicLayout() {
   return (
-    <div className="min-h-screen bg-slate-50 text-[#102A43] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F7FAFD] text-navy-500 flex flex-col font-sans">
       <Navbar />
       <main className="flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-0">
         <PageTransition className="h-full">

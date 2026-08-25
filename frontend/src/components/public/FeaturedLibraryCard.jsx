@@ -47,10 +47,10 @@ export default function FeaturedLibraryCard({ library }) {
       style={{ rotateX, rotateY, willChange: 'transform' }}
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="group bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-3xl p-4 shadow-xl hover:shadow-2xl hover:shadow-amber-900/20 transition-all duration-300 flex flex-col h-full relative select-none"
+      className="os-card group !bg-navy-900 !border-navy-700 hover:!border-navy-600 rounded-3xl p-4 shadow-xl hover:shadow-2xl hover:shadow-navy-950/40 transition-all duration-300 flex flex-col h-full relative select-none"
     >
       {/* 1. COVER BANNER HEADER */}
-      <div className="relative h-44 sm:h-52 bg-slate-800 rounded-2xl overflow-hidden shrink-0 border border-slate-700/50">
+      <div className="relative h-44 sm:h-52 bg-navy-800 rounded-2xl overflow-hidden shrink-0 border border-white/10">
         {coverUrl && !coverErr ? (
           <img
             src={coverUrl}
@@ -59,16 +59,16 @@ export default function FeaturedLibraryCard({ library }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-tr from-slate-800 to-slate-700 flex flex-col items-center justify-center text-slate-500 p-4 text-center">
-            <Building2 className="w-10 h-10 mb-1 text-slate-600" />
+          <div className="w-full h-full bg-gradient-to-tr from-navy-800 to-navy-700 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
+            <Building2 className="w-10 h-10 mb-1 text-gold-500/50" />
             <span className="text-[11px] font-bold uppercase tracking-wider">OpenShelf Partner</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-navy-950/40 pointer-events-none" />
 
         {/* Top Badges */}
         <div className="absolute top-4 left-4 z-10 pointer-events-none">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md text-amber-400 text-[11px] font-extrabold shadow-sm uppercase tracking-wider">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-navy-950/80 backdrop-blur-md text-gold-400 text-[11px] font-extrabold shadow-sm uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             FEATURED PARTNER
           </span>
@@ -76,7 +76,7 @@ export default function FeaturedLibraryCard({ library }) {
 
         {/* Floating Book Count Pill */}
         <div className="absolute bottom-4 right-4 z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-700 text-amber-400 text-[11px] font-extrabold shadow-sm">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-navy-950/80 backdrop-blur-md border border-white/10 text-gold-400 text-[11px] font-extrabold shadow-sm">
             <BookOpen className="w-3.5 h-3.5" />
             <span>{bookCount} {bookCount === 1 ? 'Book' : 'Books'}</span>
           </span>
@@ -84,7 +84,7 @@ export default function FeaturedLibraryCard({ library }) {
 
         {/* Overlapping Logo Avatar - inside the cover container but at the bottom edge */}
         <div className="absolute -bottom-4 left-4 z-20">
-          <div className="w-16 h-16 rounded-xl bg-slate-800 p-1 border-2 border-slate-900 shadow-xl overflow-hidden shrink-0">
+          <div className="w-16 h-16 rounded-xl bg-navy-800 p-1 border-2 border-navy-900 shadow-xl overflow-hidden shrink-0">
             {logoUrl && !logoErr ? (
               <img
                 src={logoUrl}
@@ -93,7 +93,7 @@ export default function FeaturedLibraryCard({ library }) {
                 className="w-full h-full object-cover rounded-lg"
               />
             ) : (
-              <div className="w-full h-full bg-slate-700 rounded-lg flex items-center justify-center text-slate-400">
+              <div className="w-full h-full bg-navy-700 rounded-lg flex items-center justify-center text-slate-400">
                 <Building2 className="w-6 h-6" />
               </div>
             )}
@@ -106,22 +106,22 @@ export default function FeaturedLibraryCard({ library }) {
         
         {/* Title & Location */}
         <div className="space-y-1.5 mb-5">
-          <h3 className="text-xl font-bold text-white group-hover:text-amber-400 transition-colors line-clamp-1 tracking-tight">
+          <h3 className="text-xl font-semibold text-white group-hover:text-gold-400 transition-colors line-clamp-1 tracking-tight">
             {library.name}
           </h3>
 
           <div className="flex items-center gap-1.5 text-slate-400 text-sm font-medium line-clamp-1">
-            <MapPin className="w-4 h-4 text-amber-500 shrink-0" />
+            <MapPin className="w-4 h-4 text-gold-500 shrink-0" />
             <span className="truncate">{library.address || 'Location not specified'}</span>
           </div>
         </div>
 
         {/* Push bottom section to the end */}
-        <div className="mt-auto pt-4 border-t border-slate-700/80 flex items-center justify-between">
+        <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
           <motion.div
             initial="rest"
             whileHover="hover"
-            className="inline-flex items-center gap-1.5 text-amber-400 font-bold text-sm hover:text-amber-300 transition-colors relative z-10"
+            className="inline-flex items-center gap-1.5 text-gold-400 font-bold text-sm hover:text-gold-300 transition-colors relative z-10"
           >
             Visit Library
             <motion.span

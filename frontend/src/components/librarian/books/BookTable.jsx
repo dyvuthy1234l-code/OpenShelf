@@ -3,11 +3,11 @@ import { BookOpen, Eye, Edit3, Trash2, CheckCircle2, XCircle } from 'lucide-reac
 
 export default function BookTable({ books = [], onEdit, onDelete }) {
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
+    <div className="os-panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-full max-w-[800px] text-left text-xs">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+            <tr className="bg-navy-50/60 border-b border-brand-border/60 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
               <th className="py-4 px-6">Book</th>
               <th className="py-4 px-4">Author</th>
               <th className="py-4 px-4">Category</th>
@@ -18,12 +18,12 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+          <tbody className="font-medium text-slate-800">
             {books.map((book) => {
               const isAvailable = (book.available_quantity ?? 0) > 0;
 
               return (
-                <tr key={book.id} className="hover:bg-slate-50/80 transition-colors">
+                <tr key={book.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                   {/* Book Title & Thumbnail */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
@@ -31,13 +31,13 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                         {book.cover_image_url ? (
                           <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover" />
                         ) : (
-                          <BookOpen className="w-5 h-5 text-amber-600/60" />
+                          <BookOpen className="w-5 h-5 text-gold-600/60" />
                         )}
                       </div>
                       <div className="min-w-0">
                         <Link
                           to={`/librarian/books/${book.id}`}
-                          className="font-extrabold text-slate-900 hover:text-amber-700 transition-colors truncate block max-w-[200px]"
+                          className="font-extrabold text-slate-900 hover:text-gold-600 transition-colors truncate block max-w-[200px]"
                         >
                           {book.title}
                         </Link>
@@ -56,7 +56,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   {/* Category */}
                   <td className="py-4 px-4">
                     {book.category?.name ? (
-                      <span className="inline-block text-[10px] uppercase font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                      <span className="os-badge-warning">
                         {book.category.name}
                       </span>
                     ) : (
@@ -77,11 +77,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   {/* Available Copies / Stock Status */}
                   <td className="py-4 px-4 text-center">
                     <span
-                      className={`inline-flex items-center gap-1 font-bold text-xs px-2.5 py-0.5 rounded-full ${
-                        isAvailable
-                          ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
-                          : 'text-rose-700 bg-rose-50 border border-rose-200'
-                      }`}
+                      className={`os-badge-${isAvailable ? 'success' : 'danger'}`}
                     >
                       {isAvailable ? <CheckCircle2 className="w-3 h-3 text-emerald-600" /> : <XCircle className="w-3 h-3 text-rose-600" />}
                       {isAvailable ? `${book.available_quantity} Available` : 'Out of Stock'}
@@ -90,18 +86,18 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
 
                   {/* Status */}
                   <td className="py-4 px-4">
-                    <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full border ${
+                    <span className={`uppercase ${
                       (book.status || 'active') === 'active'
-                        ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                        ? 'os-badge-success'
                         : (book.status === 'maintenance')
-                        ? 'text-amber-800 bg-amber-50 border-amber-200'
-                        : 'text-slate-600 bg-slate-100 border-slate-200'
+                        ? 'os-badge-warning'
+                        : 'os-badge-info'
                     }`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${
                         (book.status || 'active') === 'active'
                           ? 'bg-emerald-500'
                           : (book.status === 'maintenance')
-                          ? 'bg-amber-500'
+                          ? 'bg-gold-500'
                           : 'bg-slate-400'
                       }`} />
                       {book.status || 'active'}
@@ -113,7 +109,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                     <Link
                       to={`/librarian/books/${book.id}`}
                       title="View Details"
-                      className="inline-block p-1.5 text-slate-500 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-colors"
+                      className="os-btn-ghost h-8 w-8 px-2"
                     >
                       <Eye className="w-4 h-4" />
                     </Link>
@@ -121,7 +117,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                     <button
                       onClick={() => onEdit(book)}
                       title="Edit Book"
-                      className="p-1.5 text-slate-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors"
+                      className="os-btn-ghost h-8 w-8 px-2"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
@@ -129,7 +125,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                     <button
                       onClick={() => onDelete(book)}
                       title="Delete Book"
-                      className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                      className="os-btn-ghost h-8 w-8 px-2 hover:!text-rose-600"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

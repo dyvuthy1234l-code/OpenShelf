@@ -48,7 +48,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
-        className="bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5"
+        className="os-panel p-6 max-w-md w-full shadow-xl shadow-navy-950/10 space-y-5"
       >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-emerald-700 font-extrabold text-base">
@@ -98,11 +98,11 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
 
         {isOverdue && (
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Initial Fine Payment Status</label>
+            <label className="os-label">Initial Fine Payment Status</label>
             <select
               value={fineStatus}
               onChange={(e) => setFineStatus(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+              className="os-input"
             >
               <option value="unpaid">Unpaid (Member owes fine)</option>
               <option value="paid">Paid (Member paid fine on return)</option>
@@ -111,7 +111,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
           </div>
         )}
 
-        <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl text-[11px] font-semibold text-amber-900 leading-relaxed">
+        <div className="bg-gold-100/60 border border-gold-200 p-3 rounded-2xl text-[11px] font-semibold text-gold-600 leading-relaxed">
           Has the physical book been returned and inspected? This action increments available library stock.
         </div>
 
@@ -119,7 +119,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
           <button
             onClick={onClose}
             disabled={confirming}
-            className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+            className="os-btn-secondary"
           >
             Cancel
           </button>
@@ -127,7 +127,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
           <button
             onClick={handleConfirm}
             disabled={confirming}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+            className="os-btn-primary"
           >
             {confirming ? (
               <>

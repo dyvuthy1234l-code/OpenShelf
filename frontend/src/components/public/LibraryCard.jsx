@@ -19,10 +19,10 @@ export default function LibraryCard({ library }) {
   return (
     <motion.div
       {...CARD_MOTION_PROPS}
-      className="group bg-white border border-slate-200/70 hover:border-amber-500/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full select-none"
+      className="os-card group rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full select-none"
     >
       {/* 1. COVER BANNER HEADER */}
-      <div className="relative h-36 sm:h-40 bg-slate-950 overflow-hidden shrink-0">
+      <div className="relative h-36 sm:h-40 bg-navy-950 overflow-hidden shrink-0 rounded-t-2xl">
         {coverUrl && !coverErr ? (
           <img
             src={coverUrl}
@@ -57,8 +57,8 @@ export default function LibraryCard({ library }) {
           </div>
 
           <div>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold shadow-2xs">
-              <span className="w-1 h-1 rounded-full bg-white animate-pulse" />
+            <span className="os-badge-success backdrop-blur-md shadow-2xs">
+              <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
               Active
             </span>
           </div>
@@ -74,7 +74,7 @@ export default function LibraryCard({ library }) {
       </div>
 
       {/* 2. OVERLAPPING LOGO & CARD CONTENT */}
-      <div className="p-5 pt-0 flex flex-col flex-grow bg-white relative">
+      <div className="p-5 pt-0 flex flex-col flex-grow relative">
         {/* Overlapping Logo Avatar */}
         <div className="flex items-end justify-between -mt-9 sm:-mt-10 mb-3 z-20">
           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1 border-2 border-white shadow-md overflow-hidden shrink-0 group-hover:shadow-lg transition-shadow">
@@ -95,7 +95,7 @@ export default function LibraryCard({ library }) {
 
         {/* Title & Location */}
         <div className="space-y-1 mb-3">
-          <h3 className="text-base sm:text-lg font-extrabold text-slate-900 group-hover:text-amber-700 transition-colors line-clamp-1 tracking-tight">
+          <h3 className="text-base sm:text-lg font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-1 tracking-tight">
             {library.name}
           </h3>
 
@@ -137,7 +137,7 @@ export default function LibraryCard({ library }) {
           <motion.div initial="rest" whileHover="hover">
             <Link
               to={`/libraries/${library.id}`}
-              className="inline-flex min-h-11 items-center justify-between w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-extrabold rounded-xl transition-all duration-200 shadow-xs cursor-pointer"
+              className="os-btn-gold inline-flex min-h-11 items-center justify-between w-full px-4 text-xs"
             >
               <span>Explore Library Profile</span>
               <motion.span

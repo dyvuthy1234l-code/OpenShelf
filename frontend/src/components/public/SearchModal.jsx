@@ -55,10 +55,10 @@ export default function SearchModal({ isOpen, onClose }) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden pointer-events-auto"
+              className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-brand-border overflow-hidden pointer-events-auto"
             >
-              <form onSubmit={handleSubmit} className="relative flex items-center border-b border-slate-100 p-2">
-                <Search className="w-5 h-5 text-amber-500 ml-3 shrink-0" />
+              <form onSubmit={handleSubmit} className="relative flex items-center border-b border-brand-border/70 p-2">
+                <Search className="w-5 h-5 text-gold-500 ml-3 shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -66,18 +66,18 @@ export default function SearchModal({ isOpen, onClose }) {
                   placeholder="Search for books, authors, or libraries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent border-none py-3 px-4 text-base text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-0"
+                  className="w-full bg-transparent border-none py-3 px-4 text-base text-navy-800 placeholder-slate-400 focus:outline-none focus:ring-0"
                 />
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label="Close search"
-                  className="flex h-11 w-11 items-center justify-center mr-1 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="flex h-11 w-11 items-center justify-center mr-1 text-slate-400 hover:text-navy-800 bg-navy-50 hover:bg-navy-100 rounded-xl transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </form>
-              <div className="p-4 bg-slate-50">
+              <div className="p-4 bg-navy-50">
                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-3">
                   Quick links
                 </div>
@@ -89,7 +89,7 @@ export default function SearchModal({ isOpen, onClose }) {
                         navigate(`/books?search=${cat}`);
                         onClose();
                       }}
-                      className="px-3 py-1.5 bg-white border border-slate-200 hover:border-amber-400 hover:text-amber-700 rounded-lg text-xs font-medium text-slate-600 transition-colors"
+                      className="os-btn-secondary px-3 py-1.5 rounded-xl text-xs font-medium"
                     >
                       {cat}
                     </button>

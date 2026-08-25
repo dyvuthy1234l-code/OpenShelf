@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -78,6 +79,117 @@
   --color-rose-50: #FFF1F1;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+
+  --radius-card: 1rem;
+
+  --shadow-os-xs: 0 1px 2px rgba(7, 23, 43, 0.05);
+  --shadow-os-sm: 0 2px 8px rgba(7, 23, 43, 0.06);
+  --shadow-os-md: 0 4px 20px rgba(7, 23, 43, 0.07);
+  --shadow-os-lg: 0 12px 32px rgba(7, 23, 43, 0.12);
+}
+
+@layer base {
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* ---------- Buttons ---------- */
+  .os-btn, .os-btn-primary, .os-btn-gold, .os-btn-secondary, .os-btn-ghost, .os-btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold px-4 h-10 select-none;
+    transition: transform 150ms ease-out, box-shadow 180ms ease, background-color 150ms ease,
+      color 150ms ease, border-color 150ms ease, opacity 150ms ease;
+  }
+  .os-btn:hover:not(:disabled),
+  .os-btn-primary:hover:not(:disabled),
+  .os-btn-gold:hover:not(:disabled),
+  .os-btn-secondary:hover:not(:disabled),
+  .os-btn-ghost:hover:not(:disabled),
+  .os-btn-danger:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .os-btn:active:not(:disabled),
+  .os-btn-primary:active:not(:disabled),
+  .os-btn-gold:active:not(:disabled),
+  .os-btn-secondary:active:not(:disabled),
+  .os-btn-ghost:active:not(:disabled),
+  .os-btn-danger:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  .os-btn:disabled, .os-btn-primary:disabled, .os-btn-gold:disabled,
+  .os-btn-secondary:disabled, .os-btn-ghost:disabled, .os-btn-danger:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .os-btn-primary {
+    @apply bg-navy-800 text-white;
+    box-shadow: 0 4px 14px rgba(15, 50, 86, 0.25);
+  }
+  .os-btn-primary:hover:not(:disabled) {
+    @apply bg-navy-700;
+    box-shadow: 0 6px 18px rgba(15, 50, 86, 0.32);
+  }
+
+  .os-btn-gold {
+    @apply bg-gold-500 text-navy-950;
+    box-shadow: 0 4px 14px rgba(240, 180, 41, 0.35);
+  }
+  .os-btn-gold:hover:not(:disabled) {
+    @apply bg-gold-600;
+    box-shadow: 0 6px 18px rgba(214, 158, 30, 0.4);
+  }
+
+  .os-btn-secondary {
+    @apply bg-white text-navy-800 border border-brand-border hover:bg-navy-50;
+  }
+  .os-btn-secondary:hover:not(:disabled) {
+    @apply border-slate-300;
+  }
+
+  .os-btn-ghost {
+    @apply bg-transparent text-slate-600 hover:bg-slate-100 hover:text-navy-800;
+  }
+
+  .os-btn-danger {
+    @apply bg-rose-600 text-white;
+    box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25);
+  }
+  .os-btn-danger:hover:not(:disabled) {
+    @apply bg-rose-700;
+  }
+
+  /* ---------- Inputs ---------- */
+  .os-input {
+    @apply w-full rounded-xl border border-brand-border bg-white h-11 px-3.5 text-sm text-brand-text
+      placeholder:text-slate-400 transition-colors
+      focus:outline-none focus:border-navy-600 focus:ring-4 focus:ring-navy-800/10;
+  }
+
+  .os-label {
+    @apply block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5;
+  }
+
+  /* ---------- Badges / Chips ---------- */
+  .os-badge-success { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide bg-emerald-50 text-emerald-700 border border-emerald-200/70; }
+  .os-badge-warning { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide bg-gold-100 text-gold-600 border border-gold-200; }
+  .os-badge-danger  { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide bg-rose-50 text-rose-700 border border-rose-200/70; }
+  .os-badge-info    { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold tracking-wide bg-navy-50 text-navy-700 border border-brand-border; }
+
+  /* ---------- Cards ---------- */
+  .os-panel {
+    @apply bg-white border border-brand-border/70 rounded-2xl;
+    box-shadow: var(--shadow-os-sm);
+  }
+
+  /* ---------- Section heading ---------- */
+  .os-section-title {
+    @apply text-xl sm:text-2xl font-extrabold text-brand-text tracking-tight;
+    font-family: var(--font-display);
+  }
 }
 
 /* Global Styles */
