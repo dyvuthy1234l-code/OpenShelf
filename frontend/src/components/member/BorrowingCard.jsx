@@ -132,23 +132,37 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
             <span
               className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                 status === 'return_requested'
-                  ? 'bg-amber-50 text-amber-800 border border-amber-300'
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
                   : status === 'approved'
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
                   : status === 'borrowed' || status === 'picked_up'
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                   : status === 'returned'
-                  ? 'bg-slate-100 text-slate-600 border border-slate-200'
+                  ? 'bg-slate-100 text-slate-700 border border-slate-200'
                   : status === 'rejected' || isOverdue
-                  ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+                  ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                  : 'bg-amber-100 text-amber-900 border border-amber-200'
               }`}
             >
-              {status === 'return_requested' ? '🟡 Return Requested' : isOverdue ? '🔴 Overdue' : status}
+              {status === 'return_requested' 
+                ? '🟡 Return Requested' 
+                : status === 'approved' 
+                ? '✅ Approved' 
+                : status === 'borrowed' || status === 'picked_up' 
+                ? '📖 Borrowed' 
+                : status === 'returned' 
+                ? '✔️ Returned' 
+                : isOverdue 
+                ? '🔴 Overdue' 
+                : status}
             </span>
 
-            {dueDate && (status === 'borrowed' || status === 'picked_up' || isOverdue) && status !== 'return_requested' && (
-              <div className={`flex items-center gap-1 text-xs font-bold ${isOverdue ? 'text-rose-600' : 'text-amber-700'}`}>
+            {dueDate && (status === 'borrowed' || status === 'picked_up' || status === 'approved' || isOverdue) && status !== 'return_requested' && (
+              <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                isOverdue 
+                  ? 'bg-rose-50 text-rose-700 border-rose-200' 
+                  : 'bg-amber-50 text-amber-800 border-amber-200'
+              }`}>
                 {isOverdue ? <AlertTriangle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
                 <span>{countdownText}</span>
               </div>

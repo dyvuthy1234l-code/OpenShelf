@@ -37,18 +37,13 @@ export default function Home() {
     }
 
     let cursor = 0;
-    let deleting = false;
     const timer = window.setInterval(() => {
-      if (!deleting) {
-        cursor += 1;
-        setTypedLocation(locationWord.slice(0, cursor));
-        if (cursor === locationWord.length) deleting = true;
-      } else {
-        cursor -= 1;
-        setTypedLocation(locationWord.slice(0, cursor));
-        if (cursor === 0) deleting = false;
+      cursor += 1;
+      setTypedLocation(locationWord.slice(0, cursor));
+      if (cursor === locationWord.length) {
+        window.clearInterval(timer);
       }
-    }, 145);
+    }, 120);
 
     return () => window.clearInterval(timer);
   }, []);

@@ -402,7 +402,7 @@ export default function LibraryDetail() {
                     <Phone className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Phone Contact</span>
-                      <span className="text-slate-700 font-semibold">{library.phone}</span>
+                      <a href={`tel:${library.phone}`} className="text-amber-700 font-bold hover:underline">{library.phone}</a>
                     </div>
                   </div>
                 )}
@@ -412,7 +412,7 @@ export default function LibraryDetail() {
                     <Mail className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Email Address</span>
-                      <span className="text-slate-700 font-semibold break-all">{library.email}</span>
+                      <a href={`mailto:${library.email}`} className="text-amber-700 font-bold hover:underline break-all">{library.email}</a>
                     </div>
                   </div>
                 )}

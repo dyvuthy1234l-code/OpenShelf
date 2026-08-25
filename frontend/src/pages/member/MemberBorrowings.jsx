@@ -16,13 +16,17 @@ export default function MemberBorrowings() {
   const [meta, setMeta] = useState({ current_page: 1, last_page: 1, total: 0 });
   const ITEMS_PER_PAGE = 5;
 
-  const tabs = ['All', 'Pending', 'Approved', 'Borrowed', 'Return Requested', 'Returned', 'Rejected', 'Overdue'];
+  const tabs = ['All', 'Pending', 'Active', 'Returned', 'Overdue'];
 
   const getStatusParam = (tab) => {
-    if (tab === 'All') return undefined;
-    const tabLower = tab.toLowerCase().replace(/\s+/g, '_');
-    if (tabLower === 'borrowed') return 'borrowed,picked_up';
-    return tabLower;
+    const map = {
+      'All': undefined,
+      'Pending': 'pending',
+      'Active': 'approved,borrowed,picked_up,return_requested',
+      'Returned': 'returned',
+      'Overdue': 'overdue',
+    };
+    return map[tab];
   };
 
   const loadBorrowings = useCallback(async (isSilent = false) => {

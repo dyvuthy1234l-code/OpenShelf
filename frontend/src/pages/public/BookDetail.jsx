@@ -847,6 +847,59 @@ export default function BookDetail() {
           </div>
         )}
       </AnimatePresence>
+
+        {/* Mobile Sticky Borrow Action Bar */}
+        <div className="fixed bottom-14 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 shadow-lg block md:hidden">
+          <div className="flex items-center gap-2 max-w-7xl mx-auto">
+            {!isAuthenticated ? (
+              <button
+                onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`)}
+                className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In to Request</span>
+              </button>
+            ) : user?.role !== 'member' ? (
+              <div className="flex-1 py-2 bg-slate-100 text-slate-500 text-[11px] font-bold rounded-xl text-center">
+                Librarians / Admins cannot borrow
+              </div>
+            ) : activeBorrowing ? (
+              <Link to="/member/borrowings" className="flex-1 text-center py-2 bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold rounded-xl truncate">
+                {activeBorrowing.status === 'pending' ? 'Request Pending' : 'Currently Borrowed'} • View Record
+              </Link>
+            ) : isAvailable ? (
+              <button
+                onClick={() => setShowBorrowModal(true)}
+                className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-xs"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Request to Borrow</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleWaitlistToggle}
+                disabled={processingWaitlist}
+                className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-slate-900 text-white font-extrabold text-xs rounded-xl shadow-xs"
+              >
+                <Clock className="w-4 h-4 text-amber-400" />
+                <span>{waitlistEntry ? 'Leave Waitlist' : 'Join Waitlist'}</span>
+              </button>
+            )}
+
+            <button
+              onClick={handleSaveToggle}
+              disabled={savingFav}
+              aria-label="Save book"
+              className={`p-2.5 rounded-xl border text-xs font-extrabold transition-all shrink-0 ${
+                isSaved
+                  ? 'bg-amber-500 text-slate-950 border-amber-400'
+                  : 'bg-white text-slate-700 border-slate-200'
+              }`}
+            >
+              <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-slate-950 text-slate-950' : ''}`} />
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );
