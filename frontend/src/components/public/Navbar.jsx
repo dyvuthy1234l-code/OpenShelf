@@ -53,7 +53,7 @@ export default function Navbar() {
     { name: 'Libraries', path: '/libraries' },
     { name: 'Books', path: '/books' },
     { name: 'Categories', path: '/categories' },
-    ...(!isAuthenticated ? [{ name: 'For Librarians', path: '/become-librarian' }] : []),
+    { name: 'For Librarians', path: '/become-librarian' },
   ];
 
   return (
