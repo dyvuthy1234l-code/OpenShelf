@@ -29,7 +29,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
   if (dueDate) {
     const diffTime = dueDate - now;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays < 0) {
       isOverdue = true;
       countdownText = `${Math.abs(diffDays)} days overdue`;
@@ -41,6 +41,22 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
       countdownText = `${diffDays} days left`;
     }
   }
+
+  const isActiveLoan = ['approved', 'borrowed', 'picked_up'].includes(status);
+  const isDueSoon = !isOverdue && dueDate && dueDate - now <= 3 * 24 * 60 * 60 * 1000 && (status === 'borrowed' || status === 'picked_up' || status === 'approved');
+
+  const statusBadge =
+    isOverdue
+      ? { cls: 'os-badge-danger', label: 'Overdue' }
+      : status === 'return_requested'
+      ? { cls: 'os-badge-warning', label: 'Return Requested' }
+      : status === 'rejected'
+      ? { cls: 'os-badge-danger', label: 'Rejected' }
+      : status === 'returned'
+      ? { cls: 'os-badge-info', label: 'Returned' }
+      : isActiveLoan
+      ? { cls: 'os-badge-success', label: status === 'picked_up' ? 'Borrowed' : status }
+      : { cls: 'os-badge-warning', label: status || 'Pending' };
 
   const isEligibleForReturn = (status === 'borrowed' || status === 'picked_up' || isOverdue) && status !== 'return_requested' && status !== 'returned';
 
@@ -98,7 +114,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
   return (
     <>
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all space-y-4">
+      <div className="os-panel p-5 hover:shadow-md transition-shadow space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           {/* Book + Library Info */}
           <div className="flex items-center gap-4 min-w-0">
@@ -116,10 +132,10 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
             </div>
 
             <div className="min-w-0 space-y-1">
-              <h3 className="text-base font-bold text-slate-900 truncate">{book.title || 'Untitled Book'}</h3>
+              <h3 className="text-base font-bold text-navy-900 truncate">{book.title || 'Untitled Book'}</h3>
               {book.author && <p className="text-xs text-slate-500 truncate">By {book.author}</p>}
               {library.name && (
-                <div className="flex items-center gap-1 text-xs text-amber-700 font-semibold truncate">
+                <div className="flex items-center gap-1 text-xs text-gold-600 font-semibold truncate">
                   <Building2 className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{library.name}</span>
                 </div>
@@ -129,39 +145,13 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
           {/* Status Pill & Countdown */}
           <div className="shrink-0 flex sm:flex-col items-start sm:items-end justify-between w-full sm:w-auto gap-2">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                status === 'return_requested'
-                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                  : status === 'approved'
-                  ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                  : status === 'borrowed' || status === 'picked_up'
-                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                  : status === 'returned'
-                  ? 'bg-slate-100 text-slate-700 border border-slate-200'
-                  : status === 'rejected' || isOverdue
-                  ? 'bg-rose-100 text-rose-800 border border-rose-200'
-                  : 'bg-amber-100 text-amber-900 border border-amber-200'
-              }`}
-            >
-              {status === 'return_requested' 
-                ? '🟡 Return Requested' 
-                : status === 'approved' 
-                ? '✅ Approved' 
-                : status === 'borrowed' || status === 'picked_up' 
-                ? '📖 Borrowed' 
-                : status === 'returned' 
-                ? '✔️ Returned' 
-                : isOverdue 
-                ? '🔴 Overdue' 
-                : status}
-            </span>
+            <span className={statusBadge.cls}>{statusBadge.label}</span>
 
             {dueDate && (status === 'borrowed' || status === 'picked_up' || status === 'approved' || isOverdue) && status !== 'return_requested' && (
-              <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+              <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border tabular-nums ${
                 isOverdue 
                   ? 'bg-rose-50 text-rose-700 border-rose-200' 
-                  : 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-gold-100 text-gold-600 border-gold-200'
               }`}>
                 {isOverdue ? <AlertTriangle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
                 <span>{countdownText}</span>
@@ -174,7 +164,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
           <div>
             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Requested</span>
-            <span className="font-bold text-slate-800">
+            <span className="font-bold text-slate-800 tabular-nums">
               {borrowing.created_at ? new Date(borrowing.created_at).toLocaleDateString() : 'N/A'}
             </span>
           </div>
@@ -182,7 +172,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {(borrowing.picked_up_at || borrowing.pickup_date) && (
             <div>
               <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Picked Up</span>
-              <span className="font-bold text-slate-800">
+              <span className="font-bold text-slate-800 tabular-nums">
                 {new Date(borrowing.picked_up_at || borrowing.pickup_date).toLocaleDateString()}
               </span>
             </div>
@@ -191,7 +181,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {borrowing.due_date && (
             <div>
               <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Due Date</span>
-              <span className={`font-bold ${isOverdue ? 'text-rose-600' : 'text-slate-800'}`}>
+              <span className={`font-bold tabular-nums ${isOverdue ? 'text-rose-600' : isDueSoon ? 'text-gold-600' : 'text-slate-800'}`}>
                 {new Date(borrowing.due_date).toLocaleDateString()}
               </span>
             </div>
@@ -200,7 +190,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {(borrowing.returned_at || borrowing.return_date) && (
             <div>
               <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Returned</span>
-              <span className="font-bold text-emerald-700">
+              <span className="font-bold text-emerald-700 tabular-nums">
                 {new Date(borrowing.returned_at || borrowing.return_date).toLocaleDateString()}
               </span>
             </div>
@@ -209,8 +199,8 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
         {/* Return Requested Status Notice */}
         {status === 'return_requested' && (
-          <div className="bg-amber-50/80 border border-amber-200/90 rounded-xl p-3 text-xs text-amber-900 flex items-start gap-2.5 font-medium">
-            <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="bg-gold-100/60 border border-gold-200 rounded-xl p-3 text-xs text-navy-800 flex items-start gap-2.5 font-medium">
+            <Clock className="w-4 h-4 text-gold-600 shrink-0 mt-0.5" />
             <div>
               <strong className="block font-bold">Return Requested</strong>
               <span>Waiting for the librarian to confirm the physical return.</span>
@@ -270,7 +260,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {isEligibleForReturn && (
             <button
               onClick={() => setShowReturnModal(true)}
-              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all"
             >
               <ArrowRightLeft className="w-3.5 h-3.5" />
               <span>Request Return</span>
@@ -295,12 +285,11 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2 text-slate-900 font-extrabold text-lg">
-                  <ArrowRightLeft className="w-5 h-5 text-amber-600" />
+                  <ArrowRightLeft className="w-5 h-5 text-gold-600" />
                   <h3 id="return-request-title">Request Book Return</h3>
                 </div>
                 <button
                   onClick={() => setShowReturnModal(false)}
-                  aria-label="Close"
                   aria-label="Close return request"
                   className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg"
                 >
@@ -322,12 +311,12 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
                 {library.name && (
                   <div className="pt-2 border-t border-slate-200/60">
                     <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Library</span>
-                    <span className="font-bold text-amber-700 truncate block">{library.name}</span>
+                    <span className="font-bold text-gold-600 truncate block">{library.name}</span>
                   </div>
                 )}
               </div>
 
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 leading-relaxed font-medium">
+              <div className="p-3 bg-gold-100/60 border border-gold-200 rounded-xl text-xs text-navy-800 leading-relaxed font-medium">
                 The librarian will confirm the physical return after you hand the book back.
               </div>
 
@@ -342,7 +331,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
                 <button
                   onClick={handleRequestReturnSubmit}
                   disabled={requestingReturn}
-                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
                 >
                   {requestingReturn ? (
                     <>

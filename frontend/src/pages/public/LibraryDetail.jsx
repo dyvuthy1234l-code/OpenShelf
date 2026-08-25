@@ -9,12 +9,11 @@ import {
 import publicService from '../../services/publicService';
 import BookCard from '../../components/public/BookCard';
 import Pagination from '../../components/public/Pagination';
-import EmptyState from '../../components/public/EmptyState';
 import ErrorState from '../../components/public/ErrorState';
 import BookSkeleton from '../../components/common/BookSkeleton';
 import LibraryTopRatedBooks from '../../components/public/LibraryTopRatedBooks';
 import LibraryReviews from '../../components/library/LibraryReviews';
-import getImageUrl, { getLibraryCoverUrl, getLibraryLogoUrl } from '../../utils/imageUrl';
+import { getLibraryCoverUrl, getLibraryLogoUrl } from '../../utils/imageUrl';
 import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 export default function LibraryDetail() {
@@ -188,20 +187,20 @@ export default function LibraryDetail() {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-amber-700 transition-colors cursor-pointer"
+        className="os-btn-ghost h-9 px-3 self-start -ml-3 text-xs font-bold"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Back</span>
       </button>
 
       {/* PART 1 — LIBRARY HERO (COVER + OVERLAPPING LOGO) */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xs">
+      <div className="bg-white border border-brand-border/70 rounded-3xl overflow-hidden shadow-xs">
         {/* Full-width Cover Banner */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative h-48 sm:h-64 md:h-72 lg:h-80 xl:h-96 bg-slate-950 overflow-hidden"
+          className="relative h-48 sm:h-64 md:h-72 lg:h-80 xl:h-96 bg-navy-950 overflow-hidden"
         >
           {getLibraryCoverUrl(library.cover_image_url || library.cover_image, 1200) ? (
             <motion.img
@@ -215,12 +214,12 @@ export default function LibraryDetail() {
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-slate-950 via-navy-900 to-amber-950/40 flex flex-col items-center justify-center p-6 text-center">
-              <Building2 className="w-16 h-16 text-amber-400/40 mb-2" />
-              <span className="text-sm font-bold text-amber-200/80">OpenShelf Community Partner Library</span>
+            <div className="w-full h-full bg-gradient-to-r from-navy-950 via-navy-900 to-navy-700 flex flex-col items-center justify-center p-6 text-center">
+              <Building2 className="w-16 h-16 text-gold-400/40 mb-2" />
+              <span className="text-sm font-bold text-gold-200/80">OpenShelf Community Partner Library</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-slate-950/10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-navy-950/20 to-navy-950/10 pointer-events-none" />
         </motion.div>
 
         {/* Overlapping Logo & Identity Information */}
@@ -245,7 +244,7 @@ export default function LibraryDetail() {
                   />
                 ) : (
                   <div className="w-full h-full bg-slate-100 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center text-slate-400 p-2 text-center">
-                    <Building2 className="w-10 h-10 text-amber-600 mb-1" />
+                    <Building2 className="w-10 h-10 text-gold-600 mb-1" />
                     <span className="text-[10px] font-extrabold text-slate-700 leading-tight">LIBRARY LOGO</span>
                   </div>
                 )}
@@ -259,18 +258,18 @@ export default function LibraryDetail() {
                 className="space-y-1.5 pt-2"
               >
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+                  <span className="os-badge-success">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     ● Open
                   </span>
                   <span className="text-xs text-slate-400 font-semibold">Verified Partner</span>
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{library.name}</h1>
+                <h1 className="os-section-title sm:text-3xl lg:text-4xl">{library.name}</h1>
 
                 {library.reviews_count > 0 && (
                   <div className="flex items-center gap-1.5 mt-1">
-                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    <Star className="w-4 h-4 text-gold-500 fill-gold-500" />
                     <span className="text-sm font-bold text-slate-900">{library.average_rating}</span>
                     <span className="text-xs text-slate-500">({library.reviews_count} reviews)</span>
                   </div>
@@ -278,7 +277,7 @@ export default function LibraryDetail() {
 
                 {library.address && (
                   <div className="flex items-center gap-2 text-slate-600 text-xs sm:text-sm font-medium">
-                    <MapPin className="w-4 h-4 text-amber-600 shrink-0" />
+                    <MapPin className="w-4 h-4 text-gold-600 shrink-0" />
                     <span>{library.address}</span>
                   </div>
                 )}
@@ -297,7 +296,7 @@ export default function LibraryDetail() {
                   href={library.google_maps_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+                  className="os-btn-gold text-xs"
                 >
                   <span>Get Directions</span>
                   <ExternalLink className="w-4 h-4" />
@@ -311,7 +310,7 @@ export default function LibraryDetail() {
       {/* PART 2 — TWO-COLUMN INFORMATION SECTION BELOW HERO */}
       <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* LEFT CARD (2/3 width) — TABBED DETAILS */}
-        <div className="lg:col-span-2 bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="lg:col-span-2 bg-white border border-brand-border/70 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
           {/* Compact Editorial Tab Header */}
           <div role="tablist" aria-label="Library information" className="flex items-center gap-4 sm:gap-6 border-b border-slate-100 overflow-x-auto no-scrollbar">
             {[
@@ -329,8 +328,8 @@ export default function LibraryDetail() {
                   aria-selected={isActive}
                   className={`min-h-11 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 whitespace-nowrap ${
                     isActive
-                      ? 'text-amber-700 border-amber-500 font-bold'
-                      : 'text-slate-500 hover:text-slate-800 border-transparent'
+                      ? 'text-navy-800 border-gold-500 font-bold'
+                      : 'text-slate-500 hover:text-navy-800 border-transparent'
                   }`}
                 >
                   {tab.label}
@@ -357,7 +356,7 @@ export default function LibraryDetail() {
 
                 {/* Library Lending Terms & Policy Parameters */}
                 <div className="pt-4 border-t border-slate-100 space-y-3">
-                  <div className="flex items-center gap-2 text-amber-700 font-bold text-xs uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-gold-600 font-bold text-xs uppercase tracking-wider">
                     <ShieldAlert className="w-4 h-4" />
                     <span>Lending Terms & Policies</span>
                   </div>
@@ -383,9 +382,9 @@ export default function LibraryDetail() {
                   </div>
 
                   {library.borrowing_rules && (
-                    <div className="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-4 space-y-1 mt-2">
-                      <span className="text-[11px] font-bold text-amber-900 block uppercase tracking-wider">Borrowing Rules</span>
-                      <p className="text-xs text-amber-950/90 whitespace-pre-line leading-relaxed">
+                    <div className="bg-gold-50 border border-gold-200/80 rounded-2xl p-4 space-y-1 mt-2">
+                      <span className="text-[11px] font-bold text-gold-600 block uppercase tracking-wider">Borrowing Rules</span>
+                      <p className="text-xs text-slate-700 whitespace-pre-line leading-relaxed">
                         {library.borrowing_rules}
                       </p>
                     </div>
@@ -405,36 +404,36 @@ export default function LibraryDetail() {
               >
                 {library.phone && (
                   <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                    <Phone className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                    <Phone className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Phone Contact</span>
-                      <a href={`tel:${library.phone}`} className="text-amber-700 font-bold hover:underline">{library.phone}</a>
+                      <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Phone Contact</span>
+                      <a href={`tel:${library.phone}`} className="text-gold-600 font-bold hover:underline">{library.phone}</a>
                     </div>
                   </div>
                 )}
 
                 {library.email && (
                   <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                    <Mail className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                    <Mail className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Email Address</span>
-                      <a href={`mailto:${library.email}`} className="text-amber-700 font-bold hover:underline break-all">{library.email}</a>
+                      <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Email Address</span>
+                      <a href={`mailto:${library.email}`} className="text-gold-600 font-bold hover:underline break-all">{library.email}</a>
                     </div>
                   </div>
                 )}
 
                 <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <MapPin className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Province / Location</span>
+                    <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Province / Location</span>
                     <span className="text-slate-700 font-semibold">{library.city ? `Province: ${library.city}` : (library.address || 'Phnom Penh, Cambodia')}</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <Clock className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider mb-0.5">Opening Hours</span>
+                    <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Opening Hours</span>
                     <span className="text-slate-700 font-semibold">{library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 AM - 05:00 PM'}</span>
                   </div>
                 </div>
@@ -451,9 +450,9 @@ export default function LibraryDetail() {
                 className="space-y-4 text-xs sm:text-sm text-slate-600"
               >
                 <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <MapPin className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <span className="font-bold text-slate-900 block text-xs uppercase tracking-wider">Physical Address</span>
+                    <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider">Physical Address</span>
                     <p className="text-slate-700 font-medium">{library.address || 'Phnom Penh, Cambodia'}</p>
                   </div>
                 </div>
@@ -464,7 +463,7 @@ export default function LibraryDetail() {
                       href={library.google_maps_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+                      className="os-btn-gold text-xs"
                     >
                       <span>Get Directions</span>
                       <ExternalLink className="w-4 h-4" />
@@ -490,7 +489,7 @@ export default function LibraryDetail() {
 
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-center space-y-1">
                   <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider">Available Books</span>
-                  <span className="text-2xl font-extrabold text-amber-700">{meta.total}</span>
+                  <span className="text-2xl font-extrabold text-gold-600">{meta.total}</span>
                 </div>
 
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-center space-y-1">
@@ -503,7 +502,7 @@ export default function LibraryDetail() {
         </div>
 
         {/* RIGHT CARD (1/3 width) — LIBRARY INFORMATION SUMMARY */}
-        <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs h-fit">
+        <div className="bg-white border border-brand-border/70 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs h-fit">
           <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3">
             Library Information
           </h3>
@@ -511,7 +510,7 @@ export default function LibraryDetail() {
           <div className="space-y-3.5 text-xs">
             <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
               <span className="text-slate-500 font-medium">Status</span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80 text-[11px]">
+              <span className="os-badge-success">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 ● Open
               </span>
@@ -524,7 +523,7 @@ export default function LibraryDetail() {
 
             <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
               <span className="text-slate-500 font-medium">Fine Per Day</span>
-              <span className="font-extrabold text-amber-700">${Number(library.fine_per_day ?? 0.50).toFixed(2)}</span>
+              <span className="font-extrabold text-gold-600">${Number(library.fine_per_day ?? 0.50).toFixed(2)}</span>
             </div>
 
             <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
@@ -548,12 +547,12 @@ export default function LibraryDetail() {
 
             <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
               <span className="text-slate-500 font-medium">Book Collections</span>
-              <span className="font-extrabold text-slate-900">{totalBooksCount}</span>
+              <span className="font-medium text-navy-800">{totalBooksCount}</span>
             </div>
 
             <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
               <span className="text-slate-500 font-medium">Available Books</span>
-              <span className="font-extrabold text-amber-700">{meta.total}</span>
+              <span className="font-extrabold text-gold-600">{meta.total}</span>
             </div>
           </div>
         </div>
@@ -566,15 +565,15 @@ export default function LibraryDetail() {
       <LibraryReviews libraryId={id} initialReviewsCount={library.reviews_count || 0} />
 
       {/* PART 3 — BOOKS AT THIS LIBRARY & LIBRARY-SPECIFIC CATEGORY FILTERS */}
-      <div ref={booksGridRef} className="space-y-6 pt-4 border-t border-slate-200/80">
+      <div ref={booksGridRef} className="space-y-6 pt-4 border-t border-brand-border/60">
         {/* Section Header */}
         <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-xl bg-gold-500 text-navy-950 flex items-center justify-center font-bold shrink-0">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Books at this Library</h2>
+              <h2 className="os-section-title">Books at this Library</h2>
               <p className="text-xs text-slate-500">Browse catalogue holdings available at {library.name}</p>
             </div>
           </div>
@@ -582,7 +581,7 @@ export default function LibraryDetail() {
           {(search || categoryId || sort !== 'latest' || page > 1) && (
             <button
               onClick={handleClearFilters}
-              className="inline-flex min-h-11 items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 font-semibold px-3 py-1.5 bg-rose-50 border border-rose-200 rounded-xl transition-colors shrink-0"
+              className="os-btn-secondary h-10 px-4 text-xs shrink-0"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Clear filters</span>
@@ -591,21 +590,22 @@ export default function LibraryDetail() {
         </motion.div>
 
         {/* Filter Toolbar: Search + Library-Specific Categories + Sort */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-xs">
+        <div className="bg-white border border-brand-border/70 rounded-2xl p-4 flex flex-col md:flex-row md:items-center flex-wrap gap-3 shadow-xs">
           {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <div className="relative md:flex-1 min-w-[200px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <input
               type="text"
               placeholder="Search title, author, ISBN..."
               value={search}
               onChange={(e) => updateFilters({ search: e.target.value })}
-              className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2.5 pl-10 pr-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all"
+              className="os-input h-10 pl-10 pr-10 text-xs"
             />
             {search && (
               <button
                 onClick={() => updateFilters({ search: '' })}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                aria-label="Clear book search"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1.5 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -617,7 +617,8 @@ export default function LibraryDetail() {
             <select
               value={categoryId}
               onChange={(e) => updateFilters({ category_id: e.target.value })}
-              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              aria-label="Filter by category"
+              className="os-input h-10 pr-8 text-xs font-medium cursor-pointer"
             >
               <option value="">All Categories in this library</option>
               {categories.map((c) => (
@@ -633,7 +634,8 @@ export default function LibraryDetail() {
             <select
               value={sort}
               onChange={(e) => updateFilters({ sort: e.target.value })}
-              className="w-full min-h-11 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-2.5 px-4 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-all font-medium cursor-pointer"
+              aria-label="Sort books"
+              className="os-input h-10 pr-8 text-xs font-medium cursor-pointer"
             >
               <option value="latest">Newest Added</option>
               <option value="top_rated">Highest Rated</option>
@@ -644,9 +646,9 @@ export default function LibraryDetail() {
         {/* Real-time Count Indicator */}
         <div className="flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-amber-600" />
+            <SlidersHorizontal className="w-4 h-4 text-gold-600" />
             <span>
-              Showing <strong className="text-slate-900">{startItem}–{endItem}</strong> of <strong className="text-slate-900">{meta.total}</strong> books
+              Showing <strong className="text-navy-800">{startItem}–{endItem}</strong> of <strong className="text-navy-800">{meta.total}</strong> books
             </span>
           </div>
         </div>
@@ -657,11 +659,11 @@ export default function LibraryDetail() {
           <BookSkeleton count={10} />
         ) : books.length === 0 ? (
           /* Empty State */
-          <div className="bg-white border border-slate-200/90 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs">
-            <div className="w-16 h-16 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center mx-auto text-amber-600">
-              <BookOpen className="w-8 h-8" />
+          <div className="bg-white border border-brand-border/70 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs">
+            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto text-navy-700">
+              <BookOpen className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-extrabold text-slate-900">
+            <h3 className="text-lg font-semibold text-navy-800">
               {search || categoryId ? 'No matching books found' : 'No books available yet'}
             </h3>
             <p className="text-xs sm:text-sm text-slate-500">
@@ -673,7 +675,7 @@ export default function LibraryDetail() {
               {search || categoryId ? (
                 <button
                   onClick={handleClearFilters}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+                  className="os-btn-gold"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Clear filters</span>
@@ -681,7 +683,7 @@ export default function LibraryDetail() {
               ) : (
                 <Link
                   to="/libraries"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+                  className="os-btn-gold"
                 >
                   <span>Browse other libraries</span>
                 </Link>

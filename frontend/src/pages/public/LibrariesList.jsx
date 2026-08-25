@@ -108,15 +108,15 @@ export default function LibrariesList() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-12 pb-20">
       {/* 1. EDITORIAL PAGE HEADER */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-xs space-y-4">
+      <div className="bg-white border border-brand-border/70 rounded-3xl p-6 sm:p-10 shadow-xs space-y-4">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1">
           <Building2 className="w-4 h-4" />
           <span>Community Directory</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="os-section-title sm:text-3xl lg:text-4xl">
           Physical Libraries
         </h1>
-        <p className="text-slate-600 text-xs sm:text-base leading-relaxed max-w-3xl">
+        <p className="text-slate-500 text-xs sm:text-base leading-relaxed max-w-3xl">
           Explore partner community libraries across Cambodia. Connect with physical reading spaces, inspect collection counts, and borrow books in person.
         </p>
       </div>
@@ -124,7 +124,7 @@ export default function LibrariesList() {
       {/* 2. FEATURED LIBRARIES SECTION (Show near top on page 1) */}
       {page === 1 && featuredLibraries.length > 0 && (
         <section className="space-y-6">
-          <motion.div {...REVEAL_VARIANTS} className="flex items-center justify-between border-b border-slate-200/80 pb-4">
+          <motion.div {...REVEAL_VARIANTS} className="flex items-center justify-between border-b border-brand-border/60 pb-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600">
                 <Sparkles className="w-4 h-4 text-gold-500" />
@@ -152,7 +152,7 @@ export default function LibrariesList() {
 
       {/* 3. ALL LIBRARIES SECTION WITH SERVER-SIDE PAGINATION */}
       <section ref={directoryRef} className="space-y-6">
-        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-border/60 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600">
               <Building2 className="w-4 h-4" />
@@ -165,49 +165,47 @@ export default function LibrariesList() {
         </motion.div>
 
         {/* TOOLBAR CARD: Search Input, 25 Cambodian Provinces Selector, & Sort Dropdown */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div className="bg-white border border-brand-border/70 rounded-2xl p-4 sm:p-5 shadow-2xs">
+          <div className="flex flex-col xl:flex-row xl:items-center flex-wrap gap-3">
             {/* Real-time Showing Count */}
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 shrink-0">
-              <SlidersHorizontal className="w-4 h-4 text-amber-600 shrink-0" />
+              <SlidersHorizontal className="w-4 h-4 text-gold-600 shrink-0" />
               <span>
-                Showing <strong className="text-slate-900">{startItem}–{endItem}</strong> of <strong className="text-slate-900">{meta.total}</strong> libraries
+                Showing <strong className="text-navy-800">{startItem}–{endItem}</strong> of <strong className="text-navy-800">{meta.total}</strong> libraries
               </span>
             </div>
 
             {/* Embedded Search Input */}
-            <div className="flex-1 max-w-md w-full">
-              <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search library name, address, or location..."
-                  value={searchInput}
-                  onChange={handleSearchChange}
-                  className="w-full min-h-11 bg-slate-50 border border-slate-200 focus:border-amber-500 rounded-xl py-2 pl-10 pr-11 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-500/20 transition-all font-medium"
-                />
-                {searchInput && (
-                  <button
-                    onClick={() => { setSearchInput(''); setSelectedProvince(''); setPage(1); }}
-                    aria-label="Clear library search"
-                    className="absolute right-1.5 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+            <div className="relative flex-1 min-w-[220px] max-w-md w-full">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search library name, address, or location..."
+                value={searchInput}
+                onChange={handleSearchChange}
+                className="os-input h-10 pl-10 pr-10 text-xs font-medium"
+              />
+              {searchInput && (
+                <button
+                  onClick={() => { setSearchInput(''); setPage(1); }}
+                  aria-label="Clear library search"
+                  className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
 
             {/* Selectors: All 25 Provinces of Cambodia & Sort Dropdown */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
               {/* 25 Cambodian Provinces Dropdown */}
-              <div className="flex min-h-11 items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
-                <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                <span className="text-slate-500 font-semibold">Province:</span>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-600 pointer-events-none" />
                 <select
                   value={selectedProvince}
                   onChange={(e) => handleProvinceChange(e.target.value)}
-                  className="bg-transparent text-slate-900 font-bold focus:outline-none cursor-pointer text-xs max-w-[150px] sm:max-w-[190px] truncate"
+                  aria-label="Filter by province"
+                  className="os-input h-10 pl-9 pr-4 text-xs font-semibold cursor-pointer max-w-[150px] sm:max-w-[210px] truncate"
                 >
                   <option value="">All Provinces (ខេត្ត/ក្រុងទាំងអស់)</option>
                   <option value="Phnom Penh">Phnom Penh (ភ្នំពេញ)</option>
@@ -239,22 +237,22 @@ export default function LibrariesList() {
               </div>
 
               {/* Sort Dropdown */}
-              <div className="flex min-h-11 items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
-                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-slate-500 font-semibold">Sort:</span>
+              <div className="relative">
+                <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-transparent text-slate-900 font-bold focus:outline-none cursor-pointer text-xs"
+                  aria-label="Sort libraries"
+                  className="os-input h-10 pl-9 pr-4 text-xs font-semibold cursor-pointer"
                 >
                   <option value="most_books">Most Books</option>
                   <option value="name">Name (A-Z)</option>
                   <option value="newest">Newest First</option>
                 </select>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
         {/* CONTENT SKELETON / ERROR / EMPTY / GRID */}
         <AnimatePresence mode="wait">
@@ -282,12 +280,12 @@ export default function LibrariesList() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="bg-white border border-slate-200/90 rounded-3xl p-10 text-center max-w-md mx-auto space-y-4 shadow-xs"
+              className="bg-white border border-brand-border/70 rounded-3xl p-10 text-center max-w-md mx-auto space-y-4 shadow-xs"
             >
-              <div className="w-16 h-16 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center mx-auto text-amber-600">
-                <Building2 className="w-8 h-8" />
+              <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto text-navy-700">
+                <Building2 className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-extrabold text-slate-900">
+              <h3 className="text-lg font-semibold text-navy-800">
                 {selectedProvince ? `No libraries in ${selectedProvince} yet` : 'No libraries found'}
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
@@ -303,7 +301,7 @@ export default function LibrariesList() {
                 {selectedProvince && selectedProvince !== 'Phnom Penh' && (
                   <button
                     onClick={() => handleProvinceChange('Phnom Penh')}
-                    className="inline-flex min-h-11 items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                    className="os-btn-gold h-10 px-4 text-xs"
                   >
                     <Building2 className="w-4 h-4" />
                     <span>View Phnom Penh Libraries</span>
@@ -311,7 +309,7 @@ export default function LibrariesList() {
                 )}
                 <button
                   onClick={handleClearFilters}
-                  className="inline-flex min-h-11 items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all cursor-pointer"
+                  className="os-btn-secondary h-10 px-4 text-xs"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>All Provinces</span>

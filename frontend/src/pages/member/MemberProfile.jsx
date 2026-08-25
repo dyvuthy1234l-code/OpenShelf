@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Mail, Phone, Lock, CheckCircle2, AlertCircle, 
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import memberService from '../../services/memberService';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 export default function MemberProfile() {
   const { user, updateUser } = useAuth();
@@ -36,6 +37,11 @@ export default function MemberProfile() {
   const [profileError, setProfileError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [avatarErrored, setAvatarErrored] = useState(false);
+
+  useEffect(() => {
+    setAvatarErrored(false);
+  }, [user?.avatar_url]);
 
   // Handle File Selection
   const handleFileSelect = (e) => {
@@ -168,7 +174,7 @@ export default function MemberProfile() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 pb-16">
       {/* Hidden File Input */}
       <input
         ref={fileInputRef}
@@ -184,7 +190,7 @@ export default function MemberProfile() {
           <User className="w-4 h-4" />
           <span>Account Settings</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900">Member Profile</h1>
+        <h1 className="os-section-title">Member Profile</h1>
         <p className="text-slate-500 text-xs sm:text-sm mt-1">Manage your profile picture, personal information, and security</p>
       </div>
 
@@ -193,8 +199,13 @@ export default function MemberProfile() {
         {/* Avatar Container with Camera Button */}
         <div className="relative group shrink-0">
           <div className="w-24 h-24 rounded-full sm:rounded-3xl bg-gold-500 text-navy-950 font-extrabold text-3xl flex items-center justify-center shadow-lg shadow-gold-500/20 overflow-hidden border-4 border-white ring-4 ring-gold-500/40">
-            {user?.avatar_url ? (
-              <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+            {user?.avatar_url && !avatarErrored ? (
+              <img
+                src={user.avatar_url}
+                alt={user.name}
+                className="w-full h-full object-cover"
+                onError={() => setAvatarErrored(true)}
+              />
             ) : (
               <span>{user?.name ? user.name[0].toUpperCase() : 'M'}</span>
             )}
@@ -232,7 +243,7 @@ export default function MemberProfile() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-            <span className="os-badge-warning uppercase tracking-wider">
+            <span className="os-badge-info uppercase tracking-wider">
               Role: {user?.role || 'member'}
             </span>
             <span className={`inline-flex items-center gap-1 capitalize ${
@@ -530,6 +541,6 @@ export default function MemberProfile() {
           </div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

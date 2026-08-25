@@ -81,9 +81,17 @@ export default function MemberNotifications() {
             <Bell className="w-4 h-4" />
             <span>Activity Inbox</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900">Notifications</h1>
+          <h1 className="os-section-title">Notifications</h1>
           <p className="text-slate-500 text-xs sm:text-sm mt-1">
             Updates on borrowing requests, due dates, and library activity
+            {!loading && notifications.length > 0 && (
+              <>
+                {' '}· <strong className="font-bold tabular-nums text-navy-800">{notifications.length}</strong> total
+                {unreadCount > 0 && (
+                  <> · <strong className="font-bold tabular-nums text-gold-600">{unreadCount}</strong> unread</>
+                )}
+              </>
+            )}
           </p>
         </div>
 
@@ -166,7 +174,7 @@ export default function MemberNotifications() {
                       <h4 className={`text-xs font-bold ${isUnread ? 'text-gold-600' : 'text-navy-900'}`}>
                         {title}
                       </h4>
-                      <span className="text-[10px] text-slate-400 shrink-0">
+                      <span className="text-[10px] text-slate-400 shrink-0 tabular-nums">
                         {formatNotificationTime(n.created_at)}
                       </span>
                     </div>

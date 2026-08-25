@@ -24,6 +24,7 @@ export default function MemberFavorites() {
   const [error, setError] = useState(null);
   const [removingId, setRemovingId] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
+  const [erroredCovers, setErroredCovers] = useState({});
 
   const fetchFavorites = useCallback(async (pageToFetch = 1) => {
     try {
@@ -99,8 +100,13 @@ export default function MemberFavorites() {
             <Bookmark className="w-4 h-4" />
             <span>Saved Wishlist</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-900">Your Favorite Books</h1>
-          <p className="text-slate-500 text-xs sm:text-sm mt-1">Books you saved for future reading</p>
+          <h1 className="os-section-title">Your Favorite Books</h1>
+          <p className="text-slate-500 text-xs sm:text-sm mt-1">
+            Books you saved for future reading
+            {!loading && meta.total > 0 && (
+              <> · <strong className="font-bold tabular-nums text-navy-800">{meta.total}</strong> saved</>
+            )}
+          </p>
         </div>
 
         <Link
@@ -153,6 +159,7 @@ export default function MemberFavorites() {
             {favorites.map((fav) => {
               const book = fav.book || {};
               const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;
+              const coverErrored = !!erroredCovers[fav.id];
 
               return (
                 <motion.div
@@ -161,11 +168,12 @@ export default function MemberFavorites() {
                   className="os-card flex flex-col h-full group"
                 >
                   <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
-                    {book.cover_image_url ? (
+                    {book.cover_image_url && !coverErrored ? (
                       <img
                         src={getBookCoverUrl(book.cover_image_url, 400)}
                         alt={book.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        onError={() => setErroredCovers((prev) => ({ ...prev, [fav.id]: true }))}
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 flex flex-col items-center justify-center p-4 text-center">

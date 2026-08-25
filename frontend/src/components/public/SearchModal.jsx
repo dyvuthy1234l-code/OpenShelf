@@ -176,7 +176,7 @@ export default function SearchModal({ isOpen, onClose }) {
                   aria-label="Close search"
                   className="flex h-9 w-9 items-center justify-center text-slate-400 hover:text-navy-800 hover:bg-slate-100 hover:rotate-90 rounded-xl transition-all duration-300 shrink-0"
                 >
-                  <X className="w-4.5 h-4.5" />
+                  <X className="w-5 h-5" />
                 </button>
               </form>
 
