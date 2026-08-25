@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Building2, User, CheckCircle2, XCircle, Bookmark, Star, Clock } from 'lucide-react';
+import { BookOpen, Building2, User, CheckCircle2, XCircle, Bookmark, Star, Eye, Clock } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import getImageUrl, { getBookCoverUrl } from '../../utils/imageUrl';
+import { getBookCoverUrl } from '../../utils/imageUrl';
 import { CARD_MOTION_PROPS } from '../../constants/motionTokens';
 
 function formatRelativeTime(dateString) {
@@ -29,9 +29,11 @@ export default function BookCard({ book, showDateAdded = false }) {
   const { isAuthenticated, user, isBookFavorite, toggleFavorite } = useAuth();
   const navigate = useNavigate();
   const [savingFav, setSavingFav] = useState(false);
+  const [imageErr, setImageErr] = useState(false);
+
+  const timeAgo = showDateAdded ? formatRelativeTime(book.created_at || book.added_at) : null;
 
   const isFavorited = isBookFavorite(book.id);
-
   const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;
   const availableQty = book.available_quantity ?? 0;
 
@@ -40,8 +42,6 @@ export default function BookCard({ book, showDateAdded = false }) {
   const hasRating = numRating !== null && !isNaN(numRating) && numRating > 0;
   const ratingValue = hasRating ? numRating.toFixed(1) : null;
   const reviewsCount = book.reviews_count ?? book.rating_count ?? null;
-
-  const timeAgo = showDateAdded ? formatRelativeTime(book.created_at || book.added_at) : null;
 
   const handleFavoriteClick = async (e) => {
     e.preventDefault();
@@ -63,16 +63,14 @@ export default function BookCard({ book, showDateAdded = false }) {
     }
   };
 
-  const [imageErr, setImageErr] = useState(false);
-
   return (
     <motion.div
       {...CARD_MOTION_PROPS}
       onClick={() => navigate(`/books/${book.id}`)}
-      className="os-card group relative rounded-2xl overflow-hidden hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full cursor-pointer"
+      className="os-card group relative rounded-2xl overflow-hidden flex flex-col h-full cursor-pointer focus-within:ring-2 focus-within:ring-navy-600/40"
     >
-      {/* Cover Image Container */}
-      <div className="relative aspect-[3/4] w-full bg-navy-50 overflow-hidden shrink-0 rounded-t-2xl flex items-center justify-center group/cover">
+      {/* Cover */}
+      <div className="relative aspect-[3/4] w-full bg-navy-50 overflow-hidden shrink-0">
         {getBookCoverUrl(book.cover_image_url || book.cover_image, 400) && !imageErr ? (
           <img
             src={getBookCoverUrl(book.cover_image_url || book.cover_image, 400)}
@@ -80,7 +78,7 @@ export default function BookCard({ book, showDateAdded = false }) {
             loading="lazy"
             decoding="async"
             onError={() => setImageErr(true)}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out will-change-transform"
+            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out will-change-transform"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-tr from-slate-200 via-white to-slate-100 flex flex-col items-center justify-center p-4 text-center">
@@ -89,14 +87,23 @@ export default function BookCard({ book, showDateAdded = false }) {
           </div>
         )}
 
-        {/* Category Pill */}
+        {/* Hover overlay + quick action */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-navy-950/70 via-navy-950/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center pb-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-navy-800 shadow-md">
+            <Eye className="w-3.5 h-3.5" />
+            View Details
+          </span>
+        </div>
+
+        {/* Category pill — top left */}
         {book.category?.name && (
-          <div className="absolute top-3 left-3 z-20 bg-white/90 backdrop-blur-md border border-slate-200 text-slate-800 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-xs">
+          <span className="absolute top-3 left-3 z-20 max-w-[55%] truncate bg-white/90 backdrop-blur-md border border-slate-200 text-slate-800 px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-xs">
             {book.category.name}
-          </div>
+          </span>
         )}
 
-        {/* Favorite Action Button */}
+        {/* Favorite — top right */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.8, rotate: -5 }}
@@ -104,83 +111,72 @@ export default function BookCard({ book, showDateAdded = false }) {
           disabled={savingFav}
           aria-label={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
           title={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
-          className={`absolute bottom-3 right-3 z-20 flex h-11 w-11 items-center justify-center rounded-xl border transition-all duration-200 shadow-xs ${
+          className={`absolute top-3 right-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-md transition-all duration-200 shadow-xs ${
             isFavorited
-              ? 'bg-amber-500 text-slate-950 border-amber-500'
-              : 'bg-white/90 hover:bg-amber-50 text-slate-600 hover:text-amber-700 border-slate-200'
+              ? 'bg-gold-500 text-navy-950 border-gold-500'
+              : 'bg-white/90 hover:bg-gold-50 text-slate-600 hover:text-gold-600 border-slate-200'
           }`}
         >
-          <Bookmark className={`w-4 h-4 ${isFavorited ? 'fill-slate-950' : ''}`} />
+          <Bookmark className={`w-4 h-4 ${isFavorited ? 'fill-navy-950' : ''}`} />
         </motion.button>
 
-        {/* Availability Badge */}
-        <div className="absolute top-3 right-3 z-20 pointer-events-none">
-          <motion.div
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ willChange: 'transform' }}
-          >
-            {isAvailable ? (
-              <span className="os-badge-success backdrop-blur-md shadow-xs">
-                <CheckCircle2 className="w-3 h-3" />
-                {availableQty} Available
-              </span>
-            ) : (
-              <span className="os-badge-danger backdrop-blur-md shadow-xs">
-                <XCircle className="w-3 h-3" />
-                Borrowed
-              </span>
-            )}
-          </motion.div>
+        {/* Availability — bottom left, static & calm */}
+        <div className="absolute bottom-3 left-3 z-20">
+          {isAvailable ? (
+            <span className="os-badge-success backdrop-blur-md shadow-xs">
+              <CheckCircle2 className="w-3 h-3" />
+              {availableQty} Available
+            </span>
+          ) : (
+            <span className="os-badge-danger backdrop-blur-md shadow-xs">
+              <XCircle className="w-3 h-3" />
+              Borrowed
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Book Info */}
-      <div className="p-5 flex flex-col flex-grow space-y-2">
-        <div>
-          <h3 className="text-base font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-1">
-            {book.title}
-          </h3>
+      {/* Info */}
+      <div className="p-4 flex flex-col flex-grow gap-1.5">
+        <h3 className="text-[15px] font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-2 leading-snug">
+          {book.title}
+        </h3>
 
-          {book.author && (
-            <div className="flex items-center gap-1.5 text-slate-500 text-xs mt-0.5">
-              <User className="w-3.5 h-3.5 text-slate-400" />
-              <span className="line-clamp-1">{book.author}</span>
-            </div>
-          )}
-        </div>
+        {book.author && (
+          <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+            <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <span className="line-clamp-1">{book.author}</span>
+          </div>
+        )}
 
-        {/* Rating & Relative Date */}
-        <div className="flex items-center justify-between text-xs pt-1">
+        {/* Meta row: rating + added time + library */}
+        <div className="mt-auto pt-2 flex items-center justify-between gap-2">
           {hasRating ? (
-            <div className="flex items-center gap-1 text-amber-700 font-bold">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 shrink-0" />
-              <span>{ratingValue}</span>
+            <span className="inline-flex items-center gap-1 text-xs font-bold text-gold-600">
+              <Star className="w-3.5 h-3.5 fill-gold-400 text-gold-500 shrink-0" />
+              {ratingValue}
               {reviewsCount !== null && (
                 <span className="text-[11px] text-slate-400 font-normal">({reviewsCount})</span>
               )}
-            </div>
+            </span>
           ) : (
             <span className="text-[11px] text-slate-400 font-medium italic">No ratings yet</span>
           )}
 
           {timeAgo && (
-            <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-medium bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">
+            <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-medium bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100 shrink-0">
               <Clock className="w-3 h-3 text-slate-400 shrink-0" />
               {timeAgo}
             </span>
           )}
+
+          {book.library?.name && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-slate-50 border border-slate-200/80 px-2 py-0.5 rounded-lg min-w-0">
+              <Building2 className="w-3 h-3 text-gold-600 shrink-0" />
+              <span className="line-clamp-1">{book.library.name}</span>
+            </span>
+          )}
         </div>
-
-        {/* Library Info */}
-        {book.library?.name && (
-          <div className="flex items-center gap-1.5 text-xs text-slate-700 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-xl">
-            <Building2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-            <span className="line-clamp-1 font-semibold">{book.library.name}</span>
-          </div>
-        )}
-
-
       </div>
     </motion.div>
   );
