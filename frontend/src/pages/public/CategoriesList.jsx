@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -219,9 +219,9 @@ export default function CategoriesList() {
       <div ref={directoryRef} className="space-y-8">
         {loading ? (
           /* Skeleton Loading Cards (4 columns x 3 rows = 12 cards) */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
-              <div key={n} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse h-48">
+              <div key={n} className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)] bg-white border border-slate-200 rounded-2xl p-5 space-y-4 animate-pulse h-48">
                 <div className="w-10 h-10 bg-slate-100 rounded-xl" />
                 <div className="h-4 bg-slate-100 rounded w-3/4" />
                 <div className="h-3 bg-slate-100 rounded w-1/2" />
@@ -257,7 +257,7 @@ export default function CategoriesList() {
               variants={LIST_STAGGER}
               initial="initial"
               animate="animate"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="flex flex-wrap justify-center gap-6"
             >
               {categories.map((cat) => {
                 const targetLibraryId = libraryId || cat.library_id;
@@ -272,6 +272,7 @@ export default function CategoriesList() {
                     variants={LIST_ITEM}
                     whileHover={{ y: -6 }}
                     transition={{ duration: 0.3, ease: 'easeOut' }}
+                    className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
                   >
                     <Link
                       to={bookTarget}
@@ -321,3 +322,4 @@ export default function CategoriesList() {
     </div>
   );
 }
+

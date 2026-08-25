@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Bookmark, BookOpen, Trash2, ArrowRight, Building2, CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -155,7 +155,7 @@ export default function MemberFavorites() {
         />
       ) : (
         <div className="space-y-8">
-          <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="flex flex-wrap justify-center gap-5">
             {favorites.map((fav) => {
               const book = fav.book || {};
               const isAvailable = (book.available_quantity ?? book.quantity ?? 0) > 0;
@@ -165,7 +165,7 @@ export default function MemberFavorites() {
                 <motion.div
                   key={fav.id}
                   variants={LIST_ITEM}
-                  className="os-card flex flex-col h-full group"
+                  className="os-card flex flex-col h-full group w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(25%-0.9375rem)]"
                 >
                   <div className="relative aspect-[3/4] w-full bg-slate-100/80 overflow-hidden flex items-center justify-center group/cover">
                     {book.cover_image_url && !coverErrored ? (
@@ -247,3 +247,4 @@ export default function MemberFavorites() {
     </motion.div>
   );
 }
+

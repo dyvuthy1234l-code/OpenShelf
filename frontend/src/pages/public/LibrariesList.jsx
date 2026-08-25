@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+﻿import { useState, useMemo, useRef } from 'react';
 import { 
   Building2, Search, X, Sparkles, SlidersHorizontal, ArrowUpDown, RefreshCw, MapPin 
 } from 'lucide-react';
@@ -139,10 +139,10 @@ export default function LibrariesList() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="flex flex-wrap justify-center gap-6"
           >
             {featuredLibraries.map((lib) => (
-              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM}>
+              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%-0.75rem)]">
                 <FeaturedLibraryCard library={lib} />
               </motion.div>
             ))}
@@ -263,7 +263,7 @@ export default function LibrariesList() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="flex flex-wrap justify-center gap-6"
             >
               {[...Array(6)].map((_, i) => (
                 <LibrarySkeleton key={`lib-skeleton-${i}`} />
@@ -330,10 +330,10 @@ export default function LibrariesList() {
                 variants={LIST_STAGGER}
                 initial="initial"
                 animate="animate"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="flex flex-wrap justify-center gap-6"
               >
                 {sortedLibraries.map((lib) => (
-                  <motion.div key={`all-${lib.id}`} variants={LIST_ITEM}>
+                  <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
                     <LibraryCard library={lib} />
                   </motion.div>
                 ))}
@@ -352,3 +352,5 @@ export default function LibrariesList() {
     </div>
   );
 }
+
+

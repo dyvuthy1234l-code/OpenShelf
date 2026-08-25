@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+﻿import { useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Search, X, SlidersHorizontal, RefreshCw } from 'lucide-react';
@@ -289,10 +289,10 @@ export default function BooksList() {
                 variants={LIST_STAGGER}
                 initial="initial"
                 animate="animate"
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
+                className="flex flex-wrap justify-center gap-5"
               >
                 {books.map((b) => (
-                  <motion.div key={b.id} variants={LIST_ITEM}>
+                  <motion.div key={b.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(20%-1rem)]">
                     <BookCard book={b} />
                   </motion.div>
                 ))}
@@ -311,3 +311,4 @@ export default function BooksList() {
     </div>
   );
 }
+

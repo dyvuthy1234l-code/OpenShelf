@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -767,10 +767,10 @@ export default function BookDetail() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6"
+            className="flex flex-wrap justify-center gap-5"
           >
             {relatedBooks.map((relBook) => (
-              <motion.div key={relBook.id} variants={LIST_ITEM}>
+              <motion.div key={relBook.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(20%-1rem)]">
                 <BookCard book={relBook} />
               </motion.div>
             ))}
@@ -927,3 +927,4 @@ export default function BookDetail() {
     </>
   );
 }
+

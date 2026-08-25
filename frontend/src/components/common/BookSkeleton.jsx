@@ -2,11 +2,11 @@ import React from 'react';
 
 export default function BookSkeleton({ count = 8 }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+    <div className="flex flex-wrap justify-center gap-5">
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs flex flex-col h-full animate-pulse"
+          className="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)] lg:w-[calc(20%-1rem)] bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs flex flex-col h-full animate-pulse"
         >
           {/* Cover Image Placeholder */}
           <div className="relative aspect-[3/4] w-full bg-slate-200/80 shrink-0" />
