@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
@@ -57,9 +57,9 @@ export default function Home() {
 
         const [libRes, availRes, recentRes, ratedRes] = await Promise.allSettled([
           publicService.getLibraries({ per_page: 6 }),
-          publicService.getBooks({ available_only: true, per_page: 8 }),
-          publicService.getBooks({ sort: 'latest', per_page: 8 }),
-          publicService.getBooks({ sort: 'top_rated', per_page: 12 }),
+          publicService.getBooks({ available_only: true, per_page: 10 }),
+          publicService.getBooks({ sort: 'latest', per_page: 10 }),
+          publicService.getBooks({ sort: 'top_rated', per_page: 15 }),
         ]);
 
         const libs = libRes.status === 'fulfilled' ? (libRes.value?.data || libRes.value?.libraries || []) : [];
@@ -91,7 +91,7 @@ export default function Home() {
           return rateB - rateA;
         });
 
-        setHighlyRatedBooks(filteredRated.slice(0, 8));
+        setHighlyRatedBooks(filteredRated.slice(0, 10));
       } catch {
         setError('Failed to load homepage resources. Please refresh or try again later.');
       } finally {
@@ -346,7 +346,7 @@ export default function Home() {
             animate="show"
             className="flex flex-wrap justify-center gap-5"
           >
-            {[...Array(8)].map((_, i) => (
+            {[...Array(10)].map((_, i) => (
               <BookSkeleton key={`book-skeleton-${i}`} />
             ))}
           </motion.div>
@@ -406,7 +406,7 @@ export default function Home() {
             animate="show"
             className="flex flex-wrap justify-center gap-5"
           >
-            {[...Array(4)].map((_, i) => (
+            {[...Array(10)].map((_, i) => (
               <BookSkeleton key={`recent-skeleton-${i}`} />
             ))}
           </motion.div>

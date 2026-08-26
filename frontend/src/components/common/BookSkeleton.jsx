@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 
-export default function BookSkeleton({ count = 8 }) {
+export default function BookSkeleton({ count = 10 }) {
   return (
     <div className="flex flex-wrap justify-center gap-5">
       {Array.from({ length: count }).map((_, index) => (

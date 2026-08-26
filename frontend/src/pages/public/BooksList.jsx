@@ -1,4 +1,4 @@
-﻿import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Search, X, SlidersHorizontal, RefreshCw } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function BooksList() {
     library_id: libraryId || undefined,
     sort: sort || undefined,
     page,
-    per_page: 12,
+    per_page: 10,
   };
 
   const {
@@ -68,7 +68,7 @@ export default function BooksList() {
   const meta = {
     current_page: Number(booksRes?.meta?.current_page) || page,
     last_page: Number(booksRes?.meta?.last_page) || 1,
-    per_page: Number(booksRes?.meta?.per_page) || 12,
+    per_page: Number(booksRes?.meta?.per_page) || 10,
     total: Number(booksRes?.meta?.total) || books.length,
   };
   const error = isError ? 'Failed to load books catalogue. Please check your network connection.' : null;
@@ -311,5 +311,3 @@ export default function BooksList() {
     </div>
   );
 }
-
-
