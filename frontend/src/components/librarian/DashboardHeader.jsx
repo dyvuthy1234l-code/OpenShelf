@@ -33,7 +33,7 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 w-full">
+    <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0 w-full">
       <div className="space-y-0.5 min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-flex items-center gap-1">
@@ -47,7 +47,7 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
             </span>
           )}
         </div>
-        <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight mt-0.5">
+        <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight mt-0.5">
           Welcome back, {user?.name || 'Librarian'}
         </h1>
         <p className="text-[11px] text-slate-500 font-medium truncate">

@@ -179,8 +179,10 @@ export default function Dashboard() {
         min-w-0
         min-h-0
         flex-1
+        h-full
         flex
         flex-col
+        justify-between
         overflow-x-hidden
         font-sans
       "
@@ -383,17 +385,21 @@ export default function Dashboard() {
             ease: 'easeOut',
           }}
           className="
-            mt-2.5
+            mt-2
             min-h-0
             flex-1
-            space-y-2.5
-            overflow-visible
+            h-full
+            flex
+            flex-col
+            justify-between
+            space-y-2
+            lg:space-y-2.5
           "
         >
           {/* =========================
               KPI
           ========================== */}
-          <section className="min-w-0">
+          <section className="min-w-0 shrink-0">
             <AnalyticsKpiGrid
               reports={reports}
               memberSummary={memberSummary}
@@ -407,6 +413,8 @@ export default function Dashboard() {
             className="
               grid
               min-w-0
+              flex-1
+              min-h-0
               grid-cols-1
               items-stretch
               gap-2.5
@@ -417,6 +425,8 @@ export default function Dashboard() {
             <div
               className="
                 min-w-0
+                h-full
+                min-h-0
                 lg:col-span-8
               "
             >
@@ -436,6 +446,8 @@ export default function Dashboard() {
             <div
               className="
                 min-w-0
+                h-full
+                min-h-0
                 lg:col-span-4
               "
             >
@@ -454,6 +466,8 @@ export default function Dashboard() {
             className="
               grid
               min-w-0
+              flex-1
+              min-h-0
               grid-cols-1
               items-stretch
               gap-2.5
@@ -464,6 +478,8 @@ export default function Dashboard() {
             <div
               className="
                 min-w-0
+                h-full
+                min-h-0
                 lg:col-span-6
               "
             >
@@ -477,6 +493,8 @@ export default function Dashboard() {
             <div
               className="
                 min-w-0
+                h-full
+                min-h-0
                 lg:col-span-6
               "
             >
