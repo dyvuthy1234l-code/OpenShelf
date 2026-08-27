@@ -57,7 +57,7 @@ export default function AdminLibrarians() {
 
   const loadData = useCallback(async () => {
     try {
-      setLoading(true);
+      if (librarians.length === 0) setLoading(true);
       setError(null);
       const [libRes, libListRes] = await Promise.all([
         adminService.getLibrarians({

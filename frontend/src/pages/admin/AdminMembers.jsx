@@ -35,7 +35,7 @@ export default function AdminMembers() {
 
   const loadData = useCallback(async () => {
     try {
-      setLoading(true);
+      if (members.length === 0) setLoading(true);
       setError(null);
       const [membersRes, libListRes] = await Promise.all([
         adminService.getMembers({

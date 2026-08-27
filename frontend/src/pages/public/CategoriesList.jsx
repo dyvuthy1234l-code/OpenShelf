@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -16,6 +16,7 @@ export default function CategoriesList() {
   const [categories, setCategories] = useState([]);
   const [libraries, setLibraries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(null);
 
   // Read URL query parameters
@@ -47,7 +48,8 @@ export default function CategoriesList() {
   // Fetch Paginated Categories from Backend API
   const loadCategories = useCallback(async () => {
     try {
-      setLoading(true);
+      if (categories.length === 0) setLoading(true);
+      setIsFetching(true);
       setError(null);
 
       const params = {
@@ -80,8 +82,9 @@ export default function CategoriesList() {
       setError('Failed to load book categories. Please check your network connection.');
     } finally {
       setLoading(false);
+      setIsFetching(false);
     }
-  }, [search, libraryId, page]);
+  }, [search, libraryId, page, categories.length]);
 
   useEffect(() => {
     const timer = setTimeout(loadCategories, 300);
@@ -125,9 +128,7 @@ export default function CategoriesList() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= lastPage) {
       updateFilters({ page: newPage.toString() });
-      if (directoryRef.current) {
-        directoryRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -252,7 +253,7 @@ export default function CategoriesList() {
           </div>
         ) : (
           /* Categories Grid & Pagination Bar */
-          <div className="space-y-8">
+          <div className={`space-y-8 transition-opacity duration-200 ${isFetching ? 'opacity-60 pointer-events-none' : 'opacity-100'}`}>
             <motion.div
               variants={LIST_STAGGER}
               initial="initial"
@@ -322,5 +323,3 @@ export default function CategoriesList() {
     </div>
   );
 }
-
-

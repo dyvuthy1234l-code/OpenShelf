@@ -8,6 +8,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './GuestRoute';
 import PublicLayout from '../components/public/PublicLayout';
+import ScrollToTop from '../components/common/ScrollToTop';
 
 // Auth Pages
 const Login = lazy(() => import('../pages/auth/Login'));
@@ -70,6 +71,7 @@ const RouteFallback = () => (
 export default function AppRouter() {
   return (
     <HashRouter>
+      <ScrollToTop />
       <AuthProvider>
         <Suspense fallback={<RouteFallback />}>
           <Routes>

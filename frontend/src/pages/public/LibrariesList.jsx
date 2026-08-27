@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { 
   Building2, Search, X, Sparkles, SlidersHorizontal, ArrowUpDown, RefreshCw, MapPin 
 } from 'lucide-react';
@@ -6,11 +6,10 @@ import { useLibraries } from '../../hooks/queries/useLibraries';
 import useDebounce from '../../hooks/useDebounce';
 import LibraryCard from '../../components/public/LibraryCard';
 import FeaturedLibraryCard from '../../components/public/FeaturedLibraryCard';
-import Pagination from '../../components/public/Pagination';
 import AnimatedPagination from '../../components/common/AnimatedPagination';
 import ErrorState from '../../components/public/ErrorState';
 import LibrarySkeleton from '../../components/common/LibrarySkeleton';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 export default function LibrariesList() {
@@ -43,9 +42,9 @@ export default function LibrariesList() {
     refetch: loadLibraries,
   } = useLibraries(queryParams);
 
-  const loading = initialLoading || isFetching;
-
   const libraries = librariesRes?.data || librariesRes?.libraries || [];
+  const loading = initialLoading && libraries.length === 0;
+
   const meta = {
     current_page: Number(librariesRes?.meta?.current_page) || page,
     last_page: Number(librariesRes?.meta?.last_page) || 1,
@@ -78,9 +77,7 @@ export default function LibrariesList() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= meta.last_page) {
       setPage(newPage);
-      if (directoryRef.current) {
-        directoryRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -255,103 +252,76 @@ export default function LibrariesList() {
         </div>
 
         {/* CONTENT SKELETON / ERROR / EMPTY / GRID */}
-        <AnimatePresence mode="wait">
-          {loading ? (
-            <motion.div 
-              key="loading-skeleton"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+        {loading ? (
+          <div className="flex flex-wrap justify-center gap-6">
+            {[...Array(6)].map((_, i) => (
+              <LibrarySkeleton key={`lib-skeleton-${i}`} />
+            ))}
+          </div>
+        ) : error ? (
+          <ErrorState message={error} onRetry={loadLibraries} />
+        ) : sortedLibraries.length === 0 ? (
+          /* EMPTY RESULT STATE */
+          <div className="bg-white border border-brand-border/70 rounded-3xl p-10 text-center max-w-md mx-auto space-y-4 shadow-xs">
+            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto text-navy-700">
+              <Building2 className="w-7 h-7" />
+            </div>
+            <h3 className="text-lg font-semibold text-navy-800">
+              {selectedProvince ? `No libraries in ${selectedProvince} yet` : 'No libraries found'}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+              {selectedProvince ? (
+                <>
+                  Currently, there are no partner libraries registered in <strong className="text-slate-800">{selectedProvince}</strong>. Most partner libraries are located in <strong className="text-slate-800">Phnom Penh</strong>.
+                </>
+              ) : (
+                <>We couldn&apos;t find any physical libraries matching &quot;<strong className="text-slate-700">{searchInput}</strong>&quot;.</>
+              )}
+            </p>
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+              {selectedProvince && selectedProvince !== 'Phnom Penh' && (
+                <button
+                  onClick={() => handleProvinceChange('Phnom Penh')}
+                  className="os-btn-gold h-10 px-4 text-xs"
+                >
+                  <Building2 className="w-4 h-4" />
+                  <span>View Phnom Penh Libraries</span>
+                </button>
+              )}
+              <button
+                onClick={handleClearFilters}
+                className="os-btn-secondary h-10 px-4 text-xs"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>All Provinces</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* LIBRARY CARDS GRID & PAGINATION CONTROLS */
+          <div className={`space-y-8 transition-opacity duration-200 ${isFetching ? 'opacity-60 pointer-events-none' : 'opacity-100'}`}>
+            <motion.div
+              variants={LIST_STAGGER}
+              initial="initial"
+              animate="animate"
               className="flex flex-wrap justify-center gap-6"
             >
-              {[...Array(6)].map((_, i) => (
-                <LibrarySkeleton key={`lib-skeleton-${i}`} />
+              {sortedLibraries.map((lib) => (
+                <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+                  <LibraryCard library={lib} />
+                </motion.div>
               ))}
             </motion.div>
-          ) : error ? (
-            <motion.div key="error-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <ErrorState message={error} onRetry={loadLibraries} />
-            </motion.div>
-          ) : sortedLibraries.length === 0 ? (
-            /* EMPTY RESULT STATE */
-            <motion.div 
-              key="empty-state"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="bg-white border border-brand-border/70 rounded-3xl p-10 text-center max-w-md mx-auto space-y-4 shadow-xs"
-            >
-              <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto text-navy-700">
-                <Building2 className="w-7 h-7" />
-              </div>
-              <h3 className="text-lg font-semibold text-navy-800">
-                {selectedProvince ? `No libraries in ${selectedProvince} yet` : 'No libraries found'}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                {selectedProvince ? (
-                  <>
-                    Currently, there are no partner libraries registered in <strong className="text-slate-800">{selectedProvince}</strong>. Most partner libraries are located in <strong className="text-slate-800">Phnom Penh</strong>.
-                  </>
-                ) : (
-                  <>We couldn&apos;t find any physical libraries matching &quot;<strong className="text-slate-700">{searchInput}</strong>&quot;.</>
-                )}
-              </p>
-              <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                {selectedProvince && selectedProvince !== 'Phnom Penh' && (
-                  <button
-                    onClick={() => handleProvinceChange('Phnom Penh')}
-                    className="os-btn-gold h-10 px-4 text-xs"
-                  >
-                    <Building2 className="w-4 h-4" />
-                    <span>View Phnom Penh Libraries</span>
-                  </button>
-                )}
-                <button
-                  onClick={handleClearFilters}
-                  className="os-btn-secondary h-10 px-4 text-xs"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  <span>All Provinces</span>
-                </button>
-              </div>
-            </motion.div>
-          ) : (
-            /* LIBRARY CARDS GRID & PAGINATION CONTROLS */
-            <motion.div
-              key={`page-${meta.current_page}`}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="space-y-8"
-            >
-              <motion.div
-                variants={LIST_STAGGER}
-                initial="initial"
-                animate="animate"
-                className="flex flex-wrap justify-center gap-6"
-              >
-                {sortedLibraries.map((lib) => (
-                  <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
-                    <LibraryCard library={lib} />
-                  </motion.div>
-                ))}
-              </motion.div>
 
-              {/* Pagination Controls Bar */}
-              <AnimatedPagination
-                currentPage={meta.current_page}
-                lastPage={meta.last_page}
-                onPageChange={handlePageChange}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+            {/* Pagination Controls Bar */}
+            <AnimatedPagination
+              currentPage={meta.current_page}
+              lastPage={meta.last_page}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
       </section>
     </div>
   );
 }
-
-
-

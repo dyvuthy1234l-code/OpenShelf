@@ -47,11 +47,12 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <motion.div
           {...BACKDROP_MOTION_VARIANTS}
-          className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm"
+          onClick={onClose}
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
         />
         <motion.div
           {...MODAL_MOTION_VARIANTS}
-          className="os-panel p-6 max-w-md w-full shadow-xl shadow-navy-950/10 space-y-5"
+          className="relative z-10 bg-white border border-slate-200/90 p-6 max-w-md w-full rounded-2xl shadow-2xl space-y-5"
         >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-emerald-700 font-extrabold text-base">

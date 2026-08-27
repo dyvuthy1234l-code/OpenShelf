@@ -50,7 +50,7 @@ export default function AdminLibraries() {
 
   const loadLibraries = useCallback(async () => {
     try {
-      setLoading(true);
+      if (libraries.length === 0) setLoading(true);
       setError(null);
       const res = await adminService.getLibraries({
         page: currentPage,

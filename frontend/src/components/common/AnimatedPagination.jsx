@@ -42,7 +42,7 @@ export default function AnimatedPagination({ currentPage, lastPage, onPageChange
               <motion.div
                 layoutId="activePageIndicator"
                 className="absolute inset-0 bg-amber-400 rounded-xl"
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 35 }}
               />
             )}
             <span className="relative z-10">{p}</span>
