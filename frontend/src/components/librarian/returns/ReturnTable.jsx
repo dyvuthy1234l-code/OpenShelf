@@ -1,22 +1,8 @@
 import { Link } from 'react-router-dom';
 import { CheckCircle2, BookOpen, Clock, AlertTriangle, DollarSign } from 'lucide-react';
+import StatusBadge from '../../common/StatusBadge';
 
 export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'return_requested':
-        return <span className="os-badge-warning uppercase">🟡 Return Requested</span>;
-      case 'overdue':
-        return <span className="os-badge-danger uppercase">🔴 Overdue</span>;
-      case 'borrowed':
-      case 'picked_up':
-        return <span className="os-badge-success uppercase">🟢 Borrowed</span>;
-      case 'returned':
-        return <span className="os-badge-info uppercase">⚪ Returned</span>;
-      default:
-        return <span className="os-badge-info uppercase">{status}</span>;
-    }
-  };
 
   const getFineBadge = (amount, fineStatus) => {
     if (!amount || parseFloat(amount) === 0) {
@@ -98,7 +84,7 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
 
                   {/* Status */}
                   <td className="py-4 px-4">
-                    {getStatusBadge(req.status)}
+                    <StatusBadge status={req.status} />
                   </td>
 
                   {/* Fine */}

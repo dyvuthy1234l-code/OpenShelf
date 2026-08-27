@@ -5,6 +5,7 @@ import {
   DollarSign, CheckCircle2, ArrowRightLeft, X 
 } from 'lucide-react';
 import memberService from '../../services/memberService';
+import StatusBadge from '../common/StatusBadge';
 
 export default function BorrowingCard({ borrowing, onActionSuccess }) {
   const [extending, setExtending] = useState(false);
@@ -14,6 +15,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
   const [actionMessage, setActionMessage] = useState('');
   const [actionError, setActionError] = useState('');
+  const [imageErr, setImageErr] = useState(false);
 
   const book = borrowing.book || {};
   const library = borrowing.library || {};
@@ -44,20 +46,6 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
   const isActiveLoan = ['approved', 'borrowed', 'picked_up'].includes(status);
   const isDueSoon = !isOverdue && dueDate && dueDate - now <= 3 * 24 * 60 * 60 * 1000 && (status === 'borrowed' || status === 'picked_up' || status === 'approved');
-
-  const statusBadge =
-    isOverdue
-      ? { cls: 'os-badge-danger', label: 'Overdue' }
-      : status === 'return_requested'
-      ? { cls: 'os-badge-warning', label: 'Return Requested' }
-      : status === 'rejected'
-      ? { cls: 'os-badge-danger', label: 'Rejected' }
-      : status === 'returned'
-      ? { cls: 'os-badge-info', label: 'Returned' }
-      : isActiveLoan
-      ? { cls: 'os-badge-success', label: status === 'picked_up' ? 'Borrowed' : status }
-      : { cls: 'os-badge-warning', label: status || 'Pending' };
-
   const isEligibleForReturn = (status === 'borrowed' || status === 'picked_up' || isOverdue) && status !== 'return_requested' && status !== 'returned';
 
   const handleRequestReturnSubmit = async () => {
@@ -110,8 +98,6 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
     }
   };
 
-    const [imageErr, setImageErr] = useState(false);
-
   return (
     <>
       <div className="os-panel p-5 hover:shadow-md transition-shadow space-y-4">
@@ -145,7 +131,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
           {/* Status Pill & Countdown */}
           <div className="shrink-0 flex sm:flex-col items-start sm:items-end justify-between w-full sm:w-auto gap-2">
-            <span className={statusBadge.cls}>{statusBadge.label}</span>
+            <StatusBadge status={isOverdue ? 'overdue' : status} />
 
             {dueDate && (status === 'borrowed' || status === 'picked_up' || status === 'approved' || isOverdue) && status !== 'return_requested' && (
               <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border tabular-nums ${
@@ -222,7 +208,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
               <button
                 onClick={handlePayFine}
                 disabled={paying}
-                className="min-h-11 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all"
+                className="min-h-11 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-xs transition-all cursor-pointer"
               >
                 {paying ? 'Processing...' : 'Pay Fine'}
               </button>
@@ -250,7 +236,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
             <button
               onClick={handleExtend}
               disabled={extending}
-              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50"
+              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${extending ? 'animate-spin' : ''}`} />
               <span>{extending ? 'Extending...' : 'Extend Loan'}</span>
@@ -260,7 +246,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {isEligibleForReturn && (
             <button
               onClick={() => setShowReturnModal(true)}
-              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all"
+              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
             >
               <ArrowRightLeft className="w-3.5 h-3.5" />
               <span>Request Return</span>
@@ -272,7 +258,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
       {/* CONFIRMATION MODAL */}
       <AnimatePresence>
         {showReturnModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65">
             <motion.div
               role="dialog"
               aria-modal="true"
@@ -289,9 +275,10 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
                   <h3 id="return-request-title">Request Book Return</h3>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setShowReturnModal(false)}
                   aria-label="Close return request"
-                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg"
+                  className="flex h-11 w-11 items-center justify-center text-slate-400 hover:text-slate-600 rounded-lg cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -322,16 +309,18 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
 
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
+                  type="button"
                   onClick={() => setShowReturnModal(false)}
                   disabled={requestingReturn}
-                  className="min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all"
+                  className="min-h-11 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={handleRequestReturnSubmit}
                   disabled={requestingReturn}
-                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {requestingReturn ? (
                     <>

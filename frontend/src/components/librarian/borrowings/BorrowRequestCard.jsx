@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, User, Calendar, CheckCircle2, XCircle } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
+import StatusBadge from '../../common/StatusBadge';
 
 export default function BorrowRequestCard({ borrowing, onApprove, onReject, onPickup }) {
   const isAvailable = (borrowing.book?.available_quantity ?? 0) > 0;
@@ -19,11 +20,7 @@ export default function BorrowRequestCard({ borrowing, onApprove, onReject, onPi
             <span className="font-extrabold text-xs text-slate-900 truncate max-w-[130px]">{borrowing.user?.name}</span>
           </div>
 
-          <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase ${
-            borrowing.status === 'pending' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-100 text-slate-700'
-          }`}>
-            {borrowing.status}
-          </span>
+          <StatusBadge status={borrowing.status} />
         </div>
 
         <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70 space-y-1 text-xs">

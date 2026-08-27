@@ -1,28 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Eye, CheckCircle2, XCircle, Clock, BookOpen, User, RefreshCw } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
+import StatusBadge from '../../common/StatusBadge';
 
 export default function BorrowRequestTable({ borrowings = [], onApprove, onReject, onPickup }) {
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'pending':
-        return <span className="os-badge-warning uppercase">🟡 Pending</span>;
-      case 'approved':
-        return <span className="os-badge-info uppercase">🔵 Approved</span>;
-      case 'borrowed':
-      case 'picked_up':
-        return <span className="os-badge-success uppercase">🟢 Borrowed</span>;
-      case 'overdue':
-        return <span className="os-badge-danger uppercase">🔴 Overdue</span>;
-      case 'return_requested':
-        return <span className="os-badge-warning uppercase">🟡 Return Requested</span>;
-      case 'returned':
-        return <span className="os-badge-info uppercase">⚪ Returned</span>;
-      case 'rejected':
-        return <span className="os-badge-danger uppercase">❌ Rejected</span>;
-      default:
-        return <span className="os-badge-info uppercase">{status}</span>;
-    }
-  };
 
   return (
     <div className="os-panel overflow-hidden">
@@ -90,7 +70,7 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
 
                   {/* Status */}
                   <td className="py-4 px-4">
-                    {getStatusBadge(req.status)}
+                    <StatusBadge status={req.status} />
                   </td>
 
                   {/* Copy Availability */}
