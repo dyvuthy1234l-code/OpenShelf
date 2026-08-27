@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, CheckCircle2, Inbox } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function RecentRequestsTable({ requests = [] }) {
   const displayRequests = requests.slice(0, 3);
@@ -57,7 +58,13 @@ export default function RecentRequestsTable({ requests = [] }) {
                 }
 
                 return (
-                  <tr key={req.id} className="hover:bg-slate-50/80 transition-colors">
+                  <motion.tr
+                    key={req.id}
+                    initial={{ opacity: 0.4, y: 3 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="hover:bg-slate-50/80 transition-colors"
+                  >
                     <td className="py-1.5 px-1.5 font-bold text-slate-900 truncate max-w-[120px]">
                       {req.user?.name || 'Member'}
                     </td>
@@ -78,7 +85,7 @@ export default function RecentRequestsTable({ requests = [] }) {
                         Review
                       </Link>
                     </td>
-                  </tr>
+                  </motion.tr>
                 );
               })}
             </tbody>

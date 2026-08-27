@@ -90,12 +90,24 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
             </div>
 
             <div>
-              <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight block leading-none">
+              <motion.span
+                key={kpi.value}
+                initial={{ opacity: 0.4, y: -4, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight block leading-none"
+              >
                 {kpi.value}
-              </span>
-              <span className={`inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${kpi.badgeBg}`}>
+              </motion.span>
+              <motion.span
+                key={kpi.subtext}
+                initial={{ opacity: 0.4, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className={`inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${kpi.badgeBg}`}
+              >
                 {kpi.subtext}
-              </span>
+              </motion.span>
             </div>
           </motion.div>
         );

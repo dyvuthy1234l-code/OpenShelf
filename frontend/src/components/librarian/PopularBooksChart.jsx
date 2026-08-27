@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Award, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function PopularBooksChart({ borrowings = [] }) {
   const popularBooks = useMemo(() => {
@@ -57,7 +58,13 @@ export default function PopularBooksChart({ borrowings = [] }) {
             const pct = Math.round((book.borrow_count / maxCount) * 100);
 
             return (
-              <div key={book.id || idx} className="group space-y-1">
+              <motion.div
+                key={book.id || idx}
+                initial={{ opacity: 0.4, y: 4, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="group space-y-1"
+              >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
                     {/* Rank Badge */}
@@ -109,7 +116,7 @@ export default function PopularBooksChart({ borrowings = [] }) {
                     className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-300 shadow-2xs"
                   />
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

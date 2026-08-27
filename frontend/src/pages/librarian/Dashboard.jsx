@@ -82,6 +82,9 @@ export default function Dashboard() {
         const repRes = await librarianService.getReports(reportParams);
         if (isMounted && repRes?.data) {
           setReports(repRes.data);
+          if (Array.isArray(repRes.data.borrowing_history) && repRes.data.borrowing_history.length > 0) {
+            setRecentRequests(repRes.data.borrowing_history.slice(0, 5));
+          }
         }
       } catch {
         // Non-critical fallback
@@ -136,12 +139,18 @@ export default function Dashboard() {
           <div className="h-40 lg:h-[155px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
-        <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5">
+        <motion.div
+          key={dateRange.preset}
+          initial={{ opacity: 0.82, y: 3, scale: 0.995 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.28, ease: 'easeOut' }}
+          className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5"
+        >
           {/* KPI ROW */}
           <AnalyticsKpiGrid reports={reports} memberSummary={memberSummary} />
 
           {/* MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books) */}
-          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[255px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[255px] min-h-0">
             <div className="lg:col-span-8 h-full min-h-0">
               <BorrowingActivityChart
                 circulationData={reports?.monthly_circulation || []}
@@ -153,18 +162,18 @@ export default function Dashboard() {
             <div className="lg:col-span-4 h-full min-h-0">
               <PopularBooksChart borrowings={reports?.borrowing_history || []} />
             </div>
-          </motion.div>
+          </div>
 
           {/* BOTTOM ROW (50% Recent Requests + 50% Book Categories) */}
-          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[155px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[155px] min-h-0">
             <div className="lg:col-span-6 h-full min-h-0">
-              <RecentRequestsTable requests={recentRequests} />
+              <RecentRequestsTable requests={reports?.borrowing_history && reports.borrowing_history.length > 0 ? reports.borrowing_history : recentRequests} />
             </div>
             <div className="lg:col-span-6 h-full min-h-0">
               <CategoryDistributionChart categories={categories} />
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       )}
     </div>
   );
