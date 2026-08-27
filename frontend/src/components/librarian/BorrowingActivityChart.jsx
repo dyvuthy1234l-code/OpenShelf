@@ -1,8 +1,24 @@
 import { useState, useMemo } from 'react';
 
-export default function BorrowingActivityChart({ circulationData = [], borrowings = [], library = null }) {
-  const [timeFilter, setTimeFilter] = useState('This Month');
+export default function BorrowingActivityChart({ circulationData = [], borrowings = [], library = null, preset = 'all' }) {
   const [hoveredPoint, setHoveredPoint] = useState(null);
+
+  // Map global header preset to chart time filter
+  const timeFilter = useMemo(() => {
+    switch (preset) {
+      case 'today':
+        return 'Today';
+      case 'week':
+        return 'This Week';
+      case 'month':
+        return 'This Month';
+      case 'year':
+        return 'This Year';
+      case 'all':
+      default:
+        return 'All Time';
+    }
+  }, [preset]);
 
   // Check if real circulation data is provided from Laravel backend API
   const hasRealData = useMemo(() => {
@@ -342,24 +358,6 @@ export default function BorrowingActivityChart({ circulationData = [], borrowing
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Time Filter Pill Buttons */}
-        <div className="flex items-center gap-0.5 bg-slate-100/90 p-1 rounded-2xl border border-slate-200/70 text-xs shadow-2xs shrink-0">
-          {['Today', 'This Week', 'This Month', 'This Year', 'All Time'].map((tf) => (
-            <button
-              key={tf}
-              type="button"
-              onClick={() => setTimeFilter(tf)}
-              className={`px-2.5 py-1 rounded-xl text-[10px] font-extrabold transition-all cursor-pointer ${
-                timeFilter === tf
-                  ? 'bg-amber-500 text-slate-950 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-              }`}
-            >
-              {tf}
-            </button>
-          ))}
         </div>
       </div>
 

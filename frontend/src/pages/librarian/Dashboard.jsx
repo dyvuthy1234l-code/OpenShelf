@@ -141,6 +141,7 @@ export default function Dashboard() {
                 circulationData={reports?.monthly_circulation || []}
                 borrowings={reports?.borrowing_history || []}
                 library={library}
+                preset={dateRange.preset}
               />
             </div>
             <div className="lg:col-span-4 h-full min-h-0">
