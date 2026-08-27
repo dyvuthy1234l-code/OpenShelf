@@ -89,24 +89,24 @@ export default function CategoryOverviewChart({ categories = [], reports = null 
   }, [categoryData, totalBooks, circumference]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 shadow-2xs h-auto lg:h-[240px] flex flex-col justify-between space-y-3">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 shadow-2xs h-auto lg:h-[220px] flex flex-col justify-between space-y-2">
       {/* Card Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
-        <div className="space-y-0.5">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 shrink-0">
+        <div className="flex flex-col min-w-0 space-y-0.5">
           <div className="flex items-center gap-1.5">
             <Layers className="w-4 h-4 text-amber-600 shrink-0" />
-            <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase">
+            <h3 className="text-xs font-black text-slate-900 tracking-tight leading-none uppercase">
               Category Overview
             </h3>
           </div>
-          <p className="text-[10px] font-medium text-slate-500">
+          <p className="text-[10px] font-medium text-slate-500 leading-none">
             Distribution of books by category
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100/90 px-2.5 py-1 rounded-xl border border-slate-200/70 shrink-0 shadow-2xs">
+        <div className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100/90 px-2 py-0.5 rounded-lg border border-slate-200/70 shrink-0 shadow-2xs">
           <span>All Books</span>
-          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+          <ChevronDown className="w-3 h-3 text-slate-400" />
         </div>
       </div>
 

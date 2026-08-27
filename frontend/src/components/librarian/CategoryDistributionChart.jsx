@@ -15,10 +15,10 @@ export default function CategoryDistributionChart({ categories = [] }) {
   }, [categories]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2.5 shadow-2xs h-auto lg:h-[240px] flex flex-col justify-between">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 space-y-2 shadow-2xs h-auto lg:h-[220px] flex flex-col justify-between">
       {/* Header with View All action link */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
-        <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 shrink-0">
+        <h3 className="text-xs font-black text-slate-900 tracking-tight leading-none uppercase flex items-center gap-1.5">
           <Tag className="w-4 h-4 text-amber-600 shrink-0" />
           Book Categories
         </h3>
