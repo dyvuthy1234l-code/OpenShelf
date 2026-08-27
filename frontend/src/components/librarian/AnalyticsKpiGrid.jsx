@@ -78,7 +78,7 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
           <motion.div
             key={idx}
             variants={LIST_ITEM}
-            className={`bg-white border border-slate-200/90 rounded-2xl py-1.5 px-2.5 shadow-2xs hover:shadow-md ${kpi.borderHover} transition-all duration-200 flex flex-col justify-between h-[76px] group`}
+            className={`bg-white border border-slate-200/90 rounded-2xl py-2 px-3 shadow-2xs hover:shadow-md ${kpi.borderHover} transition-all duration-200 flex flex-col justify-between h-[88px] group`}
           >
             <div className="flex items-center justify-between">
               <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">

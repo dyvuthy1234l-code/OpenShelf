@@ -287,7 +287,7 @@ export default function Dashboard() {
               <div
                 key={i}
                 className="
-                  h-[76px]
+                  h-[88px]
                   rounded-2xl
                   border
                   border-slate-200
@@ -314,7 +314,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-8
-                lg:h-[200px]
+                lg:h-[235px]
               "
             />
 
@@ -326,7 +326,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-4
-                lg:h-[200px]
+                lg:h-[235px]
               "
             />
           </div>
@@ -348,7 +348,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-6
-                lg:h-[205px]
+                lg:h-[250px]
               "
             />
 
@@ -360,7 +360,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-6
-                lg:h-[205px]
+                lg:h-[250px]
               "
             />
           </div>

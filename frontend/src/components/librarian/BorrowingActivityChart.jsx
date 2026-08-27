@@ -283,11 +283,11 @@ export default function BorrowingActivityChart({ circulationData = [], borrowing
 
   // Dimensions & SVG Math calculations
   const svgWidth = 500;
-  const svgHeight = 105;
+  const svgHeight = 120;
   const paddingLeft = 32;
   const paddingRight = 20;
-  const paddingTop = 8;
-  const paddingBottom = 18;
+  const paddingTop = 10;
+  const paddingBottom = 20;
 
   const chartAreaWidth = svgWidth - paddingLeft - paddingRight;
   const chartAreaHeight = svgHeight - paddingTop - paddingBottom;
@@ -313,7 +313,7 @@ export default function BorrowingActivityChart({ circulationData = [], borrowing
   }, [chartPoints, maxVal]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 lg:p-3 flex flex-col justify-between shadow-2xs space-y-1 h-[200px]">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 flex flex-col justify-between shadow-2xs space-y-1.5 h-[235px]">
       {/* Chart Header */}
       <div className="flex items-start justify-between border-b border-slate-100 pb-2 shrink-0">
         <div className="space-y-0.5">

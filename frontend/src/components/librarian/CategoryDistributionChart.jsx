@@ -15,7 +15,7 @@ export default function CategoryDistributionChart({ categories = [] }) {
   }, [categories]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 lg:p-3 space-y-1.5 shadow-2xs h-auto lg:h-[205px] flex flex-col justify-between">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2.5 shadow-2xs h-auto min-h-[250px] lg:h-[250px] flex flex-col justify-between">
       {/* Header with View All action link */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 shrink-0">
         <h3 className="text-xs font-black text-slate-900 tracking-tight leading-none uppercase flex items-center gap-1.5">
@@ -37,7 +37,7 @@ export default function CategoryDistributionChart({ categories = [] }) {
           <span>No category data available.</span>
         </div>
       ) : (
-        <div className="space-y-2.5 flex-1 overflow-y-auto pr-1 flex flex-col justify-center min-h-0">
+        <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5 min-h-0">
           {topCategories.map((cat, idx) => {
             const count = Number(cat.books_count ?? cat.count ?? 0);
             const pct = totalBooks > 0 ? Math.round((count / totalBooks) * 100) : 0;
