@@ -23,68 +23,58 @@ export default function Dashboard() {
 
   const [dateRange, setDateRange] = useState({ startDate: '', endDate: '', preset: 'all' });
   const [initialLoading, setInitialLoading] = useState(true);
-  const [isUpdatingFilter, setIsUpdatingFilter] = useState(false);
   const [error, setError] = useState(null);
 
-  // 1. Initial full fetch on mount
-  useEffect(() => {
-    let isMounted = true;
+  const fetchDashboardData = useCallback(async (isSilent = false) => {
+    try {
+      if (!isSilent) setInitialLoading(true);
+      setError(null);
 
-    const initDashboard = async () => {
-      try {
-        setInitialLoading(true);
-        setError(null);
+      const libRes = await librarianService.getMyLibrary();
+      const myLib = libRes.data || libRes.library || null;
+      setLibrary(myLib);
 
-        const libRes = await librarianService.getMyLibrary();
-        const myLib = libRes.data || libRes.library || null;
-        if (!isMounted) return;
-        setLibrary(myLib);
+      if (myLib) {
+        const [repRes, catRes, memRes, reqRes] = await Promise.allSettled([
+          librarianService.getReports({}),
+          librarianService.getCategories(),
+          librarianService.getMembers(),
+          librarianService.getBorrowings({ per_page: 5, status: 'pending' }),
+        ]);
 
-        if (myLib) {
-          const [repRes, catRes, memRes, reqRes] = await Promise.allSettled([
-            librarianService.getReports({}),
-            librarianService.getCategories(),
-            librarianService.getMembers(),
-            librarianService.getBorrowings({ per_page: 5, status: 'pending' }),
-          ]);
-
-          if (!isMounted) return;
-          if (repRes.status === 'fulfilled') setReports(repRes.value?.data || null);
-          if (catRes.status === 'fulfilled') setCategories(catRes.value?.data || []);
-          if (memRes.status === 'fulfilled' && memRes.value?.summary) {
-            setMemberSummary(memRes.value.summary);
-          }
-
-          let reqs = [];
-          if (reqRes.status === 'fulfilled' && Array.isArray(reqRes.value?.data) && reqRes.value.data.length > 0) {
-            reqs = reqRes.value.data;
-          } else if (repRes.status === 'fulfilled' && Array.isArray(repRes.value?.data?.borrowing_history)) {
-            reqs = repRes.value.data.borrowing_history.slice(0, 5);
-          }
-          setRecentRequests(reqs);
+        if (repRes.status === 'fulfilled') setReports(repRes.value?.data || null);
+        if (catRes.status === 'fulfilled') setCategories(catRes.value?.data || []);
+        if (memRes.status === 'fulfilled' && memRes.value?.summary) {
+          setMemberSummary(memRes.value.summary);
         }
-      } catch (err) {
-        if (isMounted) setError('Unable to load analytics dashboard data. Please try again.');
-      } finally {
-        if (isMounted) setInitialLoading(false);
+
+        let reqs = [];
+        if (reqRes.status === 'fulfilled' && Array.isArray(reqRes.value?.data) && reqRes.value.data.length > 0) {
+          reqs = reqRes.value.data;
+        } else if (repRes.status === 'fulfilled' && Array.isArray(repRes.value?.data?.borrowing_history)) {
+          reqs = repRes.value.data.borrowing_history.slice(0, 5);
+        }
+        setRecentRequests(reqs);
       }
-    };
-
-    initDashboard();
-
-    return () => {
-      isMounted = false;
-    };
+    } catch (err) {
+      setError('Unable to load analytics dashboard data. Please try again.');
+    } finally {
+      if (!isSilent) setInitialLoading(false);
+    }
   }, []);
 
-  // 2. Fast background update on date range filter change (Zero UI unmounting)
+  // Initial load
+  useEffect(() => {
+    fetchDashboardData(false);
+  }, [fetchDashboardData]);
+
+  // Background refetch on date range change
   useEffect(() => {
     if (initialLoading || !library) return;
 
     let isMounted = true;
     const updateReports = async () => {
       try {
-        setIsUpdatingFilter(true);
         const reportParams = {};
         if (dateRange.startDate) reportParams.start_date = dateRange.startDate;
         if (dateRange.endDate) reportParams.end_date = dateRange.endDate;
@@ -95,16 +85,11 @@ export default function Dashboard() {
         }
       } catch {
         // Non-critical fallback
-      } finally {
-        if (isMounted) setIsUpdatingFilter(false);
       }
     };
 
     updateReports();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [dateRange.startDate, dateRange.endDate, library, initialLoading]);
 
   const handleDateRangeChange = ({ startDate, endDate, preset }) => {
@@ -112,8 +97,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between min-h-0 space-y-3 lg:overflow-hidden overflow-y-auto h-full w-full">
-      {/* 1. Header Section (~75-85px) */}
+    <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5 h-full w-full font-sans">
+      {/* Header Section */}
       <DashboardHeader
         user={user}
         library={library}
@@ -124,39 +109,39 @@ export default function Dashboard() {
 
       {/* Error State Banner */}
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-3 shadow-2xs shrink-0">
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between gap-3 shadow-2xs shrink-0">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
           </div>
           <button
-            onClick={fetchDashboardData}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shrink-0 transition-colors cursor-pointer"
+            onClick={() => fetchDashboardData(false)}
+            className="inline-flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Try Again</span>
+            <span>Retry</span>
           </button>
         </div>
       )}
 
       {/* Loading Skeleton */}
       {initialLoading && !reports ? (
-        <div className="flex-1 space-y-3 animate-pulse min-h-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="flex-1 space-y-2.5 animate-pulse min-h-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-[108px] bg-white rounded-2xl border border-slate-200" />
+              <div key={i} className="h-[100px] bg-white rounded-2xl border border-slate-200" />
             ))}
           </div>
           <div className="h-64 lg:h-[255px] bg-white rounded-2xl border border-slate-200" />
           <div className="h-40 lg:h-[155px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
-        <div className="flex-1 flex flex-col justify-between min-h-0 space-y-3">
-          {/* SECTION 2: KPI ROW (5 Equal Height Cards ~108px) */}
+        <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5">
+          {/* KPI ROW */}
           <AnalyticsKpiGrid reports={reports} memberSummary={memberSummary} />
 
-          {/* SECTION 3: MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books ~255px) */}
-          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[255px] min-h-0">
+          {/* MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books) */}
+          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[255px] min-h-0">
             <div className="lg:col-span-8 h-full min-h-0">
               <BorrowingActivityChart
                 circulationData={reports?.monthly_circulation || []}
@@ -170,8 +155,8 @@ export default function Dashboard() {
             </div>
           </motion.div>
 
-          {/* SECTION 4: BOTTOM ROW (50% Recent Requests + 50% Book Categories ~155px) */}
-          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch lg:h-[155px] min-h-0">
+          {/* BOTTOM ROW (50% Recent Requests + 50% Book Categories) */}
+          <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[155px] min-h-0">
             <div className="lg:col-span-6 h-full min-h-0">
               <RecentRequestsTable requests={recentRequests} />
             </div>

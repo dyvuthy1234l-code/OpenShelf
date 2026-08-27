@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, Building2 } from 'lucide-react';
+import { Calendar, Building2, Sparkles } from 'lucide-react';
 import LibraryStatusToggle from './LibraryStatusToggle';
 
 export default function DashboardHeader({ user, library, dateRange, onDateRangeChange, onLibraryStatusChange }) {
@@ -33,11 +33,12 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80 shrink-0 min-h-[75px]">
+    <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 w-full">
       <div className="space-y-0.5 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] uppercase font-extrabold tracking-widest text-gold-600 block">
-            EXECUTIVE ANALYTICS DASHBOARD
+        <div className="flex items-center gap-1.5">
+          <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-flex items-center gap-1">
+            <Sparkles className="w-2.5 h-2.5 text-amber-600" />
+            Library Analytics
           </span>
           {library?.name && (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/80 truncate">
@@ -46,16 +47,16 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
             </span>
           )}
         </div>
-        <h1 className="text-xl font-extrabold text-navy-800 tracking-tight leading-tight truncate">
+        <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight leading-tight mt-0.5">
           Welcome back, {user?.name || 'Librarian'}
         </h1>
-        <p className="text-xs text-slate-500 font-medium truncate">
+        <p className="text-[11px] text-slate-500 font-medium truncate">
           Overview of your library performance, circulation, and member activity.
         </p>
       </div>
 
       {/* Status Toggle & Date Range Selector */}
-      <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+      <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
         {library && (
           <LibraryStatusToggle
             library={library}
@@ -64,7 +65,7 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
           />
         )}
 
-        <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shadow-2xs shrink-0 text-xs">
+        <div className="flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/80 shadow-2xs shrink-0 text-xs">
           <Calendar className="w-3.5 h-3.5 text-slate-400 ml-1.5 mr-0.5 hidden sm:inline" />
           {[
             { key: 'all', label: 'All Time' },
@@ -77,10 +78,10 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
               key={item.key}
               type="button"
               onClick={() => handlePresetSelect(item.key)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
                 activePreset === item.key
-                ? 'bg-navy-800 text-white shadow-2xs'
-                : 'text-slate-500 hover:text-navy-800 hover:bg-navy-100/60'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 shadow-xs scale-[1.02]'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               {item.label}

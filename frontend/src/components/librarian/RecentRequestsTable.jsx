@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Clock, CheckCircle2, Inbox } from 'lucide-react';
 
 export default function RecentRequestsTable({ requests = [] }) {
   const displayRequests = requests.slice(0, 3);
@@ -8,16 +8,17 @@ export default function RecentRequestsTable({ requests = [] }) {
     <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2 shadow-2xs h-[155px] flex flex-col justify-between">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
-        <h3 className="text-sm font-extrabold text-slate-900 tracking-tight leading-tight">
+        <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">
+          <Inbox className="w-4 h-4 text-amber-600 shrink-0" />
           Recent Borrow Requests
         </h3>
 
         <Link
           to="/librarian/borrow-requests"
-          className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:text-amber-900 transition-colors shrink-0"
+          className="text-[10px] font-black text-amber-700 hover:text-amber-800 flex items-center gap-1 transition-colors group shrink-0"
         >
           <span>View All</span>
-          <ArrowRight className="w-3 h-3" />
+          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
         </Link>
       </div>
 
@@ -72,9 +73,9 @@ export default function RecentRequestsTable({ requests = [] }) {
                     <td className="py-1.5 px-1.5 text-right">
                       <Link
                         to={`/librarian/borrow-requests/${req.id}`}
-                        className="px-2 py-0.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[10px] rounded shadow-2xs transition-colors inline-block"
+                        className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-950 font-bold text-[10px] rounded shadow-2xs transition-all inline-block"
                       >
-                        Review →
+                        Review
                       </Link>
                     </td>
                   </tr>

@@ -313,46 +313,47 @@ export default function BorrowingActivityChart({ circulationData = [], borrowing
   }, [chartPoints, maxVal]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-4 lg:p-5 flex flex-col justify-between shadow-2xs space-y-2 h-[255px]">
-      {/* Chart Header matching exact design screenshot */}
-      <div className="flex items-start justify-between border-b border-slate-100 pb-2.5 shrink-0">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 flex flex-col justify-between shadow-2xs space-y-2 h-[255px]">
+      {/* Chart Header */}
+      <div className="flex items-start justify-between border-b border-slate-100 pb-2 shrink-0">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               Borrowing Activity
             </h3>
             {hasRealData && (
-              <span className="text-[9px] font-extrabold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200 uppercase">
+              <span className="text-[8.5px] font-extrabold px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200/80 uppercase tracking-wider">
                 Live Data
               </span>
             )}
           </div>
-          <p className="text-[11px] font-medium text-slate-400">
+          <p className="text-[10px] font-medium text-slate-500">
             {timeFilter === 'Today' ? "Today's hourly circulation progression." : "Monthly borrowing and return activity."}
           </p>
 
-          {/* Legend Items with Dynamic Totals (Requests = Orange, Approved = Blue, Borrowed = Purple, Returns = Green) */}
-          <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] font-bold pt-1 flex-nowrap overflow-x-auto scrollbar-none">
+          {/* Legend Items with Dynamic Totals */}
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] font-extrabold pt-1 flex-nowrap overflow-x-auto scrollbar-none">
             <div className="flex items-center gap-1 bg-amber-50/90 border border-amber-200/80 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 shadow-2xs shrink-0" />
               <span className="text-slate-800 font-extrabold text-[10px]">
                 Requests <strong className="text-amber-600 font-black">({totals.requests})</strong>
               </span>
             </div>
             <div className="flex items-center gap-1 bg-blue-50/90 border border-blue-200/80 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 shadow-2xs shrink-0" />
               <span className="text-slate-800 font-extrabold text-[10px]">
                 Approved <strong className="text-blue-600 font-black">({totals.approved})</strong>
               </span>
             </div>
             <div className="flex items-center gap-1 bg-purple-50/90 border border-purple-200/80 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-purple-600 shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 shadow-2xs shrink-0" />
               <span className="text-slate-800 font-extrabold text-[10px]">
                 Borrowed <strong className="text-purple-600 font-black">({totals.borrowed})</strong>
               </span>
             </div>
             <div className="flex items-center gap-1 bg-emerald-50/90 border border-emerald-200/80 px-1.5 py-0.5 rounded-md whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-emerald-600 shrink-0" />
+              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-2xs shrink-0" />
               <span className="text-slate-800 font-extrabold text-[10px]">
                 Returns <strong className="text-emerald-600 font-black">({totals.returns})</strong>
               </span>

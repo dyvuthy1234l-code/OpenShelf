@@ -18,49 +18,49 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
 
   const kpiData = [
     {
-      title: 'TOTAL BOOKS',
+      title: 'Total Books',
       value: totalBooks,
-      subtext: `${availableBooks} copies available`,
-      subIcon: CheckCircle2,
+      subtext: `${availableBooks} available`,
       icon: BookOpen,
-      iconColor: 'text-amber-700 bg-amber-50 border-amber-200',
-      badgeBg: 'bg-amber-50 text-amber-800 border-amber-200',
+      gradient: 'from-amber-500 to-amber-600',
+      borderHover: 'hover:border-amber-200',
+      badgeBg: 'bg-amber-50 text-amber-800 border border-amber-200/80',
     },
     {
-      title: 'TOTAL MEMBERS',
+      title: 'Total Members',
       value: totalMembers,
-      subtext: `${activeBorrowers} active borrowers`,
-      subIcon: Users,
+      subtext: `${activeBorrowers} active`,
       icon: Users,
-      iconColor: 'text-blue-700 bg-blue-50 border-blue-200',
-      badgeBg: 'bg-blue-50 text-blue-800 border-blue-200',
+      gradient: 'from-blue-500 to-blue-700',
+      borderHover: 'hover:border-blue-200',
+      badgeBg: 'bg-blue-50 text-blue-800 border border-blue-200/80',
     },
     {
-      title: 'PENDING REQUESTS',
+      title: 'Pending Requests',
       value: pendingRequests,
       subtext: 'Awaiting review',
-      subIcon: Clock,
       icon: Clock,
-      iconColor: pendingRequests > 0 ? 'text-amber-800 bg-amber-50 border-amber-300' : 'text-slate-600 bg-slate-50 border-slate-200',
-      badgeBg: pendingRequests > 0 ? 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold' : 'bg-slate-100 text-slate-700 border-slate-200',
+      gradient: pendingRequests > 0 ? 'from-amber-500 to-amber-600' : 'from-slate-400 to-slate-500',
+      borderHover: pendingRequests > 0 ? 'hover:border-amber-300' : 'hover:border-slate-300',
+      badgeBg: pendingRequests > 0 ? 'bg-amber-100 text-amber-900 border border-amber-300 font-extrabold' : 'bg-slate-100 text-slate-700 border border-slate-200',
     },
     {
-      title: 'ACTIVE BORROWINGS',
+      title: 'Active Borrowings',
       value: activeBorrowings,
-      subtext: overdueBooks > 0 ? `${overdueBooks} overdue loans` : 'Active physical loans',
-      subIcon: overdueBooks > 0 ? AlertTriangle : ArrowLeftRight,
-      icon: ArrowLeftRight,
-      iconColor: overdueBooks > 0 ? 'text-rose-700 bg-rose-50 border-rose-200' : 'text-emerald-700 bg-emerald-50 border-emerald-200',
-      badgeBg: overdueBooks > 0 ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200',
+      subtext: overdueBooks > 0 ? `${overdueBooks} overdue` : 'Active loans',
+      icon: overdueBooks > 0 ? AlertTriangle : ArrowLeftRight,
+      gradient: overdueBooks > 0 ? 'from-rose-500 to-rose-600' : 'from-emerald-500 to-emerald-600',
+      borderHover: overdueBooks > 0 ? 'hover:border-rose-200' : 'hover:border-emerald-200',
+      badgeBg: overdueBooks > 0 ? 'bg-rose-50 text-rose-700 border border-rose-200/80' : 'bg-emerald-50 text-emerald-800 border border-emerald-200/80',
     },
     {
-      title: 'FINE REVENUE',
+      title: 'Fine Revenue',
       value: `$${collectedFines.toFixed(2)}`,
-      subtext: unpaidFines > 0 ? `$${unpaidFines.toFixed(2)} unpaid` : 'Collected fines',
-      subIcon: DollarSign,
+      subtext: unpaidFines > 0 ? `$${unpaidFines.toFixed(2)} unpaid` : 'Collected',
       icon: DollarSign,
-      iconColor: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-      badgeBg: unpaidFines > 0 ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200',
+      gradient: 'from-emerald-500 to-teal-700',
+      borderHover: 'hover:border-emerald-300',
+      badgeBg: unpaidFines > 0 ? 'bg-amber-50 text-amber-800 border border-amber-200/80' : 'bg-emerald-50 text-emerald-800 border border-emerald-200/80',
     },
   ];
 
@@ -69,34 +69,32 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
       variants={LIST_STAGGER}
       initial="initial"
       animate="animate"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 shrink-0"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 shrink-0"
     >
       {kpiData.map((kpi, idx) => {
         const Icon = kpi.icon;
-        const SubIcon = kpi.subIcon;
 
         return (
           <motion.div
             key={idx}
             variants={LIST_ITEM}
-            className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between h-[108px] group"
+            className={`bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs hover:shadow-md ${kpi.borderHover} transition-all duration-200 flex flex-col justify-between h-[100px] group`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-[9px] uppercase font-extrabold tracking-widest text-slate-400">
+              <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">
                 {kpi.title}
               </span>
-              <div className={`w-7 h-7 rounded-xl border flex items-center justify-center font-bold shrink-0 ${kpi.iconColor}`}>
-                <Icon className="w-3.5 h-3.5" />
+              <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${kpi.gradient} text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform`}>
+                <Icon className="w-4 h-4" />
               </div>
             </div>
 
-            <div className="flex items-baseline justify-between gap-1.5 pt-0.5">
-              <span className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            <div>
+              <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight block leading-none">
                 {kpi.value}
               </span>
-              <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${kpi.badgeBg}`}>
-                <SubIcon className="w-2.5 h-2.5" />
-                <span className="truncate max-w-[100px]">{kpi.subtext}</span>
+              <span className={`inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${kpi.badgeBg}`}>
+                {kpi.subtext}
               </span>
             </div>
           </motion.div>

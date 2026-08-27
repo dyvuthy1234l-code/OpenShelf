@@ -35,15 +35,13 @@ export default function PopularBooksChart({ borrowings = [] }) {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
         <div>
-          <h3 className="text-sm font-extrabold text-slate-900 tracking-tight leading-tight">
+          <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">
+            <Award className="w-4 h-4 text-amber-600" />
             Popular Books
           </h3>
           <p className="text-[10px] font-medium text-slate-500">
             Top 3 most borrowed books.
           </p>
-        </div>
-        <div className="w-6 h-6 rounded-lg bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-bold shrink-0 shadow-2xs">
-          <Award className="w-3.5 h-3.5" />
         </div>
       </div>
 
@@ -72,6 +70,7 @@ export default function PopularBooksChart({ borrowings = [] }) {
                       <img
                         src={book.cover_image_url}
                         alt={book.title}
+                        onError={(e) => { e.target.style.display = 'none'; }}
                         className="w-7 h-9 object-cover rounded border border-slate-200/80 shadow-2xs shrink-0 group-hover:scale-105 transition-transform duration-200"
                       />
                     ) : (
