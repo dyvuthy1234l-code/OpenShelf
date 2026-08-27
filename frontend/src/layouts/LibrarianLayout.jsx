@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, Building2, BookOpen, Tag, Inbox, 
   ArrowLeftRight, Users, CreditCard, BarChart3, Bell, 
-  LogOut, Menu, X, User, ChevronRight, UserCircle 
+  LogOut, Menu, X, ChevronRight, UserCircle 
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import librarianService from '../services/librarianService';
 import { formatNotificationTime } from '../utils/dateUtils';
 import OpenShelfBrand from '../components/common/OpenShelfBrand';
 import { SIDEBAR_SLIDE_VARIANTS, BACKDROP_MOTION_VARIANTS, DROPDOWN_MOTION_VARIANTS } from '../constants/motionTokens';
+import { useNotifications } from '../hooks/queries/useNotifications';
+import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../hooks/queries/useNotificationMutations';
 
 export default function LibrarianLayout() {
   const { user, logout } = useAuth();
@@ -18,63 +20,29 @@ export default function LibrarianLayout() {
   const navigate = useNavigate();
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
 
-  const fetchLibrarianNotifications = useCallback(async () => {
-    if (!user || (user.role !== 'librarian' && user.role !== 'admin')) return;
-    try {
-      const res = await librarianService.getNotifications();
-      const list = res.data || [];
-      setNotifications(list);
-      setUnreadCount(res.unread_count ?? list.filter((n) => !n.read_at).length);
-    } catch {
-      // non-critical
-    }
-  }, [user]);
+  // TanStack Query for reactive notifications state across header, sidebar, and notification pages
+  const { data: notifResData, refetch: fetchLibrarianNotifications } = useNotifications('librarian', Boolean(user));
+  const markNotifReadMutation = useMarkNotificationAsRead('librarian');
+  const markAllNotifsReadMutation = useMarkAllNotificationsAsRead('librarian');
 
-  useEffect(() => {
-    fetchLibrarianNotifications();
+  const notifications = Array.isArray(notifResData?.data) ? notifResData.data : (Array.isArray(notifResData) ? notifResData : []);
+  const unreadCount = notifResData?.unread_count ?? notifications.filter((n) => !n.read_at && !n.is_read).length;
 
-    // Auto-refresh every 10 seconds for real-time borrow requests & notifications
-    const interval = setInterval(fetchLibrarianNotifications, 10000);
-
-    const handleFocus = () => fetchLibrarianNotifications();
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [fetchLibrarianNotifications]);
-
-  const handleMarkNotifRead = async (id) => {
-    try {
-      await librarianService.markNotificationAsRead(id);
-      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n)));
-      setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch {
-      // non-critical
-    }
+  const handleMarkNotifRead = (id) => {
+    markNotifReadMutation.mutate(id);
   };
 
-  const handleMarkAllNotifsRead = async () => {
-    try {
-      await librarianService.markAllNotificationsAsRead();
-      setNotifications((prev) => prev.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() })));
-      setUnreadCount(0);
-    } catch {
-      // non-critical
-    }
+  const handleMarkAllNotifsRead = () => {
+    markAllNotifsReadMutation.mutate();
   };
 
   const handleDeleteNotif = async (e, id) => {
     e.stopPropagation();
     try {
       await librarianService.deleteNotification(id);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
-      setUnreadCount((prev) => Math.max(0, prev - 1));
+      fetchLibrarianNotifications();
     } catch {
       // non-critical
     }

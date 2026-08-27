@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -9,6 +9,8 @@ import { useAuth } from '../context/AuthContext';
 import adminService from '../services/adminService';
 import OpenShelfBrand from '../components/common/OpenShelfBrand';
 import { SIDEBAR_SLIDE_VARIANTS, BACKDROP_MOTION_VARIANTS, DROPDOWN_MOTION_VARIANTS } from '../constants/motionTokens';
+import { useNotifications } from '../hooks/queries/useNotifications';
+import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../hooks/queries/useNotificationMutations';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
@@ -17,30 +19,14 @@ export default function AdminLayout() {
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [notifList, setNotifList] = useState([]);
 
-  const fetchNotifs = useCallback(async () => {
-    try {
-      const res = await adminService.getNotifications();
-      setNotifList(res.data || []);
-      setUnreadCount(res.unread_count || 0);
-    } catch {
-      // Silent error fallback
-    }
-  }, []);
+  // TanStack Query for reactive notifications state across header, sidebar, and notification pages
+  const { data: notifData, refetch: fetchNotifs } = useNotifications('admin', Boolean(user));
+  const markNotifReadMutation = useMarkNotificationAsRead('admin');
+  const markAllNotifsReadMutation = useMarkAllNotificationsAsRead('admin');
 
-  useEffect(() => {
-    fetchNotifs();
-    const interval = setInterval(fetchNotifs, 30000);
-    const handleNotificationsRead = () => fetchNotifs();
-    window.addEventListener('notificationsRead', handleNotificationsRead);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('notificationsRead', handleNotificationsRead);
-    };
-  }, [fetchNotifs]);
+  const notifList = Array.isArray(notifData?.data) ? notifData.data : (Array.isArray(notifData) ? notifData : []);
+  const unreadCount = notifData?.unread_count ?? notifList.filter((n) => !n.read_at && !n.is_read).length;
 
   // Conceptually grouped navigation items for System Administration visual hierarchy
   const navSections = [
