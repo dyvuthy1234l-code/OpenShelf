@@ -22,69 +22,90 @@ export default function Dashboard() {
   const [recentRequests, setRecentRequests] = useState([]);
 
   const [dateRange, setDateRange] = useState({ startDate: '', endDate: '', preset: 'all' });
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isUpdatingFilter, setIsUpdatingFilter] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchDashboardData = useCallback(async (isSilent = false) => {
-    try {
-      if (!isSilent) setLoading(true);
-      setError(null);
+  // 1. Initial full fetch on mount
+  useEffect(() => {
+    let isMounted = true;
 
-      // 1. Fetch librarian's library
-      const libRes = await librarianService.getMyLibrary();
-      const myLib = libRes.data || libRes.library || null;
-      setLibrary(myLib);
+    const initDashboard = async () => {
+      try {
+        setInitialLoading(true);
+        setError(null);
 
-      if (myLib) {
+        const libRes = await librarianService.getMyLibrary();
+        const myLib = libRes.data || libRes.library || null;
+        if (!isMounted) return;
+        setLibrary(myLib);
+
+        if (myLib) {
+          const [repRes, catRes, memRes, reqRes] = await Promise.allSettled([
+            librarianService.getReports({}),
+            librarianService.getCategories(),
+            librarianService.getMembers(),
+            librarianService.getBorrowings({ per_page: 5, status: 'pending' }),
+          ]);
+
+          if (!isMounted) return;
+          if (repRes.status === 'fulfilled') setReports(repRes.value?.data || null);
+          if (catRes.status === 'fulfilled') setCategories(catRes.value?.data || []);
+          if (memRes.status === 'fulfilled' && memRes.value?.summary) {
+            setMemberSummary(memRes.value.summary);
+          }
+
+          let reqs = [];
+          if (reqRes.status === 'fulfilled' && Array.isArray(reqRes.value?.data) && reqRes.value.data.length > 0) {
+            reqs = reqRes.value.data;
+          } else if (repRes.status === 'fulfilled' && Array.isArray(repRes.value?.data?.borrowing_history)) {
+            reqs = repRes.value.data.borrowing_history.slice(0, 5);
+          }
+          setRecentRequests(reqs);
+        }
+      } catch (err) {
+        if (isMounted) setError('Unable to load analytics dashboard data. Please try again.');
+      } finally {
+        if (isMounted) setInitialLoading(false);
+      }
+    };
+
+    initDashboard();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // 2. Fast background update on date range filter change (Zero UI unmounting)
+  useEffect(() => {
+    if (initialLoading || !library) return;
+
+    let isMounted = true;
+    const updateReports = async () => {
+      try {
+        setIsUpdatingFilter(true);
         const reportParams = {};
         if (dateRange.startDate) reportParams.start_date = dateRange.startDate;
         if (dateRange.endDate) reportParams.end_date = dateRange.endDate;
 
-        const [repRes, catRes, memRes, reqRes] = await Promise.allSettled([
-          librarianService.getReports(reportParams),
-          librarianService.getCategories(),
-          librarianService.getMembers(),
-          librarianService.getBorrowings({ per_page: 5, status: 'pending' }),
-        ]);
-
-        if (repRes.status === 'fulfilled') setReports(repRes.value?.data || null);
-        if (catRes.status === 'fulfilled') setCategories(catRes.value?.data || []);
-        if (memRes.status === 'fulfilled') {
-          if (memRes.value?.summary) setMemberSummary(memRes.value.summary);
+        const repRes = await librarianService.getReports(reportParams);
+        if (isMounted && repRes?.data) {
+          setReports(repRes.data);
         }
-
-        let reqs = [];
-        if (reqRes.status === 'fulfilled' && Array.isArray(reqRes.value?.data) && reqRes.value.data.length > 0) {
-          reqs = reqRes.value.data;
-        } else if (repRes.status === 'fulfilled' && Array.isArray(repRes.value?.data?.borrowing_history) && repRes.value.data.borrowing_history.length > 0) {
-          reqs = repRes.value.data.borrowing_history.slice(0, 5);
-        }
-        setRecentRequests(reqs);
+      } catch {
+        // Non-critical fallback
+      } finally {
+        if (isMounted) setIsUpdatingFilter(false);
       }
-    } catch (err) {
-      if (!isSilent) setError('Unable to load analytics dashboard data. Please try again.');
-    } finally {
-      if (!isSilent) setLoading(false);
-    }
-  }, [dateRange.startDate, dateRange.endDate]);
+    };
 
-  useEffect(() => {
-    fetchDashboardData(false);
-
-    // Auto-refresh interval every 30 seconds
-    const interval = setInterval(() => {
-      fetchDashboardData(true);
-    }, 30000);
-
-    // Auto-refresh when tab regains focus
-    const handleFocus = () => fetchDashboardData(true);
-    window.addEventListener('focus', handleFocus);
+    updateReports();
 
     return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
+      isMounted = false;
     };
-  }, [fetchDashboardData]);
+  }, [dateRange.startDate, dateRange.endDate, library, initialLoading]);
 
   const handleDateRangeChange = ({ startDate, endDate, preset }) => {
     setDateRange({ startDate, endDate, preset });
@@ -119,7 +140,7 @@ export default function Dashboard() {
       )}
 
       {/* Loading Skeleton */}
-      {loading ? (
+      {initialLoading && !reports ? (
         <div className="flex-1 space-y-3 animate-pulse min-h-0">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {Array.from({ length: 5 }).map((_, i) => (
