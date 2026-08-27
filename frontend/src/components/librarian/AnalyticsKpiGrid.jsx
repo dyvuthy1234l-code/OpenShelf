@@ -78,24 +78,24 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
           <motion.div
             key={idx}
             variants={LIST_ITEM}
-            className={`bg-white border border-slate-200/90 rounded-2xl py-1.5 px-2.5 shadow-2xs hover:shadow-md ${kpi.borderHover} transition-all duration-200 flex flex-col justify-between shrink-0 h-[76px] group`}
+            className={`bg-white border border-slate-200/90 rounded-2xl p-2.5 lg:p-3 shadow-2xs hover:shadow-md ${kpi.borderHover} transition-all duration-200 flex flex-col justify-between shrink-0 h-[86px] group`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-[9.5px] uppercase font-black tracking-wider text-slate-500">
+              <span className="text-[9.5px] lg:text-[10px] uppercase font-black tracking-wider text-slate-500 truncate">
                 {kpi.title}
               </span>
-              <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${kpi.gradient} text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform`}>
-                <Icon className="w-4 h-4" />
+              <div className={`w-6.5 h-6.5 rounded-xl bg-gradient-to-br ${kpi.gradient} text-white flex items-center justify-center font-extrabold shrink-0 shadow-xs group-hover:scale-105 transition-transform`}>
+                <Icon className="w-3.5 h-3.5" />
               </div>
             </div>
 
-            <div>
+            <div className="flex items-end justify-between gap-1 mt-1">
               <motion.span
                 key={kpi.value}
                 initial={{ opacity: 0.4, y: -4, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.25, ease: 'easeOut' }}
-                className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight block leading-none"
+                className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight block leading-none"
               >
                 {kpi.value}
               </motion.span>
@@ -104,7 +104,7 @@ export default function AnalyticsKpiGrid({ reports, memberSummary }) {
                 initial={{ opacity: 0.4, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25, ease: 'easeOut' }}
-                className={`inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${kpi.badgeBg}`}
+                className={`inline-flex items-center gap-1 text-[9px] lg:text-[9.5px] font-extrabold px-2 py-0.5 rounded-full shrink-0 ${kpi.badgeBg}`}
               >
                 {kpi.subtext}
               </motion.span>

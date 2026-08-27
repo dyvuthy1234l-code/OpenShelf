@@ -289,7 +289,7 @@ export default function Dashboard() {
               <div
                 key={i}
                 className="
-                  h-[88px]
+                  h-[86px]
                   rounded-2xl
                   border
                   border-slate-200
