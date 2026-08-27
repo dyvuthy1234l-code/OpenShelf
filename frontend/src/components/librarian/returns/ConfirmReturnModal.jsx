@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, X, RefreshCw, AlertCircle, DollarSign, BookOpen, User } from 'lucide-react';
-import { MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../../constants/motionTokens';
+import { motion } from 'framer-motion';
+import { CheckCircle2, X, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
   const [fineStatus, setFineStatus] = useState('none');
@@ -43,25 +42,33 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
   };
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <motion.div
-          {...BACKDROP_MOTION_VARIANTS}
-          onClick={onClose}
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
-        />
-        <motion.div
-          {...MODAL_MOTION_VARIANTS}
-          className="relative z-10 bg-white border border-slate-200/90 p-6 max-w-md w-full rounded-2xl shadow-2xl space-y-5"
-        >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-slate-950/65 cursor-pointer"
+      />
+
+      {/* Modal Box */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        className="relative z-10 bg-white border border-slate-200 p-6 max-w-md w-full rounded-2xl shadow-2xl space-y-5"
+      >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-emerald-700 font-extrabold text-base">
             <CheckCircle2 className="w-5 h-5" />
             <h3>Confirm Physical Return</h3>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+            aria-label="Close"
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -70,7 +77,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
         {error && (
           <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3.5 rounded-2xl text-xs font-semibold leading-relaxed flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-            <span>{error}</span>
+            <span className="flex-1">{error}</span>
           </div>
         )}
 
@@ -106,7 +113,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
             <select
               value={fineStatus}
               onChange={(e) => setFineStatus(e.target.value)}
-              className="os-input"
+              className="os-input cursor-pointer"
             >
               <option value="unpaid">Unpaid (Member owes fine)</option>
               <option value="paid">Paid (Member paid fine on return)</option>
@@ -121,17 +128,19 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <button
+            type="button"
             onClick={onClose}
             disabled={confirming}
-            className="os-btn-secondary"
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
           >
             Cancel
           </button>
 
           <button
+            type="button"
             onClick={handleConfirm}
             disabled={confirming}
-            className="os-btn-primary"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
           >
             {confirming ? (
               <>
@@ -146,8 +155,7 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
             )}
           </button>
         </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }

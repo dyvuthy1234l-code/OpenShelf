@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { XCircle, X, RefreshCw, AlertCircle } from 'lucide-react';
-import { MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../../constants/motionTokens';
 
 export default function RejectModal({ borrowing, onConfirm, onClose }) {
   const [reason, setReason] = useState('Book unavailable or reserved.');
@@ -30,35 +29,42 @@ export default function RejectModal({ borrowing, onConfirm, onClose }) {
   };
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <motion.div
-          {...BACKDROP_MOTION_VARIANTS}
-          onClick={onClose}
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
-        />
-        <motion.div
-          {...MODAL_MOTION_VARIANTS}
-          className="relative z-10 bg-white border border-slate-200/90 p-6 max-w-md w-full rounded-2xl shadow-2xl space-y-5"
-        >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-slate-950/65 cursor-pointer"
+      />
+
+      {/* Modal Box */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        className="relative z-10 bg-white border border-slate-200 p-6 max-w-md w-full rounded-2xl shadow-2xl space-y-5"
+      >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-rose-600 font-extrabold text-base">
             <XCircle className="w-5 h-5" />
             <h3>Reject Borrow Request</h3>
           </div>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close"
-            className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3.5 rounded-2xl text-xs font-semibold flex items-start gap-2">
+          <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3.5 rounded-2xl text-xs font-semibold leading-relaxed flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-            <span>{error}</span>
+            <span className="flex-1">{error}</span>
           </div>
         )}
 
@@ -91,7 +97,7 @@ export default function RejectModal({ borrowing, onConfirm, onClose }) {
               type="button"
               onClick={onClose}
               disabled={rejecting}
-              className="os-btn-secondary"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -99,7 +105,7 @@ export default function RejectModal({ borrowing, onConfirm, onClose }) {
             <button
               type="submit"
               disabled={rejecting}
-              className="os-btn-danger"
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
             >
               {rejecting ? (
                 <>
@@ -116,7 +122,6 @@ export default function RejectModal({ borrowing, onConfirm, onClose }) {
           </div>
         </form>
       </motion.div>
-      </div>
-    </AnimatePresence>
+    </div>
   );
 }
