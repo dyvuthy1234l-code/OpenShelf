@@ -4,6 +4,8 @@ import {
   ArrowLeft, CheckCircle2, AlertCircle, RotateCcw, 
   BookOpen, User, Calendar, DollarSign 
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
 
 import ConfirmReturnModal from '../../components/librarian/returns/ConfirmReturnModal';
@@ -83,7 +85,7 @@ export default function ReturnDetails() {
   const isReturned = borrowing.status === 'returned';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-4xl mx-auto space-y-8 pb-16">
       {/* Top Breadcrumb Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div className="flex items-center gap-3">
@@ -243,6 +245,6 @@ export default function ReturnDetails() {
           onClose={() => setShowConfirmModal(false)}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

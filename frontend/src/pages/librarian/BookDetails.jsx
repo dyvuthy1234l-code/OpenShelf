@@ -5,6 +5,8 @@ import {
   Building2, CheckCircle2, AlertTriangle, Clock, RefreshCw, AlertCircle,
   User, History, Layers
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
 
 import BookForm from '../../components/librarian/books/BookForm';
@@ -109,7 +111,7 @@ export default function BookDetails() {
   const activeLoans = Math.max((book.quantity ?? 1) - (book.available_quantity ?? 0), 0);
 
   return (
-    <div className="space-y-6 max-w-7xl w-full mx-auto pb-12">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="space-y-6 max-w-7xl w-full mx-auto pb-12">
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div className="flex items-center gap-3.5 min-w-0">
@@ -354,6 +356,6 @@ export default function BookDetails() {
           onClose={() => setShowDeleteModal(false)}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

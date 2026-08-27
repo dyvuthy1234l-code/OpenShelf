@@ -4,6 +4,8 @@ import {
   Tag, ArrowLeft, Edit3, Trash2, BookOpen, 
   CheckCircle2, AlertCircle, RefreshCw, ChevronLeft, ChevronRight, Search, X 
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
 
 import BookTable from '../../components/librarian/books/BookTable';
@@ -144,7 +146,7 @@ export default function CategoryDetails() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-5xl mx-auto space-y-8 pb-16">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div className="flex items-center gap-3">
@@ -396,6 +398,6 @@ export default function CategoryDetails() {
           onClose={() => setShowDeleteModal(false)}
         />
       )}
-    </div>
+    </motion.div>
   );
 }

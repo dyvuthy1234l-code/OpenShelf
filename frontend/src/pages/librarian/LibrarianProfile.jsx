@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import memberService from '../../services/memberService';
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { 
@@ -152,7 +154,7 @@ const LibrarianProfile = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-y-auto lg:overflow-hidden h-full pr-1 pb-1 font-sans">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-3 overflow-y-auto lg:overflow-hidden h-full pr-1 pb-1 font-sans">
       <PageHeader 
         eyebrow="Account Settings" 
         title="My Profile" 
@@ -459,7 +461,7 @@ const LibrarianProfile = () => {
 
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

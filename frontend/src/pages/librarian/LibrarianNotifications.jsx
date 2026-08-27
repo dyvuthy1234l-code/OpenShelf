@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import { 
   Bell, Inbox, ArrowLeftRight, CheckCircle2, 
   Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink 
@@ -95,7 +97,7 @@ export default function LibrarianNotificationsPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between min-h-0 space-y-4 overflow-y-auto lg:overflow-hidden h-full max-w-5xl mx-auto w-full">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col justify-between min-h-0 space-y-4 overflow-y-auto lg:overflow-hidden h-full max-w-5xl mx-auto w-full">
       {/* Header */}
       <PageHeader
         eyebrow="Communication Hub"
@@ -179,9 +181,9 @@ export default function LibrarianNotificationsPage() {
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear inbox</span>
             </button>
-          )}
-        </div>
+        )}
       </div>
+    </div>
 
       {/* Notifications List Viewport */}
       {loading ? (
@@ -295,6 +297,6 @@ export default function LibrarianNotificationsPage() {
           })}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

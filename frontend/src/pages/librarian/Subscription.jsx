@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import { CreditCard, CheckCircle2, ShieldCheck, ArrowRight, RefreshCw, Crown, Star, AlertTriangle, Clock, Lock, Info } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import PageHeader from '../../components/librarian/common/PageHeader';
@@ -88,7 +90,7 @@ export default function SubscriptionPage() {
     : calculateRemainingDays(subscription?.raw_end_date || subscription?.end_date);
 
   return (
-    <div className="flex-1 flex flex-col justify-start min-h-0 space-y-5 overflow-y-auto h-full pb-8">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col justify-start min-h-0 space-y-5 overflow-y-auto h-full pb-8">
       {/* Page Header */}
       <PageHeader
         eyebrow="Subscription Management"
@@ -319,6 +321,6 @@ export default function SubscriptionPage() {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

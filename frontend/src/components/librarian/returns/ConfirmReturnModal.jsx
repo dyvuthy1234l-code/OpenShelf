@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, X, RefreshCw, AlertCircle } from 'lucide-react';
+import { MODAL_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../../constants/motionTokens';
 
 export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
   const [fineStatus, setFineStatus] = useState('none');
@@ -45,18 +46,14 @@ export default function ConfirmReturnModal({ borrowing, onConfirm, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        {...BACKDROP_MOTION_VARIANTS}
         onClick={onClose}
         className="fixed inset-0 bg-slate-950/65 cursor-pointer"
       />
 
       {/* Modal Box */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        {...MODAL_MOTION_VARIANTS}
         className="relative z-10 bg-white border border-slate-200 p-6 max-w-md w-full rounded-2xl shadow-2xl space-y-5"
       >
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
