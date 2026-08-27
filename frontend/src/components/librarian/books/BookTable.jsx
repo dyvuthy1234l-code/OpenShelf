@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen, Eye, Edit3, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import { TABLE_ROW_VARIANTS, TABLE_ROW_ITEM } from '../../../constants/motionTokens';
 
 export default function BookTable({ books = [], onEdit, onDelete }) {
   return (
@@ -18,12 +20,12 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="font-medium text-slate-800">
+          <motion.tbody variants={TABLE_ROW_VARIANTS} initial="initial" animate="animate" className="font-medium text-slate-800">
             {books.map((book) => {
               const isAvailable = (book.available_quantity ?? 0) > 0;
 
               return (
-                <tr key={book.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
+                <motion.tr variants={TABLE_ROW_ITEM} key={book.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                   {/* Book Title & Thumbnail */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
@@ -130,10 +132,10 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </td>
-                </tr>
+                </motion.tr>
               );
             })}
-          </tbody>
+          </motion.tbody>
         </table>
       </div>
     </div>

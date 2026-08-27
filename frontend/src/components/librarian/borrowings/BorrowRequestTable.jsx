@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
 import StatusBadge from '../../common/StatusBadge';
+import { TABLE_ROW_VARIANTS, TABLE_ROW_ITEM } from '../../../constants/motionTokens';
 
 export default function BorrowRequestTable({ borrowings = [], onApprove, onReject, onPickup }) {
 
@@ -19,12 +21,12 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="font-medium text-slate-800">
+          <motion.tbody variants={TABLE_ROW_VARIANTS} initial="initial" animate="animate" className="font-medium text-slate-800">
             {borrowings.map((req) => {
               const isAvailable = (req.book?.available_quantity ?? 0) > 0;
 
               return (
-                <tr key={req.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
+                <motion.tr variants={TABLE_ROW_ITEM} key={req.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                   {/* Member */}
                   <td className="py-4 px-6 font-bold text-slate-900">
                     <div className="flex items-center gap-2.5">
@@ -117,10 +119,10 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                       View
                     </Link>
                   </td>
-                </tr>
+                </motion.tr>
               );
             })}
-          </tbody>
+          </motion.tbody>
         </table>
       </div>
     </div>

@@ -3,9 +3,9 @@ import {
   Users, AlertCircle, RefreshCw, RotateCcw,
   ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import librarianService from '../../services/librarianService';
-import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import MemberTable from '../../components/librarian/members/MemberTable';
@@ -103,18 +103,20 @@ export default function MembersPage() {
       />
 
       {/* Error Alert */}
-      {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{error}</span>
-          </div>
-          <button onClick={fetchMembers} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0">
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Retry</span>
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div {...BANNER_MOTION} key="error-banner" className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{error}</span>
+            </div>
+            <button onClick={fetchMembers} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0">
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Overview Stat Badges */}
       <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
@@ -182,11 +184,13 @@ export default function MembersPage() {
             </div>
 
             {/* Mobile Grid View */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 lg:hidden">
+            <motion.div variants={MOBILE_GRID_VARIANTS} initial="initial" animate="animate" className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 lg:hidden">
               {members.map((m) => (
-                <MemberCard key={m.id} member={m} />
+                <motion.div key={m.id} variants={MOBILE_CARD_VARIANTS}>
+                  <MemberCard member={m} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Server-Side Pagination Control Bar */}

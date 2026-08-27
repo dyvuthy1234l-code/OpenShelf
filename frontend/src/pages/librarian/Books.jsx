@@ -3,11 +3,11 @@ import {
   Plus, AlertCircle, CheckCircle2, RefreshCw,
   ChevronLeft, ChevronRight, Inbox
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import librarianService from '../../services/librarianService';
 import { queryClient } from '../../query/queryClient';
 import useDebounce from '../../hooks/useDebounce';
-import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import BookTable from '../../components/librarian/books/BookTable';
@@ -211,29 +211,33 @@ export default function BooksPage() {
       </PageHeader>
 
       {/* Success Notification Banner */}
-      {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{successMessage}</span>
-          </div>
-          <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs cursor-pointer">Dismiss</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div {...BANNER_MOTION} key="success-banner" className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+            <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs cursor-pointer">Dismiss</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Error Alert */}
-      {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{error}</span>
-          </div>
-          <button onClick={() => fetchBooks(currentPage)} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer">
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Retry</span>
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div {...BANNER_MOTION} key="error-banner" className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{error}</span>
+            </div>
+            <button onClick={() => fetchBooks(currentPage)} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer">
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Search & Filters Toolbar */}
       <div className="shrink-0">
@@ -296,16 +300,17 @@ export default function BooksPage() {
             </div>
 
             {/* Mobile Grid View */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden">
+            <motion.div variants={MOBILE_GRID_VARIANTS} initial="initial" animate="animate" className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden">
               {books.map((book) => (
-                <BookCard
-                  key={book.id}
-                  book={book}
-                  onEdit={handleOpenEditModal}
-                  onDelete={handleOpenDeleteModal}
-                />
+                <motion.div key={book.id} variants={MOBILE_CARD_VARIANTS}>
+                  <BookCard
+                    book={book}
+                    onEdit={handleOpenEditModal}
+                    onDelete={handleOpenDeleteModal}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Pagination Bar */}

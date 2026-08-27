@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Tag, Eye, Edit3, Trash2, BookOpen } from 'lucide-react';
+import { TABLE_ROW_VARIANTS, TABLE_ROW_ITEM } from '../../../constants/motionTokens';
 
 export default function CategoryTable({ categories = [], onEdit, onDelete }) {
   return (
@@ -16,9 +18,9 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
               <th className="py-4 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="font-medium text-slate-800">
+          <motion.tbody variants={TABLE_ROW_VARIANTS} initial="initial" animate="animate" className="font-medium text-slate-800">
             {categories.map((cat) => (
-              <tr key={cat.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
+              <motion.tr variants={TABLE_ROW_ITEM} key={cat.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                 {/* Category Name & Icon */}
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
@@ -94,9 +96,9 @@ export default function CategoryTable({ categories = [], onEdit, onDelete }) {
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>
-              </tr>
-            ))}
-          </tbody>
+            </motion.tr>
+          ))}
+          </motion.tbody>
         </table>
       </div>
     </div>

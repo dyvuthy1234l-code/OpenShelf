@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS, BANNER_MOTION, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import { 
   Bell, Inbox, ArrowLeftRight, CheckCircle2, 
   Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink 
@@ -106,28 +106,32 @@ export default function LibrarianNotificationsPage() {
       />
 
       {/* Action Banner / Alerts */}
-      {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{successMessage}</span>
-          </div>
-          <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs">Dismiss</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div {...BANNER_MOTION} key="success-banner" className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+            <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs">Dismiss</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{error}</span>
-          </div>
-          <button onClick={() => fetchNotifications(false)} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0">
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Retry</span>
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div {...BANNER_MOTION} key="error-banner" className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{error}</span>
+            </div>
+            <button onClick={() => fetchNotifications(false)} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0">
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Toolbar & Filters */}
       <div className="bg-white border border-slate-200/90 p-3.5 rounded-2xl shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
@@ -207,7 +211,7 @@ export default function LibrarianNotificationsPage() {
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+        <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="flex-1 overflow-y-auto space-y-2.5 pr-1">
           {filteredNotifications.map((notif) => {
             const isUnread = !notif.read_at;
             const data = notif.data || {};
@@ -216,7 +220,8 @@ export default function LibrarianNotificationsPage() {
             const timeStr = formatNotificationTime(notif.created_at);
 
             return (
-              <div
+              <motion.div
+                variants={LIST_ITEM}
                 key={notif.id}
                 onClick={() => handleNavigateToTarget(notif)}
                 className={`group p-4 rounded-2xl border transition-all duration-200 flex items-start gap-4 cursor-pointer relative ${
@@ -292,10 +297,10 @@ export default function LibrarianNotificationsPage() {
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );

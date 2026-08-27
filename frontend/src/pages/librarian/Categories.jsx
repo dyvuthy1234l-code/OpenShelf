@@ -3,9 +3,9 @@ import {
   Tag, Plus, AlertCircle, CheckCircle2, RefreshCw,
   ChevronLeft, ChevronRight, RotateCcw
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import librarianService from '../../services/librarianService';
-import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import CategoryTable from '../../components/librarian/categories/CategoryTable';
@@ -157,26 +157,30 @@ export default function CategoriesPage() {
       </PageHeader>
 
       {/* Success Notification Banner */}
-      {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{successMessage}</span>
-          </div>
-          <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs cursor-pointer">Dismiss</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div {...BANNER_MOTION} key="success-banner" className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+            <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs cursor-pointer">Dismiss</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Error Alert */}
-      {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{error}</span>
-          </div>
-          <button onClick={() => setError(null)} className="text-rose-700 font-bold text-xs cursor-pointer">Dismiss</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div {...BANNER_MOTION} key="error-banner" className="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs shrink-0">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{error}</span>
+            </div>
+            <button onClick={() => setError(null)} className="text-rose-700 font-bold text-xs cursor-pointer">Dismiss</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Search Toolbar */}
       <div className="shrink-0">
@@ -230,16 +234,17 @@ export default function CategoriesPage() {
             </div>
 
             {/* Mobile Grid View */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden">
+            <motion.div variants={MOBILE_GRID_VARIANTS} initial="initial" animate="animate" className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden">
               {categories.map((cat) => (
-                <CategoryCard
-                  key={cat.id}
-                  category={cat}
-                  onEdit={handleOpenEditModal}
-                  onDelete={handleOpenDeleteModal}
-                />
+                <motion.div key={cat.id} variants={MOBILE_CARD_VARIANTS}>
+                  <CategoryCard
+                    category={cat}
+                    onEdit={handleOpenEditModal}
+                    onDelete={handleOpenDeleteModal}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
 
           {/* Server-Side Pagination Controls */}

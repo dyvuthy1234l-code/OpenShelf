@@ -84,6 +84,40 @@ export const LIST_ITEM = {
   animate: { opacity: 1, y: 0, transition: { duration: MOTION_DURATIONS.NORMAL, ease: MOTION_EASINGS.PREMIUM } },
 };
 
+// Table Row Stagger Token (for <motion.tbody>)
+export const TABLE_ROW_VARIANTS = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: { staggerChildren: 0.03, delayChildren: 0.02 },
+  },
+};
+
+export const TABLE_ROW_ITEM = {
+  initial: { opacity: 0, x: -6 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.18, ease: MOTION_EASINGS.PREMIUM } },
+};
+
+// Mobile Grid Stagger Token (for card grids on mobile)
+export const MOBILE_GRID_VARIANTS = {
+  initial: {},
+  animate: {
+    transition: { staggerChildren: 0.04, delayChildren: 0.02 },
+  },
+};
+
+export const MOBILE_CARD_VARIANTS = {
+  initial: { opacity: 0, y: 10, scale: 0.97 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.22, ease: MOTION_EASINGS.PREMIUM } },
+};
+
+// Banner / Toast Slide-in Token
+export const BANNER_MOTION = {
+  initial: { opacity: 0, y: -10, height: 0, marginBottom: 0 },
+  animate: { opacity: 1, y: 0, height: 'auto', marginBottom: undefined, transition: { duration: 0.22, ease: MOTION_EASINGS.PREMIUM } },
+  exit: { opacity: 0, y: -6, height: 0, marginBottom: 0, transition: { duration: 0.15, ease: 'easeIn' } },
+};
+
 // Scroll-triggered reveal for public page sections
 export const REVEAL_VARIANTS = {
   initial: { opacity: 0, y: 24 },

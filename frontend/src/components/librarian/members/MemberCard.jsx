@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Eye } from 'lucide-react';
+import { CARD_MOTION_PROPS } from '../../../constants/motionTokens';
 
 export default function MemberCard({ member }) {
   const isOverdue = member.overdue_count > 0;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+    <motion.div {...CARD_MOTION_PROPS} className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-2xs flex flex-col justify-between">
       <div className="flex items-start gap-3">
         {member.avatar_url ? (
           <img
@@ -59,6 +61,6 @@ export default function MemberCard({ member }) {
           <span>View Details</span>
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

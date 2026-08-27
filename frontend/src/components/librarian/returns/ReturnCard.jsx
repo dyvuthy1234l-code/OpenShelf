@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BookOpen, User, Calendar, CheckCircle2 } from 'lucide-react';
+import { CARD_MOTION_PROPS } from '../../../constants/motionTokens';
 
 export default function ReturnCard({ borrowing, onConfirmReturn }) {
   const canReturn = borrowing.status !== 'returned';
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-4 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+    <motion.div {...CARD_MOTION_PROPS} className="bg-white border border-slate-200/90 rounded-3xl p-5 space-y-4 shadow-xs flex flex-col justify-between">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -61,6 +63,6 @@ export default function ReturnCard({ borrowing, onConfirmReturn }) {
           Review
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

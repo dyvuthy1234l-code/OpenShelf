@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Eye, BookOpen, AlertTriangle } from 'lucide-react';
+import { TABLE_ROW_VARIANTS, TABLE_ROW_ITEM } from '../../../constants/motionTokens';
 
 export default function MemberTable({ members = [] }) {
   const getStatusBadge = (status) => {
@@ -28,9 +30,9 @@ export default function MemberTable({ members = [] }) {
               <th className="py-3 px-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="font-medium text-slate-800">
+          <motion.tbody variants={TABLE_ROW_VARIANTS} initial="initial" animate="animate" className="font-medium text-slate-800">
             {members.map((m) => (
-              <tr key={m.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
+              <motion.tr variants={TABLE_ROW_ITEM} key={m.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
                 {/* Member */}
                 <td className="py-3 px-6 font-bold text-slate-900">
                   <div className="flex items-center gap-2.5">
@@ -99,9 +101,9 @@ export default function MemberTable({ members = [] }) {
                     <span>View Details</span>
                   </Link>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
-          </tbody>
+          </motion.tbody>
         </table>
       </div>
     </div>

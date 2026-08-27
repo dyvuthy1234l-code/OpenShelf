@@ -5,8 +5,8 @@ import {
   CheckCircle2, Clock, Mail, Phone, Calendar, 
   AlertCircle, DollarSign 
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM, BANNER_MOTION } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
 
 export default function MemberDetails() {
@@ -139,31 +139,31 @@ export default function MemberDetails() {
         </div>
 
         {/* 4 Quick Stat Metric Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+        <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+          <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Borrowed</span>
             <span className="text-2xl font-extrabold text-slate-900">{stats.total_borrowed}</span>
-          </div>
+          </motion.div>
 
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+          <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Active Loans</span>
             <span className="text-2xl font-extrabold text-slate-900">{stats.active_count}</span>
-          </div>
+          </motion.div>
 
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+          <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Overdue Books</span>
             <span className={`text-2xl font-extrabold ${stats.overdue_count > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
               {stats.overdue_count}
             </span>
-          </div>
+          </motion.div>
 
-          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+          <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Fines</span>
             <span className={`text-2xl font-extrabold ${stats.total_fines > 0 ? 'text-amber-700' : 'text-slate-900'}`}>
               ${parseFloat(stats.total_fines || 0).toFixed(2)}
             </span>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Active Borrowings Section */}

@@ -5,8 +5,8 @@ import {
   Building2, CheckCircle2, AlertTriangle, Clock, RefreshCw, AlertCircle,
   User, History, Layers
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM, BANNER_MOTION } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
 
 import BookForm from '../../components/librarian/books/BookForm';
@@ -152,15 +152,17 @@ export default function BookDetails() {
       </div>
 
       {/* Success Notification Banner */}
-      {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-2xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{successMessage}</span>
-          </div>
-          <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs">Dismiss</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div {...BANNER_MOTION} key="success-banner" className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-2xl text-xs font-semibold flex items-center justify-between gap-4 shadow-2xs">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+            <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs">Dismiss</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main 2-Column Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -235,27 +237,27 @@ export default function BookDetails() {
               <span>Inventory & Circulation Metrics</span>
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+            <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Copies</span>
                 <span className="text-2xl font-extrabold text-slate-900">{book.quantity ?? 1}</span>
-              </div>
+              </motion.div>
 
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+              <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Available Stock</span>
                 <span className="text-2xl font-extrabold text-emerald-700">{book.available_quantity ?? 0}</span>
-              </div>
+              </motion.div>
 
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+              <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Active Loans</span>
                 <span className="text-2xl font-extrabold text-amber-700">{activeLoans}</span>
-              </div>
+              </motion.div>
 
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
+              <motion.div variants={LIST_ITEM} className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Borrows</span>
                 <span className="text-2xl font-extrabold text-slate-900">{borrowings.length}</span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
