@@ -10,7 +10,7 @@ import AnalyticsKpiGrid from '../../components/librarian/AnalyticsKpiGrid';
 import BorrowingActivityChart from '../../components/librarian/BorrowingActivityChart';
 import PopularBooksChart from '../../components/librarian/PopularBooksChart';
 import CategoryDistributionChart from '../../components/librarian/CategoryDistributionChart';
-import RecentRequestsTable from '../../components/librarian/RecentRequestsTable';
+import CategoryOverviewChart from '../../components/librarian/CategoryOverviewChart';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -136,7 +136,7 @@ export default function Dashboard() {
             ))}
           </div>
           <div className="h-60 lg:h-[225px] bg-white rounded-2xl border border-slate-200" />
-          <div className="h-52 lg:h-[205px] bg-white rounded-2xl border border-slate-200" />
+          <div className="h-56 lg:h-[240px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
         <motion.div
@@ -164,10 +164,10 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* BOTTOM ROW (50% Recent Requests + 50% Book Categories) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[205px] min-h-0">
+          {/* BOTTOM ROW (50% Category Overview + 50% Book Categories) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[240px] min-h-0">
             <div className="lg:col-span-6 h-full min-h-0">
-              <RecentRequestsTable requests={reports?.borrowing_history && reports.borrowing_history.length > 0 ? reports.borrowing_history : recentRequests} />
+              <CategoryOverviewChart categories={categories} reports={reports} />
             </div>
             <div className="lg:col-span-6 h-full min-h-0">
               <CategoryDistributionChart categories={categories} />
