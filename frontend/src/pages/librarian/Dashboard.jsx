@@ -183,7 +183,8 @@ export default function Dashboard() {
         flex
         flex-col
         justify-between
-        overflow-x-hidden
+        overflow-hidden
+        scrollbar-none
         font-sans
       "
     >
