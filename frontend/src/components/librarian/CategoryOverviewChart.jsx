@@ -89,7 +89,7 @@ export default function CategoryOverviewChart({ categories = [], reports = null 
   }, [categoryData, totalBooks, circumference]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 shadow-2xs h-auto lg:h-[220px] flex flex-col justify-between space-y-2">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 lg:p-3 shadow-2xs h-auto lg:h-[205px] flex flex-col justify-between space-y-1.5">
       {/* Card Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 shrink-0">
         <div className="flex flex-col min-w-0 space-y-0.5">

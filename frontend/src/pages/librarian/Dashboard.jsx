@@ -314,7 +314,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-8
-                lg:h-[215px]
+                lg:h-[200px]
               "
             />
 
@@ -326,7 +326,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-4
-                lg:h-[215px]
+                lg:h-[200px]
               "
             />
           </div>
@@ -348,7 +348,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-6
-                lg:h-[220px]
+                lg:h-[205px]
               "
             />
 
@@ -360,7 +360,7 @@ export default function Dashboard() {
                 border-slate-200
                 bg-white
                 lg:col-span-6
-                lg:h-[220px]
+                lg:h-[205px]
               "
             />
           </div>

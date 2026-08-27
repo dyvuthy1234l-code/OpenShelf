@@ -395,7 +395,7 @@ export default function LibrarianLayout() {
           </header>
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
-          <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-4 flex flex-col min-h-0">
+          <main className="flex-1 overflow-y-auto lg:overflow-hidden p-2.5 sm:p-3 lg:p-3 flex flex-col min-h-0">
             <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
               <Outlet />
             </React.Suspense>
