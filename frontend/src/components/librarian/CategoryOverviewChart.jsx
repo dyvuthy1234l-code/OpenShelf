@@ -5,31 +5,49 @@ import { motion } from 'framer-motion';
 export default function CategoryOverviewChart({ categories = [], reports = null }) {
   // Extract category distribution data from reports or fallback to categories list
   const categoryData = useMemo(() => {
-    let list = [];
-    if (Array.isArray(reports?.category_distribution) && reports.category_distribution.length > 0) {
-      list = reports.category_distribution.map((item) => ({
-        id: item.id,
-        name: item.name,
-        count: Number(item.count ?? item.books_count ?? 0),
-      }));
-    } else if (Array.isArray(categories) && categories.length > 0) {
-      list = categories.map((cat) => ({
-        id: cat.id,
-        name: cat.name,
-        count: Number(cat.books_count ?? cat.count ?? 0),
-      }));
+    const countsMap = new Map();
+
+    // Map from reports if present
+    if (Array.isArray(reports?.category_distribution)) {
+      reports.category_distribution.forEach((item) => {
+        countsMap.set(String(item.name).toLowerCase(), {
+          id: item.id,
+          name: item.name,
+          count: Number(item.count ?? item.books_count ?? 0),
+        });
+      });
     }
+
+    // Merge from categories list so newly created categories appear
+    if (Array.isArray(categories)) {
+      categories.forEach((cat) => {
+        const key = String(cat.name).toLowerCase();
+        if (!countsMap.has(key)) {
+          countsMap.set(key, {
+            id: cat.id,
+            name: cat.name,
+            count: Number(cat.books_count ?? cat.count ?? 0),
+          });
+        } else {
+          // ensure highest count is reflected
+          const existing = countsMap.get(key);
+          existing.count = Math.max(existing.count, Number(cat.books_count ?? cat.count ?? 0));
+        }
+      });
+    }
+
+    let list = Array.from(countsMap.values());
 
     // Sort by count descending
     list.sort((a, b) => b.count - a.count);
 
-    // Take top 4 categories and group the rest into "Others" if more than 5
-    if (list.length > 5) {
-      const top4 = list.slice(0, 4);
-      const rest = list.slice(4);
+    // Group into "Others" only if more than 7 categories
+    if (list.length > 7) {
+      const top6 = list.slice(0, 6);
+      const rest = list.slice(6);
       const othersCount = rest.reduce((acc, c) => acc + c.count, 0);
       return [
-        ...top4,
+        ...top6,
         { id: 'others', name: 'Others', count: othersCount },
       ];
     }
@@ -199,7 +217,7 @@ export default function CategoryOverviewChart({ categories = [], reports = null 
           </div>
 
           {/* Legend Items List (7 Columns on Desktop) */}
-          <div className="md:col-span-7 space-y-1.5 py-0.5">
+          <div className="md:col-span-7 space-y-1 py-0.5 max-h-[160px] overflow-y-auto scrollbar-none">
             {donutSlices.map((item, idx) => (
               <motion.div
                 key={item.id || idx}

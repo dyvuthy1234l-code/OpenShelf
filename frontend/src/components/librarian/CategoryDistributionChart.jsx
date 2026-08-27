@@ -10,8 +10,12 @@ export default function CategoryDistributionChart({ categories = [] }) {
 
   const colorPalette = ['#2563eb', '#10b981', '#9333ea', '#f43f5e', '#f59e0b', '#0284c7', '#84cc16'];
 
-  const topCategories = useMemo(() => {
-    return categories.slice(0, 5);
+  const displayCategories = useMemo(() => {
+    return [...categories].sort((a, b) => {
+      const cntA = Number(a.books_count ?? a.count ?? 0);
+      const cntB = Number(b.books_count ?? b.count ?? 0);
+      return cntB - cntA;
+    });
   }, [categories]);
 
   return (
@@ -32,13 +36,13 @@ export default function CategoryDistributionChart({ categories = [] }) {
         </Link>
       </div>
 
-      {topCategories.length === 0 ? (
+      {displayCategories.length === 0 ? (
         <div className="flex-1 text-center text-xs text-slate-400 font-medium italic bg-slate-50 rounded-xl border border-dashed border-slate-200 flex items-center justify-center p-6 min-h-[140px]">
           <span>No category data available.</span>
         </div>
       ) : (
-        <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5 min-h-0">
-          {topCategories.map((cat, idx) => {
+        <div className="space-y-2 flex-1 flex flex-col justify-around py-0.5 min-h-0 overflow-y-auto scrollbar-none">
+          {displayCategories.map((cat, idx) => {
             const count = Number(cat.books_count ?? cat.count ?? 0);
             const pct = totalBooks > 0 ? Math.round((count / totalBooks) * 100) : 0;
             const color = colorPalette[idx % colorPalette.length];
