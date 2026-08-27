@@ -9,11 +9,11 @@ export default function CategoryDistributionChart({ categories = [] }) {
   const colorPalette = ['#d99a18', '#1a73e8', '#137333', '#9333ea', '#e11d48', '#0284c7', '#65a30d'];
 
   const topCategories = useMemo(() => {
-    return categories.slice(0, 4);
+    return categories.slice(0, 5);
   }, [categories]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2 shadow-2xs h-[155px] flex flex-col justify-between">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2 shadow-2xs h-[205px] flex flex-col justify-between">
       <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
         <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">
           <Tag className="w-4 h-4 text-amber-600 shrink-0" />
@@ -26,7 +26,7 @@ export default function CategoryDistributionChart({ categories = [] }) {
           <span>No category data available.</span>
         </div>
       ) : (
-        <div className="space-y-1.5 flex-1 overflow-hidden flex flex-col justify-center min-h-0">
+        <div className="space-y-2 flex-1 overflow-y-auto pr-1 flex flex-col justify-center min-h-0">
           {topCategories.map((cat, idx) => {
             const count = cat.books_count ?? 0;
             const pct = totalBooks > 0 ? Math.round((count / totalBooks) * 100) : 0;

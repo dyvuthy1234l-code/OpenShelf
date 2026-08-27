@@ -3,10 +3,10 @@ import { ArrowRight, Clock, CheckCircle2, Inbox } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function RecentRequestsTable({ requests = [] }) {
-  const displayRequests = requests.slice(0, 3);
+  const displayRequests = requests.slice(0, 4);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2 shadow-2xs h-[155px] flex flex-col justify-between">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2 shadow-2xs h-[205px] flex flex-col justify-between">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
         <h3 className="text-sm font-black text-slate-900 tracking-tight leading-tight uppercase flex items-center gap-1.5">

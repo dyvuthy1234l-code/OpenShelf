@@ -32,7 +32,7 @@ export default function PopularBooksChart({ borrowings = [] }) {
   }, [popularBooks]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 lg:p-4 space-y-2.5 shadow-2xs h-[255px] flex flex-col justify-between">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-3 lg:p-3.5 space-y-2 shadow-2xs h-[225px] flex flex-col justify-between">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2 shrink-0">
         <div>

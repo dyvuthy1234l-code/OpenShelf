@@ -132,11 +132,11 @@ export default function Dashboard() {
         <div className="flex-1 space-y-2.5 animate-pulse min-h-0">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-[100px] bg-white rounded-2xl border border-slate-200" />
+              <div key={i} className="h-[88px] bg-white rounded-2xl border border-slate-200" />
             ))}
           </div>
-          <div className="h-64 lg:h-[255px] bg-white rounded-2xl border border-slate-200" />
-          <div className="h-40 lg:h-[155px] bg-white rounded-2xl border border-slate-200" />
+          <div className="h-60 lg:h-[225px] bg-white rounded-2xl border border-slate-200" />
+          <div className="h-52 lg:h-[205px] bg-white rounded-2xl border border-slate-200" />
         </div>
       ) : (
         <motion.div
@@ -150,7 +150,7 @@ export default function Dashboard() {
           <AnalyticsKpiGrid reports={reports} memberSummary={memberSummary} />
 
           {/* MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[255px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[225px] min-h-0">
             <div className="lg:col-span-8 h-full min-h-0">
               <BorrowingActivityChart
                 circulationData={reports?.monthly_circulation || []}
@@ -165,7 +165,7 @@ export default function Dashboard() {
           </div>
 
           {/* BOTTOM ROW (50% Recent Requests + 50% Book Categories) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[155px] min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[205px] min-h-0">
             <div className="lg:col-span-6 h-full min-h-0">
               <RecentRequestsTable requests={reports?.borrowing_history && reports.borrowing_history.length > 0 ? reports.borrowing_history : recentRequests} />
             </div>
