@@ -3,7 +3,6 @@ import { RefreshCw, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import librarianService from '../../services/librarianService';
-import { REVEAL_VARIANTS } from '../../constants/motionTokens';
 
 import DashboardHeader from '../../components/librarian/DashboardHeader';
 import AnalyticsKpiGrid from '../../components/librarian/AnalyticsKpiGrid';
@@ -18,72 +17,130 @@ export default function Dashboard() {
   const [library, setLibrary] = useState(null);
   const [reports, setReports] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [memberSummary, setMemberSummary] = useState({ total_members: 0 });
+  const [memberSummary, setMemberSummary] = useState({
+    total_members: 0,
+  });
   const [recentRequests, setRecentRequests] = useState([]);
 
-  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '', preset: 'all' });
+  const [dateRange, setDateRange] = useState({
+    startDate: '',
+    endDate: '',
+    preset: 'all',
+  });
+
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchDashboardData = useCallback(async (isSilent = false) => {
-    try {
-      if (!isSilent) setInitialLoading(true);
-      setError(null);
-
-      const libRes = await librarianService.getMyLibrary();
-      const myLib = libRes.data || libRes.library || null;
-      setLibrary(myLib);
-
-      if (myLib) {
-        const [repRes, catRes, memRes, reqRes] = await Promise.allSettled([
-          librarianService.getReports({}),
-          librarianService.getCategories(),
-          librarianService.getMembers(),
-          librarianService.getBorrowings({ per_page: 5, status: 'pending' }),
-        ]);
-
-        if (repRes.status === 'fulfilled') setReports(repRes.value?.data || null);
-        if (catRes.status === 'fulfilled') setCategories(catRes.value?.data || []);
-        if (memRes.status === 'fulfilled' && memRes.value?.summary) {
-          setMemberSummary(memRes.value.summary);
+  const fetchDashboardData = useCallback(
+    async (isSilent = false) => {
+      try {
+        if (!isSilent) {
+          setInitialLoading(true);
         }
 
-        let reqs = [];
-        if (reqRes.status === 'fulfilled' && Array.isArray(reqRes.value?.data) && reqRes.value.data.length > 0) {
-          reqs = reqRes.value.data;
-        } else if (repRes.status === 'fulfilled' && Array.isArray(repRes.value?.data?.borrowing_history)) {
-          reqs = repRes.value.data.borrowing_history.slice(0, 5);
+        setError(null);
+
+        const libRes = await librarianService.getMyLibrary();
+        const myLib = libRes.data || libRes.library || null;
+
+        setLibrary(myLib);
+
+        if (myLib) {
+          const [repRes, catRes, memRes, reqRes] =
+            await Promise.allSettled([
+              librarianService.getReports({}),
+              librarianService.getCategories(),
+              librarianService.getMembers(),
+              librarianService.getBorrowings({
+                per_page: 5,
+                status: 'pending',
+              }),
+            ]);
+
+          if (repRes.status === 'fulfilled') {
+            setReports(repRes.value?.data || null);
+          }
+
+          if (catRes.status === 'fulfilled') {
+            setCategories(catRes.value?.data || []);
+          }
+
+          if (
+            memRes.status === 'fulfilled' &&
+            memRes.value?.summary
+          ) {
+            setMemberSummary(memRes.value.summary);
+          }
+
+          let reqs = [];
+
+          if (
+            reqRes.status === 'fulfilled' &&
+            Array.isArray(reqRes.value?.data) &&
+            reqRes.value.data.length > 0
+          ) {
+            reqs = reqRes.value.data;
+          } else if (
+            repRes.status === 'fulfilled' &&
+            Array.isArray(
+              repRes.value?.data?.borrowing_history
+            )
+          ) {
+            reqs =
+              repRes.value.data.borrowing_history.slice(0, 5);
+          }
+
+          setRecentRequests(reqs);
         }
-        setRecentRequests(reqs);
+      } catch (err) {
+        setError(
+          'Unable to load analytics dashboard data. Please try again.'
+        );
+      } finally {
+        if (!isSilent) {
+          setInitialLoading(false);
+        }
       }
-    } catch (err) {
-      setError('Unable to load analytics dashboard data. Please try again.');
-    } finally {
-      if (!isSilent) setInitialLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   // Initial load
   useEffect(() => {
     fetchDashboardData(false);
   }, [fetchDashboardData]);
 
-  // Background refetch on date range change
+  // Background refetch when date range changes
   useEffect(() => {
     if (initialLoading || !library) return;
 
     let isMounted = true;
+
     const updateReports = async () => {
       try {
         const reportParams = {};
-        if (dateRange.startDate) reportParams.start_date = dateRange.startDate;
-        if (dateRange.endDate) reportParams.end_date = dateRange.endDate;
 
-        const repRes = await librarianService.getReports(reportParams);
+        if (dateRange.startDate) {
+          reportParams.start_date = dateRange.startDate;
+        }
+
+        if (dateRange.endDate) {
+          reportParams.end_date = dateRange.endDate;
+        }
+
+        const repRes =
+          await librarianService.getReports(reportParams);
+
         if (isMounted && repRes?.data) {
           setReports(repRes.data);
-          if (Array.isArray(repRes.data.borrowing_history) && repRes.data.borrowing_history.length > 0) {
-            setRecentRequests(repRes.data.borrowing_history.slice(0, 5));
+
+          if (
+            Array.isArray(repRes.data.borrowing_history) &&
+            repRes.data.borrowing_history.length > 0
+          ) {
+            setRecentRequests(
+              repRes.data.borrowing_history.slice(0, 5)
+            );
           }
         }
       } catch {
@@ -92,87 +149,342 @@ export default function Dashboard() {
     };
 
     updateReports();
-    return () => { isMounted = false; };
-  }, [dateRange.startDate, dateRange.endDate, library, initialLoading]);
 
-  const handleDateRangeChange = ({ startDate, endDate, preset }) => {
-    setDateRange({ startDate, endDate, preset });
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    dateRange.startDate,
+    dateRange.endDate,
+    library,
+    initialLoading,
+  ]);
+
+  const handleDateRangeChange = ({
+    startDate,
+    endDate,
+    preset,
+  }) => {
+    setDateRange({
+      startDate,
+      endDate,
+      preset,
+    });
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5 h-full w-full font-sans">
-      {/* Header Section */}
-      <DashboardHeader
-        user={user}
-        library={library}
-        dateRange={dateRange}
-        onDateRangeChange={handleDateRangeChange}
-        onLibraryStatusChange={(updatedLib) => setLibrary(updatedLib)}
-      />
+    <div
+      className="
+        w-full
+        min-w-0
+        min-h-0
+        flex-1
+        flex
+        flex-col
+        overflow-x-hidden
+        font-sans
+      "
+    >
+      {/* =========================
+          HEADER
+      ========================== */}
+      <div className="shrink-0">
+        <DashboardHeader
+          user={user}
+          library={library}
+          dateRange={dateRange}
+          onDateRangeChange={handleDateRangeChange}
+          onLibraryStatusChange={(updatedLib) =>
+            setLibrary(updatedLib)
+          }
+        />
+      </div>
 
-      {/* Error State Banner */}
+      {/* =========================
+          ERROR
+      ========================== */}
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between gap-3 shadow-2xs shrink-0">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{error}</span>
+        <div
+          className="
+            mt-2.5
+            shrink-0
+            flex
+            items-center
+            justify-between
+            gap-3
+            rounded-2xl
+            border
+            border-rose-200
+            bg-rose-50
+            px-3
+            py-2.5
+            text-xs
+            font-semibold
+            text-rose-800
+          "
+        >
+          <div className="flex min-w-0 items-center gap-2">
+            <AlertCircle
+              className="h-4 w-4 shrink-0 text-rose-600"
+            />
+
+            <span className="truncate">
+              {error}
+            </span>
           </div>
+
           <button
+            type="button"
             onClick={() => fetchDashboardData(false)}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shrink-0 transition-colors cursor-pointer"
+            className="
+              inline-flex
+              min-h-9
+              shrink-0
+              cursor-pointer
+              items-center
+              gap-1.5
+              rounded-xl
+              bg-rose-600
+              px-3
+              py-1.5
+              text-xs
+              font-bold
+              text-white
+              transition-colors
+              hover:bg-rose-700
+            "
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className="h-3.5 w-3.5" />
             <span>Retry</span>
           </button>
         </div>
       )}
 
-      {/* Loading Skeleton */}
+      {/* =========================
+          CONTENT
+      ========================== */}
       {initialLoading && !reports ? (
-        <div className="flex-1 space-y-2.5 animate-pulse min-h-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+        <div
+          className="
+            mt-2.5
+            min-h-0
+            flex-1
+            space-y-2.5
+            animate-pulse
+          "
+        >
+          {/* KPI skeleton */}
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-2.5
+              sm:grid-cols-2
+              lg:grid-cols-5
+            "
+          >
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-[82px] bg-white rounded-2xl border border-slate-200" />
+              <div
+                key={i}
+                className="
+                  h-[76px]
+                  rounded-2xl
+                  border
+                  border-slate-200
+                  bg-white
+                "
+              />
             ))}
           </div>
-          <div className="h-56 lg:h-[215px] bg-white rounded-2xl border border-slate-200" />
-          <div className="h-52 lg:h-[220px] bg-white rounded-2xl border border-slate-200" />
+
+          {/* Analytics skeleton */}
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-2.5
+              lg:grid-cols-12
+            "
+          >
+            <div
+              className="
+                h-[260px]
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                lg:col-span-8
+                lg:h-[215px]
+              "
+            />
+
+            <div
+              className="
+                h-[220px]
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                lg:col-span-4
+                lg:h-[215px]
+              "
+            />
+          </div>
+
+          {/* Category skeleton */}
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-2.5
+              lg:grid-cols-12
+            "
+          >
+            <div
+              className="
+                h-[280px]
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                lg:col-span-6
+                lg:h-[220px]
+              "
+            />
+
+            <div
+              className="
+                h-[280px]
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                lg:col-span-6
+                lg:h-[220px]
+              "
+            />
+          </div>
         </div>
       ) : (
         <motion.div
           key={dateRange.preset}
-          initial={{ opacity: 0.82, y: 3, scale: 0.995 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.28, ease: 'easeOut' }}
-          className="flex-1 flex flex-col justify-between min-h-0 space-y-2.5"
+          initial={{
+            opacity: 0.82,
+            y: 3,
+            scale: 0.995,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+          }}
+          transition={{
+            duration: 0.28,
+            ease: 'easeOut',
+          }}
+          className="
+            mt-2.5
+            min-h-0
+            flex-1
+            space-y-2.5
+            overflow-visible
+          "
         >
-          {/* KPI ROW */}
-          <AnalyticsKpiGrid reports={reports} memberSummary={memberSummary} />
+          {/* =========================
+              KPI
+          ========================== */}
+          <section className="min-w-0">
+            <AnalyticsKpiGrid
+              reports={reports}
+              memberSummary={memberSummary}
+            />
+          </section>
 
-          {/* MAIN ANALYTICS ROW (65% Borrowing Activity + 35% Popular Books) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[215px] min-h-0">
-            <div className="lg:col-span-8 h-full min-h-0">
+          {/* =========================
+              ANALYTICS
+          ========================== */}
+          <section
+            className="
+              grid
+              min-w-0
+              grid-cols-1
+              items-stretch
+              gap-2.5
+              lg:grid-cols-12
+            "
+          >
+            {/* Borrowing Activity */}
+            <div
+              className="
+                min-w-0
+                lg:col-span-8
+              "
+            >
               <BorrowingActivityChart
-                circulationData={reports?.monthly_circulation || []}
-                borrowings={reports?.borrowing_history || []}
+                circulationData={
+                  reports?.monthly_circulation || []
+                }
+                borrowings={
+                  reports?.borrowing_history || []
+                }
                 library={library}
                 preset={dateRange.preset}
               />
             </div>
-            <div className="lg:col-span-4 h-full min-h-0">
-              <PopularBooksChart borrowings={reports?.borrowing_history || []} />
-            </div>
-          </div>
 
-          {/* BOTTOM ROW (50% Category Overview + 50% Book Categories) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch lg:h-[220px] min-h-0">
-            <div className="lg:col-span-6 h-full min-h-0">
-              <CategoryOverviewChart categories={categories} reports={reports} />
+            {/* Popular Books */}
+            <div
+              className="
+                min-w-0
+                lg:col-span-4
+              "
+            >
+              <PopularBooksChart
+                borrowings={
+                  reports?.borrowing_history || []
+                }
+              />
             </div>
-            <div className="lg:col-span-6 h-full min-h-0">
-              <CategoryDistributionChart categories={categories} />
+          </section>
+
+          {/* =========================
+              CATEGORY
+          ========================== */}
+          <section
+            className="
+              grid
+              min-w-0
+              grid-cols-1
+              items-stretch
+              gap-2.5
+              lg:grid-cols-12
+            "
+          >
+            {/* Donut Category Overview */}
+            <div
+              className="
+                min-w-0
+                lg:col-span-6
+              "
+            >
+              <CategoryOverviewChart
+                categories={categories}
+                reports={reports}
+              />
             </div>
-          </div>
+
+            {/* Category Distribution */}
+            <div
+              className="
+                min-w-0
+                lg:col-span-6
+              "
+            >
+              <CategoryDistributionChart
+                categories={categories}
+              />
+            </div>
+          </section>
         </motion.div>
       )}
     </div>
