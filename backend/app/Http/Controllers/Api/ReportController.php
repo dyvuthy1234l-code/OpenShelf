@@ -46,7 +46,7 @@ class ReportController extends Controller
         }
 
         $query = $library->borrowings()
-            ->with(['user:id,name,email,avatar', 'book:id,title,category_id,cover_image'])
+            ->with(['user:id,name,email,avatar', 'book:id,title,category_id,cover_image', 'library:id,name,fine_per_day'])
             ->latest();
 
         if ($startDate) {
@@ -56,7 +56,7 @@ class ReportController extends Controller
             $query->whereDate('created_at', '<=', $endDate);
         }
 
-        $borrowings = $query->get();
+        $borrowings = $query->limit(500)->get();
 
         // Status Breakdown Counts from Database with optional date filter
         $baseQuery = function () use ($library, $startDate, $endDate) {
@@ -93,59 +93,73 @@ class ReportController extends Controller
         $unpaidFines = (float) $baseQuery()->where('fine_status', 'unpaid')->sum('fine_amount');
         $waivedFines = (float) $baseQuery()->where('fine_status', 'waived')->sum('fine_amount');
 
-        // Real Monthly Circulation Data from Database
-        $lastMonths = collect(range(5, 0))->map(function ($i) use ($library) {
+        // Real Monthly Circulation Data aggregated across last 6 months
+        $sixMonthsAgo = Carbon::now()->subMonths(5)->startOfMonth();
+
+        $monthlyRequests = $library->borrowings()
+            ->where('created_at', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, count(*) as total')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(fn ($r) => $r->year . '-' . $r->month);
+
+        $monthlyApproved = $library->borrowings()
+            ->whereNotNull('approved_at')
+            ->where('approved_at', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(approved_at) as year, MONTH(approved_at) as month, count(*) as total')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(fn ($r) => $r->year . '-' . $r->month);
+
+        $monthlyBorrowed = $library->borrowings()
+            ->where(function ($q) use ($sixMonthsAgo) {
+                $q->where('borrowed_at', '>=', $sixMonthsAgo)
+                  ->orWhere(function ($sub) use ($sixMonthsAgo) {
+                      $sub->whereIn('status', ['borrowed', 'picked_up'])
+                          ->where('created_at', '>=', $sixMonthsAgo);
+                  });
+            })
+            ->selectRaw('YEAR(COALESCE(borrowed_at, created_at)) as year, MONTH(COALESCE(borrowed_at, created_at)) as month, count(*) as total')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(fn ($r) => $r->year . '-' . $r->month);
+
+        $monthlyReturns = $library->borrowings()
+            ->where('status', 'returned')
+            ->where(function ($q) use ($sixMonthsAgo) {
+                $q->where('returned_at', '>=', $sixMonthsAgo)
+                  ->orWhere(function ($sub) use ($sixMonthsAgo) {
+                      $sub->whereNull('returned_at')
+                          ->where('updated_at', '>=', $sixMonthsAgo);
+                  });
+            })
+            ->selectRaw('YEAR(COALESCE(returned_at, updated_at)) as year, MONTH(COALESCE(returned_at, updated_at)) as month, count(*) as total')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(fn ($r) => $r->year . '-' . $r->month);
+
+        $monthlyFines = $library->borrowings()
+            ->where('fine_status', 'paid')
+            ->where('updated_at', '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(updated_at) as year, MONTH(updated_at) as month, sum(fine_amount) as total')
+            ->groupBy('year', 'month')
+            ->get()
+            ->keyBy(fn ($r) => $r->year . '-' . $r->month);
+
+        $lastMonths = collect(range(5, 0))->map(function ($i) use ($monthlyRequests, $monthlyApproved, $monthlyBorrowed, $monthlyReturns, $monthlyFines) {
             $date = Carbon::now()->subMonths($i);
             $year = $date->year;
             $month = $date->month;
+            $key = $year . '-' . $month;
             $monthName = $date->format('M');
-
-            $requests = $library->borrowings()
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
-                ->count();
-
-            $approved = $library->borrowings()
-                ->whereYear('approved_at', $year)
-                ->whereMonth('approved_at', $month)
-                ->count();
-
-            $borrowed = $library->borrowings()
-                ->where(function ($q) use ($year, $month) {
-                    $q->whereYear('borrowed_at', $year)->whereMonth('borrowed_at', $month)
-                      ->orWhere(function ($sub) use ($year, $month) {
-                          $sub->whereIn('status', ['borrowed', 'picked_up'])
-                              ->whereYear('created_at', $year)
-                              ->whereMonth('created_at', $month);
-                      });
-                })
-                ->count();
-
-            $returns = $library->borrowings()
-                ->where(function ($q) use ($year, $month) {
-                    $q->whereYear('returned_at', $year)->whereMonth('returned_at', $month)
-                      ->orWhere(function ($sub) use ($year, $month) {
-                          $sub->whereNull('returned_at')
-                              ->whereYear('updated_at', $year)
-                              ->whereMonth('updated_at', $month);
-                      });
-                })
-                ->where('status', 'returned')
-                ->count();
-
-            $fineRev = (float) $library->borrowings()
-                ->where('fine_status', 'paid')
-                ->whereYear('updated_at', $year)
-                ->whereMonth('updated_at', $month)
-                ->sum('fine_amount');
 
             return [
                 'month' => $monthName,
-                'Requests' => $requests,
-                'Approved' => $approved,
-                'Borrowed' => $borrowed,
-                'Returns' => $returns,
-                'FineRevenue' => round($fineRev, 2),
+                'Requests' => (int) ($monthlyRequests->get($key)->total ?? 0),
+                'Approved' => (int) ($monthlyApproved->get($key)->total ?? 0),
+                'Borrowed' => (int) ($monthlyBorrowed->get($key)->total ?? 0),
+                'Returns' => (int) ($monthlyReturns->get($key)->total ?? 0),
+                'FineRevenue' => round((float) ($monthlyFines->get($key)->total ?? 0), 2),
             ];
         })->values();
 
@@ -154,12 +168,12 @@ class ReportController extends Controller
         $availableCopies = (int) $library->books()->selectRaw('SUM(COALESCE(available_quantity, quantity)) as total')->value('total');
         $activeBorrowingsCount = $baseQuery()->whereIn('status', ['borrowed', 'picked_up', 'overdue', 'return_requested'])->count();
 
-        // Real Member Scoping
-        $totalMembersCount = $library->borrowings()->pluck('user_id')->unique()->filter()->count();
-        $activeBorrowersCount = $library->borrowings()->whereIn('status', ['pending', 'approved', 'borrowed', 'picked_up', 'overdue'])->pluck('user_id')->unique()->filter()->count();
+        // Real Member Scoping with DB-level distinct count
+        $totalMembersCount = $library->borrowings()->distinct('user_id')->count('user_id');
+        $activeBorrowersCount = $library->borrowings()->whereIn('status', ['pending', 'approved', 'borrowed', 'picked_up', 'overdue'])->distinct('user_id')->count('user_id');
 
-        // Recent Overdue Records for Operational Alerts
-        $overdueList = $overdueQuery()->with(['user:id,name,email', 'book:id,title'])->limit(5)->get();
+        // Recent Overdue Records for Operational Alerts (eager load library to avoid N+1 in current_fine)
+        $overdueList = $overdueQuery()->with(['user:id,name,email', 'book:id,title', 'library:id,name,fine_per_day'])->limit(5)->get();
 
         // Top Active Members
         $topMembers = $library->borrowings()

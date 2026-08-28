@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -23,6 +23,26 @@ const LIST_ITEM_MOBILE = {
   animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } },
 };
 
+// Prefetch all librarian page chunks on layout mount so tab navigation is instant
+const LIBRARIAN_CHUNKS = [
+  () => import('../pages/librarian/Dashboard'),
+  () => import('../pages/librarian/Library'),
+  () => import('../pages/librarian/Books'),
+  () => import('../pages/librarian/BookDetails'),
+  () => import('../pages/librarian/Categories'),
+  () => import('../pages/librarian/CategoryDetails'),
+  () => import('../pages/librarian/BorrowRequests'),
+  () => import('../pages/librarian/BorrowRequestDetails'),
+  () => import('../pages/librarian/Returns'),
+  () => import('../pages/librarian/ReturnDetails'),
+  () => import('../pages/librarian/Members'),
+  () => import('../pages/librarian/MemberDetails'),
+  () => import('../pages/librarian/Subscription'),
+  () => import('../pages/librarian/Reports'),
+  () => import('../pages/librarian/LibrarianNotifications'),
+  () => import('../pages/librarian/LibrarianProfile'),
+];
+
 export default function LibrarianLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -36,6 +56,12 @@ export default function LibrarianLayout() {
   useLayoutEffect(() => {
     if (mainRef.current) mainRef.current.scrollTop = 0;
   }, [location.pathname]);
+
+  // Prefetch all librarian route chunks in background after initial paint
+  useEffect(() => {
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
+    idle(() => { LIBRARIAN_CHUNKS.forEach((load) => load().catch(() => {})); });
+  }, []);
 
   // TanStack Query for reactive notifications state across header, sidebar, and notification pages
   const { data: notifResData, refetch: fetchLibrarianNotifications } = useNotifications('librarian', Boolean(user));
@@ -428,13 +454,16 @@ export default function LibrarianLayout() {
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
           <main ref={mainRef} className="flex-1 overflow-y-auto scrollbar-none p-2.5 lg:p-4 flex flex-col min-h-0 h-full w-full">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout" initial={false}>
               <motion.div
                 key={location.pathname}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                transition={{
+                  duration: 0.16,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 style={{ willChange: 'opacity, transform' }}
                 className="flex-1 flex flex-col min-h-0 h-full w-full"
               >

@@ -124,16 +124,22 @@ class LibrarianMemberController extends Controller
         });
 
         // Summary calculations at DB level
-        $totalMembersCount = User::whereHas('borrowings', fn ($q) => $q->where('library_id', $library->id))->count();
-        $activeBorrowersCount = User::whereHas('borrowings', fn ($q) => $q->where('library_id', $library->id)->whereIn('status', ['pending', 'approved', 'borrowed', 'picked_up', 'overdue']))->count();
-        $overdueBorrowersCount = User::whereHas('borrowings', fn ($q) => $q->where('library_id', $library->id)->where(function ($sub) use ($today) {
-            $sub->where('status', 'overdue')
-              ->orWhere(function ($s) use ($today) {
-                  $s->whereIn('status', ['borrowed', 'picked_up'])
-                    ->whereNotNull('due_date')
-                    ->whereDate('due_date', '<', $today);
-              });
-        }))->count();
+        $totalMembersCount = Borrowing::where('library_id', $library->id)->distinct('user_id')->count('user_id');
+        $activeBorrowersCount = Borrowing::where('library_id', $library->id)
+            ->whereIn('status', ['pending', 'approved', 'borrowed', 'picked_up', 'overdue'])
+            ->distinct('user_id')
+            ->count('user_id');
+        $overdueBorrowersCount = Borrowing::where('library_id', $library->id)
+            ->where(function ($sub) use ($today) {
+                $sub->where('status', 'overdue')
+                  ->orWhere(function ($s) use ($today) {
+                      $s->whereIn('status', ['borrowed', 'picked_up'])
+                        ->whereNotNull('due_date')
+                        ->whereDate('due_date', '<', $today);
+                  });
+            })
+            ->distinct('user_id')
+            ->count('user_id');
 
         return response()->json([
             'data' => $members,

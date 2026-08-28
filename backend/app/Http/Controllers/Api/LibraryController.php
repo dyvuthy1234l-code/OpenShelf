@@ -88,7 +88,7 @@ class LibraryController extends Controller
     // Librarian មើល Library របស់ខ្លួន
     public function myLibrary(Request $request)
     {
-        $library = Library::with(['owner:id,name,email,avatar', 'books.category'])
+        $library = Library::with(['owner:id,name,email,avatar'])
             ->withCount('books')
             ->where('owner_id', $request->user()->id)
             ->first();
