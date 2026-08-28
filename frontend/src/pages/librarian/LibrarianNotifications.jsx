@@ -9,6 +9,7 @@ import {
 import { useNotifications } from '../../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
 import PageHeader from '../../components/librarian/common/PageHeader';
+import { ListSkeleton } from '../../components/librarian/common/Skeleton';
 import { formatNotificationTime } from '../../utils/dateUtils';
 import librarianService from '../../services/librarianService';
 
@@ -191,11 +192,7 @@ export default function LibrarianNotificationsPage() {
 
       {/* Notifications List Viewport */}
       {loading ? (
-        <div className="flex-1 space-y-3 animate-pulse">
-          <div className="h-24 bg-white rounded-2xl border border-slate-200" />
-          <div className="h-24 bg-white rounded-2xl border border-slate-200" />
-          <div className="h-24 bg-white rounded-2xl border border-slate-200" />
-        </div>
+        <ListSkeleton rows={4} className="mt-0" />
       ) : filteredNotifications.length === 0 ? (
         <div className="flex-1 bg-white border border-slate-200/90 rounded-3xl p-10 text-center flex flex-col items-center justify-center space-y-3 shadow-2xs">
           <div className="w-16 h-16 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl flex items-center justify-center shadow-xs">

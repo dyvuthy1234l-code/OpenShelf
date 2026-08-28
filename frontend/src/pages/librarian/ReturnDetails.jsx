@@ -7,6 +7,7 @@ import {
 import { motion } from 'framer-motion';
 import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
+import { DetailSkeleton } from '../../components/librarian/common/Skeleton';
 
 import ConfirmReturnModal from '../../components/librarian/returns/ConfirmReturnModal';
 
@@ -54,11 +55,7 @@ export default function ReturnDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-8 pb-16 animate-pulse">
-        <div className="h-64 bg-white rounded-3xl border border-slate-200" />
-      </div>
-    );
+    return <DetailSkeleton />;
   }
 
   if (error || !borrowing) {

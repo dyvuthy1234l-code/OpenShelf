@@ -11,6 +11,7 @@ import librarianService from '../../services/librarianService';
 
 import BookForm from '../../components/librarian/books/BookForm';
 import DeleteBookModal from '../../components/librarian/books/DeleteBookModal';
+import { DetailSkeleton } from '../../components/librarian/common/Skeleton';
 
 export default function BookDetails() {
   const { id } = useParams();
@@ -79,11 +80,7 @@ export default function BookDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="flex-1 space-y-4 animate-pulse">
-        <div className="h-64 bg-white rounded-3xl border border-slate-200" />
-      </div>
-    );
+    return <DetailSkeleton />;
   }
 
   if (error || !book) {
@@ -341,23 +338,27 @@ export default function BookDetails() {
       </div>
 
       {/* Edit Modal */}
-      {showEditModal && (
-        <BookForm
-          initialData={book}
-          categories={categories}
-          onSave={handleUpdateBook}
-          onClose={() => setShowEditModal(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showEditModal && (
+          <BookForm
+            initialData={book}
+            categories={categories}
+            onSave={handleUpdateBook}
+            onClose={() => setShowEditModal(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete Modal */}
-      {showDeleteModal && (
-        <DeleteBookModal
-          book={book}
-          onConfirm={handleDeleteBook}
-          onClose={() => setShowDeleteModal(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <DeleteBookModal
+            book={book}
+            onConfirm={handleDeleteBook}
+            onClose={() => setShowDeleteModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

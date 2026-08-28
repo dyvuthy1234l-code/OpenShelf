@@ -4,7 +4,7 @@ import {
   Tag, ArrowLeft, Edit3, Trash2, BookOpen, 
   CheckCircle2, AlertCircle, RefreshCw, ChevronLeft, ChevronRight, Search, X 
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
 import librarianService from '../../services/librarianService';
 
@@ -12,6 +12,7 @@ import BookTable from '../../components/librarian/books/BookTable';
 import BookCard from '../../components/librarian/books/BookCard';
 import CategoryForm from '../../components/librarian/categories/CategoryForm';
 import DeleteCategoryModal from '../../components/librarian/categories/DeleteCategoryModal';
+import { DetailSkeleton } from '../../components/librarian/common/Skeleton';
 
 export default function CategoryDetails() {
   const { id } = useParams();
@@ -116,11 +117,7 @@ export default function CategoryDetails() {
   const endIndex = Math.min(meta.current_page * meta.per_page, totalItems);
 
   if (loading && !category) {
-    return (
-      <div className="max-w-5xl mx-auto space-y-8 pb-16 animate-pulse">
-        <div className="h-64 bg-white rounded-3xl border border-slate-200" />
-      </div>
-    );
+    return <DetailSkeleton />;
   }
 
   if (error && !category) {
@@ -382,22 +379,26 @@ export default function CategoryDetails() {
       </div>
 
       {/* Edit Category Modal */}
-      {showEditModal && (
-        <CategoryForm
-          initialData={category}
-          onSave={handleUpdateCategory}
-          onClose={() => setShowEditModal(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showEditModal && (
+          <CategoryForm
+            initialData={category}
+            onSave={handleUpdateCategory}
+            onClose={() => setShowEditModal(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete Category Modal */}
-      {showDeleteModal && (
-        <DeleteCategoryModal
-          category={category}
-          onConfirm={handleDeleteCategory}
-          onClose={() => setShowDeleteModal(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <DeleteCategoryModal
+            category={category}
+            onConfirm={handleDeleteCategory}
+            onClose={() => setShowDeleteModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

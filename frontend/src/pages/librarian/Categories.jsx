@@ -8,6 +8,7 @@ import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
+import { ListSkeleton } from '../../components/librarian/common/Skeleton';
 import CategoryTable from '../../components/librarian/categories/CategoryTable';
 import CategoryCard from '../../components/librarian/categories/CategoryCard';
 import CategoryFilters from '../../components/librarian/categories/CategoryFilters';
@@ -149,7 +150,7 @@ export default function CategoriesPage() {
       >
         <button
           onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-2xs transition-all active:scale-[0.97] cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Category</span>
@@ -189,9 +190,7 @@ export default function CategoriesPage() {
 
       {/* Content Viewport */}
       {loading ? (
-        <div className="flex-1 space-y-3 animate-pulse">
-          <div className="h-64 bg-white rounded-2xl border border-slate-200" />
-        </div>
+        <ListSkeleton rows={5} className="mt-0" />
       ) : categories.length === 0 ? (
         <div className="flex-1 bg-white border border-slate-200/90 rounded-2xl p-8 text-center flex flex-col items-center justify-center space-y-3 shadow-2xs">
           <div className="w-14 h-14 bg-navy-50 border border-brand-border text-navy-700 rounded-2xl flex items-center justify-center shadow-2xs">
@@ -259,7 +258,7 @@ export default function CategoriesPage() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                   disabled={currentPage === 1 || loading}
-                  className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                  className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed"
                   title="Previous Page"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -305,7 +304,7 @@ export default function CategoriesPage() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                   disabled={currentPage === totalPages || loading}
-                  className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                  className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed"
                   title="Next Page"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -317,22 +316,26 @@ export default function CategoriesPage() {
       )}
 
       {/* Category Form Modal */}
-      {showFormModal && (
-        <CategoryForm
-          initialData={editingCategory}
-          onSave={handleSaveCategory}
-          onClose={() => setShowFormModal(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showFormModal && (
+          <CategoryForm
+            initialData={editingCategory}
+            onSave={handleSaveCategory}
+            onClose={() => setShowFormModal(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete Category Modal */}
-      {deletingCategory && (
-        <DeleteCategoryModal
-          category={deletingCategory}
-          onConfirm={handleDeleteCategoryConfirm}
-          onClose={() => setDeletingCategory(null)}
-        />
-      )}
+      <AnimatePresence>
+        {deletingCategory && (
+          <DeleteCategoryModal
+            category={deletingCategory}
+            onConfirm={handleDeleteCategoryConfirm}
+            onClose={() => setDeletingCategory(null)}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

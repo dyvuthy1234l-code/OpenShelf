@@ -8,6 +8,7 @@ import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
+import { ListSkeleton } from '../../components/librarian/common/Skeleton';
 import MemberTable from '../../components/librarian/members/MemberTable';
 import MemberCard from '../../components/librarian/members/MemberCard';
 import MemberFilters from '../../components/librarian/members/MemberFilters';
@@ -151,9 +152,7 @@ export default function MembersPage() {
 
       {/* Content Viewport */}
       {loading ? (
-        <div className="space-y-2.5 animate-pulse">
-          <div className="h-60 bg-white rounded-2xl border border-slate-200" />
-        </div>
+        <ListSkeleton rows={4} className="mt-0" />
       ) : members.length === 0 ? (
         <div className="bg-white border border-slate-200/90 rounded-2xl p-6 text-center flex flex-col items-center justify-center space-y-2.5 shadow-2xs">
           <div className="w-14 h-14 bg-navy-50 border border-brand-border text-navy-700 rounded-2xl flex items-center justify-center shadow-2xs">
@@ -205,7 +204,7 @@ export default function MembersPage() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                   disabled={currentPage === 1 || loading}
-                  className="p-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                  className="p-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed"
                   title="Previous Page"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -251,7 +250,7 @@ export default function MembersPage() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                   disabled={currentPage === totalPages || loading}
-                  className="p-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                  className="p-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-40 transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed"
                   title="Next Page"
                 >
                   <ChevronRight className="w-4 h-4" />

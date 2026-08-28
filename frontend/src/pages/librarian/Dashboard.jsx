@@ -370,19 +370,16 @@ export default function Dashboard() {
         </div>
       ) : (
         <motion.div
-          key={dateRange.preset}
           initial={{
-            opacity: 0.82,
-            y: 3,
-            scale: 0.995,
+            opacity: 0,
+            y: 6,
           }}
           animate={{
             opacity: 1,
             y: 0,
-            scale: 1,
           }}
           transition={{
-            duration: 0.28,
+            duration: 0.22,
             ease: 'easeOut',
           }}
           className="

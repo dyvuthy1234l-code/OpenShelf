@@ -316,3 +316,29 @@ input:-webkit-autofill:focus {
 
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Shimmer Skeleton Loading Effect */
+@keyframes os-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.os-skeleton {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 37%, #F1F5F9 63%);
+  background-size: 800px 100%;
+  animation: os-shimmer 1.4s infinite linear;
+}
+
+.os-skeleton-text {
+  background: linear-gradient(90deg, #EEF2F7 25%, #E0E7EE 37%, #EEF2F7 63%);
+  background-size: 800px 100%;
+  animation: os-shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+.os-skeleton-circle {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 37%, #F1F5F9 63%);
+  background-size: 800px 100%;
+  animation: os-shimmer 1.4s infinite linear;
+  border-radius: 9999px;
+}

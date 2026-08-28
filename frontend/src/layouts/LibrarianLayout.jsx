@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -14,6 +14,15 @@ import { SIDEBAR_SLIDE_VARIANTS, BACKDROP_MOTION_VARIANTS, DROPDOWN_MOTION_VARIA
 import { useNotifications } from '../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../hooks/queries/useNotificationMutations';
 
+const LIST_STAGGER_MOBILE = {
+  animate: { transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
+};
+
+const LIST_ITEM_MOBILE = {
+  initial: { opacity: 0, x: -12 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } },
+};
+
 export default function LibrarianLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -21,6 +30,12 @@ export default function LibrarianLayout() {
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+  const mainRef = useRef(null);
+
+  // Reset scroll position on route change
+  useLayoutEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+  }, [location.pathname]);
 
   // TanStack Query for reactive notifications state across header, sidebar, and notification pages
   const { data: notifResData, refetch: fetchLibrarianNotifications } = useNotifications('librarian', Boolean(user));
@@ -97,16 +112,23 @@ export default function LibrarianLayout() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
+                  className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-colors duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-extrabold translate-x-0.5'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5 hover:translate-x-0.5'
+                      ? 'text-white font-extrabold shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
-                  <span className="flex-1 truncate transition-all duration-200">{item.name}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeLibrarianTab"
+                      className="absolute inset-0 bg-navy-800 border-l-4 border-gold-500 rounded-xl z-0"
+                      transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                    />
+                  )}
+                  <Icon className={`w-4 h-4 shrink-0 relative z-10 transition-transform duration-200 ease-out group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
+                  <span className="flex-1 truncate relative z-10">{item.name}</span>
                   {item.badge > 0 && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black transition-transform duration-200 group-hover:scale-105 ${isActive ? 'bg-navy-950 text-gold-500' : 'bg-gold-500 text-navy-950'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black relative z-10 transition-transform duration-200 group-hover:scale-105 ${isActive ? 'bg-navy-950 text-gold-500' : 'bg-gold-500 text-navy-950'}`}>
                       {item.badge > 99 ? '99+' : item.badge}
                     </span>
                   )}
@@ -119,14 +141,21 @@ export default function LibrarianLayout() {
           <div className="px-3 pb-2 shrink-0">
             <Link
               to="/librarian/profile"
-              className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 ease-out motion-reduce:transition-none ${
+              className={`group relative flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-colors duration-200 cursor-pointer ${
                 location.pathname === '/librarian/profile'
-                  ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-extrabold translate-x-0.5'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5 hover:translate-x-0.5'
+                  ? 'text-white font-extrabold shadow-sm'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
               }`}
             >
-              <UserCircle className={`w-4 h-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
-              <span>My Profile</span>
+              {location.pathname === '/librarian/profile' && (
+                <motion.div
+                  layoutId="activeLibrarianTab"
+                  className="absolute inset-0 bg-navy-800 border-l-4 border-gold-500 rounded-xl z-0"
+                  transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                />
+              )}
+              <UserCircle className={`w-4 h-4 shrink-0 relative z-10 transition-transform duration-200 ease-out group-hover:scale-110 ${location.pathname === '/librarian/profile' ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
+              <span className="relative z-10">My Profile</span>
             </Link>
           </div>
 
@@ -187,31 +216,34 @@ export default function LibrarianLayout() {
                 </div>
 
                 <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-                  {navigationItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.path || (item.path !== '/librarian' && location.pathname.startsWith(item.path));
+                  <motion.div variants={LIST_STAGGER_MOBILE} initial="initial" animate="animate">
+                    {navigationItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = location.pathname === item.path || (item.path !== '/librarian' && location.pathname.startsWith(item.path));
 
-                    return (
-                      <Link
-                        key={item.name}
-                        to={item.path}
-                        onClick={() => setMobileSidebarOpen(false)}
-                        className={`group flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ease-out ${
-                          isActive
-                            ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-bold'
-                            : 'text-slate-300 hover:text-white hover:bg-white/5'
-                        }`}
-                      >
-                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                        <span className="flex-1">{item.name}</span>
-                        {item.badge > 0 && (
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-navy-950 text-gold-500' : 'bg-gold-500 text-navy-950'}`}>
-                            {item.badge > 99 ? '99+' : item.badge}
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
+                      return (
+                        <motion.div variants={LIST_ITEM_MOBILE} key={item.name}>
+                          <Link
+                            to={item.path}
+                            onClick={() => setMobileSidebarOpen(false)}
+                            className={`group flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs font-bold transition-all duration-200 ease-out ${
+                              isActive
+                                ? 'bg-navy-800 text-white border-l-4 border-gold-500 shadow-sm font-bold'
+                                : 'text-slate-300 hover:text-white hover:bg-white/5'
+                            }`}
+                          >
+                            <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                            <span className="flex-1">{item.name}</span>
+                            {item.badge > 0 && (
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-navy-950 text-gold-500' : 'bg-gold-500 text-navy-950'}`}>
+                                {item.badge > 99 ? '99+' : item.badge}
+                              </span>
+                            )}
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
                 </nav>
 
                 {/* Mobile My Profile Link */}
@@ -395,10 +427,22 @@ export default function LibrarianLayout() {
           </header>
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
-          <main className="flex-1 overflow-hidden scrollbar-none p-2.5 lg:p-3 flex flex-col min-h-0">
-            <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
-              <Outlet />
-            </React.Suspense>
+          <main ref={mainRef} className="flex-1 overflow-y-auto scrollbar-none p-2.5 lg:p-4 flex flex-col min-h-0 h-full w-full">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                style={{ willChange: 'opacity, transform' }}
+                className="flex-1 flex flex-col min-h-0 h-full w-full"
+              >
+                <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
+                  <Outlet />
+                </React.Suspense>
+              </motion.div>
+            </AnimatePresence>
           </main>
         </div>
       </div>

@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, Building2, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 import LibraryStatusToggle from './LibraryStatusToggle';
 
 export default function DashboardHeader({ user, library, dateRange, onDateRangeChange, onLibraryStatusChange }) {
   const [activePreset, setActivePreset] = useState(dateRange?.preset || 'all');
+
+  useEffect(() => {
+    if (dateRange?.preset && dateRange.preset !== activePreset) {
+      setActivePreset(dateRange.preset);
+    }
+  }, [dateRange?.preset]);
 
   const handlePresetSelect = (preset) => {
     setActivePreset(preset);
@@ -65,28 +72,36 @@ export default function DashboardHeader({ user, library, dateRange, onDateRangeC
           />
         )}
 
-        <div className="flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/80 shadow-2xs shrink-0 text-xs">
-          <Calendar className="w-3.5 h-3.5 text-slate-400 ml-1.5 mr-0.5 hidden sm:inline" />
+        <div className="relative flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/80 shadow-2xs shrink-0 text-xs select-none">
+          <Calendar className="w-3.5 h-3.5 text-slate-400 ml-1.5 mr-0.5 hidden sm:inline shrink-0" />
           {[
             { key: 'all', label: 'All Time' },
             { key: 'today', label: 'Today' },
             { key: 'week', label: 'This Week' },
             { key: 'month', label: 'This Month' },
             { key: 'year', label: 'This Year' },
-          ].map((item) => (
-            <button
-              key={item.key}
-              type="button"
-              onClick={() => handlePresetSelect(item.key)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
-                activePreset === item.key
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 shadow-xs scale-[1.02]'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+          ].map((item) => {
+            const isActive = activePreset === item.key;
+            return (
+              <button
+                key={item.key}
+                type="button"
+                onClick={() => handlePresetSelect(item.key)}
+                className={`relative px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-colors duration-150 cursor-pointer ${
+                  isActive ? 'text-slate-950 font-black' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeDatePreset"
+                    className="absolute inset-0 bg-gradient-to-r from-amber-500 to-amber-400 rounded-lg shadow-xs z-0"
+                    transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                  />
+                )}
+                <span className="relative z-10">{item.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

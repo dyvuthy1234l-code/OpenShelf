@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PAGE_MOTION_VARIANTS, BANNER_MOTION } from '../../constants/motionTokens';
 import { CreditCard, CheckCircle2, ShieldCheck, ArrowRight, RefreshCw, Crown, Star, AlertTriangle, Clock, Lock, Info } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import PageHeader from '../../components/librarian/common/PageHeader';
@@ -107,25 +107,29 @@ export default function SubscriptionPage() {
       </PageHeader>
 
       {/* Success Notification Banner */}
-      {successMsg && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-2xs shrink-0">
-          <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-            <span className="font-bold text-xs">{successMsg}</span>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {successMsg && (
+          <motion.div {...BANNER_MOTION} key="success-banner" className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-2xs shrink-0">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+              <span className="font-bold text-xs">{successMsg}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Error Notification Banner */}
-      {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-2xs shrink-0">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
-            <span className="font-bold text-xs">{error}</span>
-          </div>
-          <button onClick={() => setError(null)} className="text-rose-700 font-bold text-xs">Dismiss</button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div {...BANNER_MOTION} key="error-banner" className="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-2xs shrink-0">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
+              <span className="font-bold text-xs">{error}</span>
+            </div>
+            <button onClick={() => setError(null)} className="text-rose-700 font-bold text-xs">Dismiss</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Subscription Status Card */}
       {!isActive ? (
