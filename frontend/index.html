@@ -19,7 +19,10 @@
         if (repoName && path.length > repoName.length && path !== repoName + '/') {
           var subPath = path.substring(repoName.length);
           if (subPath && !subPath.startsWith('/assets/') && !subPath.includes('.')) {
-            window.location.replace(repoName + '/#' + subPath + window.location.search + window.location.hash);
+            // Use the existing hash route if present, otherwise convert the subPath to a hash route.
+            // Avoids creating broken double-hash URLs like /#/register#/books
+            var hashRoute = window.location.hash || ('#' + subPath);
+            window.location.replace(repoName + '/' + hashRoute + window.location.search);
           }
         }
       })();
