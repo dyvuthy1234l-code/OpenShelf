@@ -2,9 +2,12 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function AnimatedPagination({ currentPage, lastPage, onPageChange }) {
-  if (!lastPage || lastPage <= 1) return null;
+  const safeLastPage = Math.max(1, Math.floor(Number(lastPage) || 1));
+  const safeCurrentPage = Math.max(1, Math.min(Math.floor(Number(currentPage) || 1), safeLastPage));
 
-  const pages = Array.from({ length: lastPage }, (_, i) => i + 1);
+  if (safeLastPage <= 1) return null;
+
+  const pages = Array.from({ length: safeLastPage }, (_, i) => i + 1);
 
   // Sliding window logic to show limited pages
   const getVisiblePages = () => {

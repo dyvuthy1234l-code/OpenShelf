@@ -40,10 +40,12 @@ export default function BooksList() {
 
   // Query Hooks (Cached with TanStack Query + keepPreviousData)
   const { data: librariesRes } = useLibraries({ per_page: -1 });
-  const libraries = librariesRes?.data || librariesRes?.libraries || [];
+  const rawLibraries = librariesRes?.data ?? librariesRes?.libraries ?? librariesRes;
+  const libraries = Array.isArray(rawLibraries) ? rawLibraries.filter((l) => l && typeof l === 'object') : [];
 
   const { data: categoriesRes } = useCategories(libraryId ? { library_id: libraryId } : {});
-  const categories = categoriesRes?.data || [];
+  const rawCategories = categoriesRes?.data ?? categoriesRes?.categories ?? categoriesRes;
+  const categories = Array.isArray(rawCategories) ? rawCategories.filter((c) => c && typeof c === 'object') : [];
 
   const queryParams = {
     search: search || undefined,
@@ -62,14 +64,20 @@ export default function BooksList() {
     refetch: loadBooks,
   } = useBooks(queryParams);
 
-  const books = booksRes?.data || [];
+  const rawBooks = booksRes?.data ?? booksRes?.books ?? booksRes;
+  const books = Array.isArray(rawBooks) ? rawBooks.filter((b) => b && typeof b === 'object') : [];
   const loading = initialLoading && books.length === 0;
 
+  const rawCurrentPage = Number(booksRes?.meta?.current_page ?? booksRes?.current_page);
+  const rawLastPage = Number(booksRes?.meta?.last_page ?? booksRes?.last_page);
+  const rawPerPage = Number(booksRes?.meta?.per_page ?? booksRes?.per_page);
+  const rawTotal = Number(booksRes?.meta?.total ?? booksRes?.total);
+
   const meta = {
-    current_page: Number(booksRes?.meta?.current_page) || page,
-    last_page: Number(booksRes?.meta?.last_page) || 1,
-    per_page: Number(booksRes?.meta?.per_page) || 10,
-    total: Number(booksRes?.meta?.total) || books.length,
+    current_page: (!isNaN(rawCurrentPage) && rawCurrentPage > 0) ? rawCurrentPage : page,
+    last_page: (!isNaN(rawLastPage) && rawLastPage > 0) ? rawLastPage : 1,
+    per_page: (!isNaN(rawPerPage) && rawPerPage > 0) ? rawPerPage : 10,
+    total: (!isNaN(rawTotal) && rawTotal >= 0) ? rawTotal : books.length,
   };
   const error = isError ? 'Failed to load books catalogue. Please check your network connection.' : null;
 

@@ -31,6 +31,8 @@ export default function BookCard({ book, showDateAdded = false }) {
   const [savingFav, setSavingFav] = useState(false);
   const [imageErr, setImageErr] = useState(false);
 
+  if (!book || typeof book !== 'object') return null;
+
   const timeAgo = showDateAdded ? formatRelativeTime(book.created_at || book.added_at) : null;
 
   const isFavorited = isBookFavorite(book.id);
