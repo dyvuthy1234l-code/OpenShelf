@@ -62,9 +62,9 @@ export default function BooksList() {
     refetch: loadBooks,
   } = useBooks(queryParams);
 
+  const books = booksRes?.data || [];
   const loading = initialLoading && books.length === 0;
 
-  const books = booksRes?.data || [];
   const meta = {
     current_page: Number(booksRes?.meta?.current_page) || page,
     last_page: Number(booksRes?.meta?.last_page) || 1,

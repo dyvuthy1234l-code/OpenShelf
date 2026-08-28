@@ -3,11 +3,11 @@ import { Component } from 'react';
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, info) {
@@ -16,6 +16,11 @@ export default class ErrorBoundary extends Component {
 
   handleReload = () => {
     window.location.reload();
+  };
+
+  handleGoHome = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.href = window.location.origin + window.location.pathname.replace(/\/+$/, '') + '/#/';
   };
 
   render() {
@@ -30,11 +35,16 @@ export default class ErrorBoundary extends Component {
               Something went wrong
             </h2>
             <p className="text-sm text-slate-500 mb-5">
-              The page failed to load. A quick refresh usually fixes it.
+              The page failed to load. A quick refresh or returning home usually fixes it.
             </p>
-            <button onClick={this.handleReload} className="os-btn-primary w-full">
-              Refresh Page
-            </button>
+            <div className="space-y-2">
+              <button onClick={this.handleReload} className="os-btn-primary w-full">
+                Refresh Page
+              </button>
+              <button onClick={this.handleGoHome} className="os-btn-secondary w-full text-xs">
+                Back to Home Page
+              </button>
+            </div>
           </div>
         </div>
       );
