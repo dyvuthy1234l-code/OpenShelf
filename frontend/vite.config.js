@@ -4,7 +4,11 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig(({ command }) => {
   const isBuild = command === "build";
-  const basePath = process.env.VITE_BASE_PATH || (isBuild ? "/Front_OpenShelf/" : "/");
+  let repoName = "";
+  if (process.env.GITHUB_REPOSITORY) {
+    repoName = process.env.GITHUB_REPOSITORY.split("/")[1];
+  }
+  const basePath = process.env.VITE_BASE_PATH || (repoName ? `/${repoName}/` : (isBuild ? "/Front--OpenShelf/" : "/"));
 
   return {
     plugins: [react(), tailwindcss()],

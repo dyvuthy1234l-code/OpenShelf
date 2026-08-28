@@ -14,8 +14,9 @@
     <script>
       (function() {
         var path = window.location.pathname;
-        var repoName = '/Front_OpenShelf';
-        if (path.startsWith(repoName) && path.length > repoName.length && path !== repoName + '/') {
+        var match = path.match(/^\/([^\/]+)/);
+        var repoName = match ? '/' + match[1] : '';
+        if (repoName && path.length > repoName.length && path !== repoName + '/') {
           var subPath = path.substring(repoName.length);
           if (subPath && !subPath.startsWith('/assets/') && !subPath.includes('.')) {
             window.location.replace(repoName + '/#' + subPath + window.location.search + window.location.hash);
