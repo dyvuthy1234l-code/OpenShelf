@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   CheckCircle2, AlertCircle, RefreshCw, RotateCcw,
   ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
+import { useLibrarianReturns } from '../../hooks/queries/useLibrarianQueries';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { ListSkeleton } from '../../components/librarian/common/Skeleton';
@@ -15,9 +17,7 @@ import ReturnFilters from '../../components/librarian/returns/ReturnFilters';
 import ConfirmReturnModal from '../../components/librarian/returns/ConfirmReturnModal';
 
 export default function ReturnsPage() {
-  const [borrowings, setBorrowings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Filters State
   const [activeTab, setActiveTab] = useState('requests');
@@ -25,7 +25,6 @@ export default function ReturnsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [fineFilter, setFineFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: 5, total: 0 });
 
   // Action Modals & Notifications
   const [confirmingReturn, setConfirmingReturn] = useState(null);
@@ -33,7 +32,7 @@ export default function ReturnsPage() {
 
   const ITEMS_PER_PAGE = 5;
 
-  // 1. Debounce search input (350ms)
+  // Debounce search input (350ms)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -41,61 +40,43 @@ export default function ReturnsPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // 2. Automatically reset page to 1 when filters change
+  // Automatically reset page to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearch, activeTab, fineFilter]);
 
-  // 3. Server-side fetch returns
-  const fetchReturns = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const params = {
-        page: currentPage,
-        per_page: ITEMS_PER_PAGE,
-      };
-
-      if (activeTab === 'requests') {
-        params.status = 'return_requested,overdue,borrowed,picked_up';
-      } else if (activeTab === 'completed') {
-        params.status = 'returned';
-      }
-
-      if (debouncedSearch.trim()) {
-        params.search = debouncedSearch.trim();
-      }
-
-      if (fineFilter) {
-        params.fine_status = fineFilter;
-      }
-
-      const res = await librarianService.getBorrowings(params);
-      setBorrowings(res.data || []);
-      if (res.meta) {
-        setMeta(res.meta);
-      } else {
-        const total = res.data?.length || 0;
-        setMeta({ current_page: 1, last_page: 1, per_page: ITEMS_PER_PAGE, total });
-      }
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Session expired. Please log in again.');
-      } else if (err.response?.status === 403) {
-        setError('Access denied. You do not have permission to manage these returns.');
-      } else if (err.response?.status === 422) {
-        setError(err.response?.data?.message || 'Invalid return filter criteria.');
-      } else {
-        setError('Unable to load book return records from server.');
-      }
-    } finally {
-      setLoading(false);
+  // Query parameters
+  const queryParams = useMemo(() => {
+    const params = {
+      page: currentPage,
+      per_page: ITEMS_PER_PAGE,
+    };
+    if (activeTab === 'requests') {
+      params.status = 'return_requested,overdue,borrowed,picked_up';
+    } else if (activeTab === 'completed') {
+      params.status = 'returned';
     }
+    if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+    if (fineFilter) params.fine_status = fineFilter;
+    return params;
   }, [currentPage, activeTab, debouncedSearch, fineFilter]);
 
+  const { data: resData, isLoading: loading, error: queryErr, refetch: fetchReturns } = useLibrarianReturns(queryParams);
+
+  const borrowings = resData?.data || [];
+  const meta = resData?.meta || { current_page: currentPage, last_page: 1, per_page: ITEMS_PER_PAGE, total: borrowings.length };
+  const error = queryErr ? 'Unable to load book return records from server.' : null;
+
+  // Prefetch next page for 0ms instant pagination
   useEffect(() => {
-    fetchReturns();
-  }, [fetchReturns]);
+    if (meta.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['librarian', 'returns', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => librarianService.getBorrowings({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
+    }
+  }, [currentPage, queryParams, meta.last_page, queryClient]);
 
   const handleClearFilters = () => {
     setSearch('');
@@ -109,7 +90,9 @@ export default function ReturnsPage() {
       await librarianService.returnBook(id, data);
       setConfirmingReturn(null);
       setSuccessMessage('Book return confirmed successfully. Available inventory stock has been updated.');
-      await fetchReturns();
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'returns'] });
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'reports'] });
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'books'] });
     } catch (err) {
       throw err;
     }

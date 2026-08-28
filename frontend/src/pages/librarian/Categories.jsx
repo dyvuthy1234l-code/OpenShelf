@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Tag, Plus, AlertCircle, CheckCircle2, RefreshCw,
   ChevronLeft, ChevronRight, RotateCcw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
+import { useLibrarianCategories } from '../../hooks/queries/useLibrarianQueries';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { ListSkeleton } from '../../components/librarian/common/Skeleton';
@@ -16,25 +18,23 @@ import CategoryForm from '../../components/librarian/categories/CategoryForm';
 import DeleteCategoryModal from '../../components/librarian/categories/DeleteCategoryModal';
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Filters & Pagination State
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: 5, total: 0 });
 
   // Modals & Notifications
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [deletingCategory, setDeletingCategory] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState(null);
 
   const ITEMS_PER_PAGE = 5;
 
-  // 1. Debounce search input (350ms)
+  // Debounce search input (350ms)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -42,47 +42,36 @@ export default function CategoriesPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // 2. Reset page to 1 when search changes
+  // Reset page to 1 when search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearch]);
 
-  // 3. Server-side fetch categories
-  const fetchCategories = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const params = {
-        page: currentPage,
-        per_page: ITEMS_PER_PAGE,
-      };
-      if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
-
-      const res = await librarianService.getCategories(params);
-      setCategories(res.data || []);
-
-      if (res.meta) {
-        setMeta(res.meta);
-      } else {
-        const total = res.data?.length || 0;
-        setMeta({ current_page: 1, last_page: 1, per_page: ITEMS_PER_PAGE, total });
-      }
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Session expired. Please log in again.');
-      } else if (err.response?.status === 403) {
-        setError('Access denied. You do not have permission to manage categories.');
-      } else {
-        setError('Unable to load categories list from server.');
-      }
-    } finally {
-      setLoading(false);
-    }
+  // Query parameters
+  const queryParams = useMemo(() => {
+    const params = {
+      page: currentPage,
+      per_page: ITEMS_PER_PAGE,
+    };
+    if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+    return params;
   }, [currentPage, debouncedSearch]);
 
+  const { data: resData, isLoading: loading, error: queryErr, refetch: fetchCategories } = useLibrarianCategories(queryParams);
+
+  const categories = resData?.data || [];
+  const meta = resData?.meta || { current_page: currentPage, last_page: 1, per_page: ITEMS_PER_PAGE, total: categories.length };
+
+  // Prefetch next page for 0ms instant pagination
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    if (meta.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['librarian', 'categories', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => librarianService.getCategories({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
+    }
+  }, [currentPage, queryParams, meta.last_page, queryClient]);
 
   const handleClearFilters = () => {
     setSearch('');
@@ -115,7 +104,7 @@ export default function CategoriesPage() {
         setSuccessMessage('Category created successfully.');
       }
       setShowFormModal(false);
-      await fetchCategories();
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'categories'] });
     } catch (err) {
       const msg = err.response?.data?.message || 'Failed to save category.';
       setError(msg);
@@ -127,7 +116,7 @@ export default function CategoriesPage() {
       await librarianService.deleteCategory(id);
       setDeletingCategory(null);
       setSuccessMessage('Category deleted successfully.');
-      await fetchCategories();
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'categories'] });
     } catch (err) {
       const msg = err.response?.data?.message || 'This category contains books and cannot be deleted.';
       setDeletingCategory(null);

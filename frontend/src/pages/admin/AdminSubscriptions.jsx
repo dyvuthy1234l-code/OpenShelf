@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import { 
   CreditCard, CheckCircle2, Clock, AlertTriangle, XCircle, 
   DollarSign, Search, RotateCcw, Eye, ChevronLeft, ChevronRight, 
@@ -10,12 +11,10 @@ import {
 import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
+import { useAdminSubscriptions, useAdminPlans, useAdminLibrarians } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminSubscriptions() {
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Search & Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,8 +25,6 @@ export default function AdminSubscriptions() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1, total: 0, from: null, to: null });
-  const [summary, setSummary] = useState({ total: 0, active: 0, expiring: 0, expired: 0, revenue: 0 });
 
   // Plans & Subscriptions Modal State
   const [plansModalOpen, setPlansModalOpen] = useState(false);
@@ -39,7 +36,6 @@ export default function AdminSubscriptions() {
   const [openMenuPlanId, setOpenMenuPlanId] = useState(null);
 
   // Librarian & Subscription Modals State
-  const [librarians, setLibrarians] = useState([]);
   const [addSubscriptionOpen, setAddSubscriptionOpen] = useState(false);
   const [editingSubscription, setEditingSubscription] = useState(null);
   const [cancelingSubscription, setCancelingSubscription] = useState(null);
@@ -50,59 +46,37 @@ export default function AdminSubscriptions() {
   const [actionError, setActionError] = useState('');
   const [formError, setFormError] = useState('');
 
-  // New/Edit Plan Form
-  const [planForm, setPlanForm] = useState({
-    name: '',
-    price: '',
-    duration_days: 30,
-    description: '',
-  });
+  // Query parameters
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    per_page: perPage,
+    search: searchQuery,
+    status: statusFilter,
+    plan: planFilter,
+    date: dateFilter,
+  }), [currentPage, perPage, searchQuery, statusFilter, planFilter, dateFilter]);
 
-  // New/Edit Subscription Form
-  const [subscriptionForm, setSubscriptionForm] = useState({
-    user_id: '',
-    plan_id: '',
-    start_date: new Date().toISOString().split('T')[0],
-    end_date: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-    status: 'active',
-  });
+  const { data: subRes, isLoading: loading, error: queryErr, refetch: loadData } = useAdminSubscriptions(queryParams);
+  const { data: planResData } = useAdminPlans();
+  const { data: libResData } = useAdminLibrarians({ per_page: -1 });
 
-  const loadData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const [subRes, planRes, libRes] = await Promise.all([
-        adminService.getSubscriptions({
-          page: currentPage,
-          per_page: perPage,
-          search: searchQuery,
-          status: statusFilter,
-          plan: planFilter,
-          date: dateFilter,
-        }),
-        adminService.getPlans(),
-        adminService.getLibrarians({ per_page: -1 }),
-      ]);
-      setSubscriptions(subRes.data || []);
-      setPlans(planRes.data || []);
-      setLibrarians(libRes.data || []);
-      setPagination(subRes.meta || pagination);
-      setSummary(subRes.summary || summary);
-      return subRes;
-    } catch {
-      setError('Failed to load subscription records.');
-    } finally {
-      setLoading(false);
+  const subscriptions = subRes?.data || [];
+  const plans = planResData?.data || planResData || [];
+  const librarians = libResData?.data || [];
+  const pagination = subRes?.meta || { current_page: currentPage, last_page: 1, total: 0, from: null, to: null };
+  const summary = subRes?.summary || { total: 0, active: 0, expiring: 0, expired: 0, revenue: 0 };
+  const error = queryErr ? 'Failed to load subscription records.' : null;
+
+  // Prefetch next page for 0ms instant pagination
+  useEffect(() => {
+    if (pagination.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['admin', 'subscriptions', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => adminService.getSubscriptions({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
     }
-  }, [currentPage, perPage, searchQuery, statusFilter, planFilter, dateFilter]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, statusFilter, planFilter, dateFilter]);
+  }, [currentPage, queryParams, pagination.last_page, queryClient]);
 
   // Derived Subscriptions with Expiry Checks
   const enrichedSubscriptions = useMemo(() => {
@@ -158,8 +132,7 @@ export default function AdminSubscriptions() {
       setAddPlanOpen(false);
       setEditingPlan(null);
       setPlanForm({ name: '', price: '', duration_days: 30, description: '' });
-      const planRes = await adminService.getPlans();
-      setPlans(planRes.data || []);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Failed to save subscription plan.');
     } finally {
@@ -182,8 +155,7 @@ export default function AdminSubscriptions() {
       setActionMessage(`New subscriptions stopped for "${stoppingPlan.name}". Existing subscribers remain active.`);
       setTimeout(() => setActionMessage(''), 3500);
       setStoppingPlan(null);
-      const planRes = await adminService.getPlans();
-      setPlans(planRes.data || []);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Failed to stop new subscriptions.');
     } finally {
@@ -204,8 +176,7 @@ export default function AdminSubscriptions() {
       });
       setActionMessage(`Plan "${plan.name}" re-opened for new subscriptions.`);
       setTimeout(() => setActionMessage(''), 3500);
-      const planRes = await adminService.getPlans();
-      setPlans(planRes.data || []);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Failed to re-open plan.');
     } finally {
@@ -220,8 +191,7 @@ export default function AdminSubscriptions() {
       await adminService.archivePlan(plan.id);
       setActionMessage(`Subscription plan "${plan.name}" archived.`);
       setTimeout(() => setActionMessage(''), 3500);
-      const planRes = await adminService.getPlans();
-      setPlans(planRes.data || []);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
     } catch (err) {
       setActionError(err?.response?.data?.message || 'Failed to archive plan.');
       setTimeout(() => setActionError(''), 3500);
@@ -240,8 +210,7 @@ export default function AdminSubscriptions() {
       setActionMessage('Subscription plan deleted successfully.');
       setTimeout(() => setActionMessage(''), 3500);
       setDeletingPlan(null);
-      const planRes = await adminService.getPlans();
-      setPlans(planRes.data || []);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
     } catch (err) {
       const msg = err?.response?.data?.message || 'This plan cannot be deleted because it is linked to existing subscriptions or payment history. Use Archive / Close instead.';
       setDeleteError(msg);
@@ -293,7 +262,8 @@ export default function AdminSubscriptions() {
       setTimeout(() => setActionMessage(''), 3500);
       setAddSubscriptionOpen(false);
       setEditingSubscription(null);
-      loadData();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Failed to save subscription.');
     } finally {
@@ -309,7 +279,8 @@ export default function AdminSubscriptions() {
       setActionMessage(`Subscription for "${cancelingSubscription.user?.name || 'Librarian'}" has been cancelled.`);
       setTimeout(() => setActionMessage(''), 3500);
       setCancelingSubscription(null);
-      loadData();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
     } catch (err) {
       setActionError(err?.response?.data?.message || 'Failed to cancel subscription.');
       setTimeout(() => setActionError(''), 3500);
@@ -326,7 +297,8 @@ export default function AdminSubscriptions() {
       setActionMessage('Subscription record deleted.');
       setTimeout(() => setActionMessage(''), 3500);
       setDeletingSubscription(null);
-      loadData();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
     } catch (err) {
       setActionError(err?.response?.data?.message || 'Cannot delete subscription with payment history. Please cancel instead.');
       setTimeout(() => setActionError(''), 3500);

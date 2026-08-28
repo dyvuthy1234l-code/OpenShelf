@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, AlertCircle, FileText, Download, Info } from 'lucide-react';
-import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS } from '../../constants/motionTokens';
+import { useLibrarianReports, useLibrarianCategories } from '../../hooks/queries/useLibrarianQueries';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import ReportFilters from '../../components/librarian/reports/ReportFilters';
@@ -15,48 +15,18 @@ import TopActiveMembers from '../../components/librarian/reports/TopActiveMember
 import PopularBooks from '../../components/librarian/reports/PopularBooks';
 
 export default function ReportsPage() {
-  const [rawReport, setRawReport] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [error, setError] = useState(null);
-
   // Date Range Preset Filter (default preset: 'month')
   const [preset, setPreset] = useState('month');
 
-  // Fetch static categories once on mount
-  useEffect(() => {
-    librarianService.getCategories()
-      .then((res) => setCategories(res.data || res.categories || []))
-      .catch(() => setCategories([]));
-  }, []);
+  const { data: reportRes, isLoading: repLoading, isFetching: isUpdating, error: repError, refetch } = useLibrarianReports({ date_range: preset });
+  const { data: catRes } = useLibrarianCategories();
 
-  // Fetch report data dynamically when preset changes
-  const fetchReportsData = useCallback(async (selectedPreset) => {
-    const currentPreset = selectedPreset || preset;
-    try {
-      if (rawReport) {
-        setIsUpdating(true);
-      } else {
-        setInitialLoading(true);
-      }
-      setError(null);
+  const rawReport = reportRes?.data || reportRes || null;
+  const categories = catRes?.data || catRes || [];
+  const initialLoading = repLoading && !rawReport;
+  const error = repError ? 'Unable to load library reports & analytics.' : null;
 
-      const reportParams = { date_range: currentPreset };
-      const reportRes = await librarianService.getReports(reportParams);
-      setRawReport(reportRes.data || null);
-    } catch (err) {
-      setError('Unable to load library reports & analytics.');
-    } finally {
-      setInitialLoading(false);
-      setIsUpdating(false);
-    }
-  }, [preset, rawReport]);
-
-  useEffect(() => {
-    fetchReportsData(preset);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preset]);
+  const fetchReportsData = () => refetch();
 
   const handlePresetFilter = ({ preset: newPreset }) => {
     if (newPreset !== preset) {

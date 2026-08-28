@@ -1,13 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Plus, AlertCircle, CheckCircle2, RefreshCw,
   ChevronLeft, ChevronRight, Inbox
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import librarianService from '../../services/librarianService';
-import { queryClient } from '../../query/queryClient';
 import useDebounce from '../../hooks/useDebounce';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
+import { useLibrarianBooks, useLibrarianCategories } from '../../hooks/queries/useLibrarianQueries';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { ListSkeleton } from '../../components/librarian/common/Skeleton';
@@ -18,10 +19,7 @@ import BookForm from '../../components/librarian/books/BookForm';
 import DeleteBookModal from '../../components/librarian/books/DeleteBookModal';
 
 export default function BooksPage() {
-  const [books, setBooks] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Server Pagination & Filters State
   const [searchInput, setSearchInput] = useState('');
@@ -30,8 +28,6 @@ export default function BooksPage() {
   const [availability, setAvailability] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
-  const [lastPage, setLastPage] = useState(1);
-  const [total, setTotal] = useState(0);
 
   // Modals & Notifications
   const [showFormModal, setShowFormModal] = useState(false);
@@ -39,59 +35,41 @@ export default function BooksPage() {
   const [deletingBook, setDeletingBook] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Fetch Categories once on mount
+  // Query parameters
+  const queryParams = useMemo(() => {
+    const params = { page: currentPage, per_page: perPage };
+    if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+    if (categoryId) params.category_id = categoryId;
+    if (availability === 'available') params.available_only = true;
+    if (availability === 'out_of_stock' || availability === 'unavailable') params.available_only = false;
+    return params;
+  }, [currentPage, perPage, debouncedSearch, categoryId, availability]);
+
+  const { data: resData, isLoading: loading, error: queryErr, refetch: fetchBooks } = useLibrarianBooks(queryParams);
+  const { data: catRes } = useLibrarianCategories();
+
+  const books = resData?.data || [];
+  const meta = resData?.meta || {};
+  const total = meta.total ?? books.length;
+  const lastPage = meta.last_page ?? 1;
+  const categories = catRes?.data || catRes || [];
+  const error = queryErr ? 'Unable to load book catalogue. Please try again.' : null;
+
+  // Prefetch next page for 0ms instant pagination
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const catRes = await librarianService.getCategories();
-        setCategories(catRes.data || []);
-      } catch {
-        // Non-critical background load
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  // Server-side Fetch Books function
-  const fetchBooks = useCallback(async (page = 1, overrides = {}) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const s = overrides.search !== undefined ? overrides.search : debouncedSearch;
-      const c = overrides.categoryId !== undefined ? overrides.categoryId : categoryId;
-      const a = overrides.availability !== undefined ? overrides.availability : availability;
-
-      const params = {
-        page,
-        per_page: perPage,
-      };
-
-      if (s.trim()) params.search = s.trim();
-      if (c) params.category_id = c;
-      if (a === 'available') params.available_only = true;
-      if (a === 'out_of_stock' || a === 'unavailable') params.available_only = false;
-
-      const res = await librarianService.getBooks(params);
-
-      const booksData = res.data || [];
-      const meta = res.meta || {};
-
-      setBooks(booksData);
-      setTotal(meta.total ?? booksData.length);
-      setLastPage(meta.last_page ?? 1);
-      setCurrentPage(meta.current_page ?? page);
-    } catch (err) {
-      setError('Unable to load book catalogue. Please try again.');
-    } finally {
-      setLoading(false);
+    if (lastPage > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['librarian', 'books', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => librarianService.getBooks({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
     }
-  }, [debouncedSearch, categoryId, availability, perPage]);
+  }, [currentPage, queryParams, lastPage, queryClient]);
 
-  // Refetch when debounced search term changes
+  // Reset page when filters change
   useEffect(() => {
-    fetchBooks(1);
-  }, [debouncedSearch]);
+    setCurrentPage(1);
+  }, [debouncedSearch, categoryId, availability]);
 
   // Filter change handlers
   const handleSearchChange = (val) => {
@@ -102,13 +80,11 @@ export default function BooksPage() {
   const handleCategoryChange = (val) => {
     setCategoryId(val);
     setCurrentPage(1);
-    fetchBooks(1, { categoryId: val });
   };
 
   const handleAvailabilityChange = (val) => {
     setAvailability(val);
     setCurrentPage(1);
-    fetchBooks(1, { availability: val });
   };
 
   const handleClearFilters = () => {
@@ -116,13 +92,11 @@ export default function BooksPage() {
     setCategoryId('');
     setAvailability('all');
     setCurrentPage(1);
-    fetchBooks(1, { search: '', categoryId: '', availability: 'all' });
   };
 
   const handlePageChange = (page) => {
     if (page < 1 || page > lastPage || page === currentPage) return;
     setCurrentPage(page);
-    fetchBooks(page);
   };
 
   const hasActiveFilters = !!searchInput || !!categoryId || availability !== 'all';
@@ -166,8 +140,8 @@ export default function BooksPage() {
       await librarianService.updateBook(id, formData);
       setSuccessMessage('Book updated successfully.');
       setShowFormModal(false);
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'books'] });
       queryClient.invalidateQueries({ queryKey: ['books'] });
-      await fetchBooks(currentPage);
     } else {
       // Add
       await librarianService.createBook(formData);
@@ -177,8 +151,8 @@ export default function BooksPage() {
       setCategoryId('');
       setAvailability('all');
       setCurrentPage(1);
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'books'] });
       queryClient.invalidateQueries({ queryKey: ['books'] });
-      await fetchBooks(1, { search: '', categoryId: '', availability: 'all' });
     }
   };
 
@@ -186,12 +160,13 @@ export default function BooksPage() {
     await librarianService.deleteBook(id);
     setDeletingBook(null);
     setSuccessMessage('Book status updated to inactive.');
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'books'] });
     queryClient.invalidateQueries({ queryKey: ['books'] });
 
     // If deleting last item on current page (> 1), step back to previous page
-    const targetPage = (books.length === 1 && currentPage > 1) ? currentPage - 1 : currentPage;
-    setCurrentPage(targetPage);
-    await fetchBooks(targetPage);
+    if (books.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   return (

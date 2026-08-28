@@ -1,8 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { RefreshCw, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
-import librarianService from '../../services/librarianService';
+import { 
+  useMyLibrary, 
+  useLibrarianReports, 
+  useLibrarianCategories, 
+  useLibrarianMembers 
+} from '../../hooks/queries/useLibrarianQueries';
 
 import DashboardHeader from '../../components/librarian/DashboardHeader';
 import AnalyticsKpiGrid from '../../components/librarian/AnalyticsKpiGrid';
@@ -14,151 +19,36 @@ import CategoryOverviewChart from '../../components/librarian/CategoryOverviewCh
 export default function Dashboard() {
   const { user } = useAuth();
 
-  const [library, setLibrary] = useState(null);
-  const [reports, setReports] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [memberSummary, setMemberSummary] = useState({
-    total_members: 0,
-  });
-  const [recentRequests, setRecentRequests] = useState([]);
-
   const [dateRange, setDateRange] = useState({
     startDate: '',
     endDate: '',
     preset: 'all',
   });
 
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: libRes, refetch: refetchLib } = useMyLibrary();
+  const library = libRes?.data || libRes?.library || null;
 
-  const fetchDashboardData = useCallback(
-    async (isSilent = false) => {
-      try {
-        if (!isSilent) {
-          setInitialLoading(true);
-        }
+  const reportParams = useMemo(() => {
+    const params = {};
+    if (dateRange.startDate) params.start_date = dateRange.startDate;
+    if (dateRange.endDate) params.end_date = dateRange.endDate;
+    return params;
+  }, [dateRange.startDate, dateRange.endDate]);
 
-        setError(null);
+  const { data: repRes, isLoading: repLoading, error: repError, refetch: refetchRep } = useLibrarianReports(reportParams);
+  const { data: catRes } = useLibrarianCategories();
+  const { data: memRes } = useLibrarianMembers({ per_page: 1 });
 
-        const libRes = await librarianService.getMyLibrary();
-        const myLib = libRes.data || libRes.library || null;
+  const reports = repRes?.data || repRes || null;
+  const categories = catRes?.data || catRes || [];
+  const memberSummary = memRes?.summary || { total_members: 0, active_borrowers: 0, overdue_borrowers: 0 };
+  const initialLoading = repLoading && !reports;
+  const error = repError ? 'Unable to load analytics dashboard data. Please try again.' : null;
 
-        setLibrary(myLib);
-
-        if (myLib) {
-          const [repRes, catRes, memRes, reqRes] =
-            await Promise.allSettled([
-              librarianService.getReports({}),
-              librarianService.getCategories(),
-              librarianService.getMembers(),
-              librarianService.getBorrowings({
-                per_page: 5,
-                status: 'pending',
-              }),
-            ]);
-
-          if (repRes.status === 'fulfilled') {
-            setReports(repRes.value?.data || null);
-          }
-
-          if (catRes.status === 'fulfilled') {
-            setCategories(catRes.value?.data || []);
-          }
-
-          if (
-            memRes.status === 'fulfilled' &&
-            memRes.value?.summary
-          ) {
-            setMemberSummary(memRes.value.summary);
-          }
-
-          let reqs = [];
-
-          if (
-            reqRes.status === 'fulfilled' &&
-            Array.isArray(reqRes.value?.data) &&
-            reqRes.value.data.length > 0
-          ) {
-            reqs = reqRes.value.data;
-          } else if (
-            repRes.status === 'fulfilled' &&
-            Array.isArray(
-              repRes.value?.data?.borrowing_history
-            )
-          ) {
-            reqs =
-              repRes.value.data.borrowing_history.slice(0, 5);
-          }
-
-          setRecentRequests(reqs);
-        }
-      } catch (err) {
-        setError(
-          'Unable to load analytics dashboard data. Please try again.'
-        );
-      } finally {
-        if (!isSilent) {
-          setInitialLoading(false);
-        }
-      }
-    },
-    []
-  );
-
-  // Initial load
-  useEffect(() => {
-    fetchDashboardData(false);
-  }, [fetchDashboardData]);
-
-  // Background refetch when date range changes
-  useEffect(() => {
-    if (initialLoading || !library) return;
-
-    let isMounted = true;
-
-    const updateReports = async () => {
-      try {
-        const reportParams = {};
-
-        if (dateRange.startDate) {
-          reportParams.start_date = dateRange.startDate;
-        }
-
-        if (dateRange.endDate) {
-          reportParams.end_date = dateRange.endDate;
-        }
-
-        const repRes =
-          await librarianService.getReports(reportParams);
-
-        if (isMounted && repRes?.data) {
-          setReports(repRes.data);
-
-          if (
-            Array.isArray(repRes.data.borrowing_history) &&
-            repRes.data.borrowing_history.length > 0
-          ) {
-            setRecentRequests(
-              repRes.data.borrowing_history.slice(0, 5)
-            );
-          }
-        }
-      } catch {
-        // Non-critical fallback
-      }
-    };
-
-    updateReports();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [
-    dateRange.startDate,
-    dateRange.endDate,
-    library,
-    initialLoading,
-  ]);
+  const fetchDashboardData = () => {
+    refetchLib();
+    refetchRep();
+  };
 
   const handleDateRangeChange = ({
     startDate,

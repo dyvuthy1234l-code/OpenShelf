@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Users, CheckCircle2, BookOpen, XCircle, Search,
   RotateCcw, Eye, ChevronLeft, ChevronRight, X,
@@ -9,12 +10,10 @@ import {
 import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
+import { useAdminMembers, useAdminLibraries } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminMembers() {
-  const [members, setMembers] = useState([]);
-  const [libraries, setLibraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
   const [actionMessage, setActionMessage] = useState('');
 
   // Search & Filters
@@ -26,47 +25,40 @@ export default function AdminMembers() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1, total: 0, from: null, to: null });
-  const [summary, setSummary] = useState({ total: 0, active: 0, with_borrowings: 0, inactive: 0 });
 
   // Status Action Modal
   const [statusModal, setStatusModal] = useState({ open: false, type: '', member: null });
   const [actionLoading, setActionLoading] = useState(false);
 
-  const loadData = useCallback(async () => {
-    try {
-      if (members.length === 0) setLoading(true);
-      setError(null);
-      const [membersRes, libListRes] = await Promise.all([
-        adminService.getMembers({
-          page: currentPage,
-          per_page: perPage,
-          search: searchQuery,
-          status: statusFilter,
-          library: libraryFilter,
-          borrowing: borrowFilter,
-        }),
-        adminService.getLibraries({ per_page: -1 }),
-      ]);
-      setMembers(membersRes.data || []);
-      setLibraries(libListRes.data || []);
-      setPagination(membersRes.meta || pagination);
-      setSummary(membersRes.summary || summary);
-      return membersRes;
-    } catch {
-      setError('Failed to load member records.');
-    } finally {
-      setLoading(false);
+  // Query parameters
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    per_page: perPage,
+    search: searchQuery,
+    status: statusFilter,
+    library: libraryFilter,
+    borrowing: borrowFilter,
+  }), [currentPage, perPage, searchQuery, statusFilter, libraryFilter, borrowFilter]);
+
+  const { data: membersRes, isLoading: loading, error: queryErr, refetch: loadData } = useAdminMembers(queryParams);
+  const { data: libListRes } = useAdminLibraries({ per_page: -1 });
+
+  const members = membersRes?.data || [];
+  const libraries = libListRes?.data || [];
+  const pagination = membersRes?.meta || { current_page: currentPage, last_page: 1, total: 0, from: null, to: null };
+  const summary = membersRes?.summary || { total: 0, active: 0, with_borrowings: 0, inactive: 0 };
+  const error = queryErr ? 'Failed to load member records.' : null;
+
+  // Prefetch next page for 0ms instant pagination
+  useEffect(() => {
+    if (pagination.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['admin', 'members', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => adminService.getMembers({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
     }
-  }, [currentPage, perPage, searchQuery, statusFilter, libraryFilter, borrowFilter]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, statusFilter, libraryFilter, borrowFilter]);
+  }, [currentPage, queryParams, pagination.last_page, queryClient]);
 
   const filteredMembers = members;
   const paginatedMembers = members;
@@ -87,8 +79,8 @@ export default function AdminMembers() {
     try {
       setActionLoading(true);
       await adminService.updateUserStatus(memberId, newStatus);
-      const refreshed = await loadData();
-      if (!(refreshed?.data || []).length && currentPage > 1) setCurrentPage((page) => page - 1);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'members'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
       setActionMessage(`Member account status updated to ${newStatus.toUpperCase()}.`);
       setTimeout(() => setActionMessage(''), 3500);
       setStatusModal({ open: false, type: '', member: null });

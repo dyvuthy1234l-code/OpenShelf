@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ShieldCheck, CheckCircle2, XCircle, AlertCircle, Search,
   RotateCcw, Plus, Eye, Edit2, X, ChevronLeft, ChevronRight,
@@ -9,12 +10,10 @@ import {
 import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
+import { useAdminLibrarians, useAdminLibraries } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminLibrarians() {
-  const [librarians, setLibrarians] = useState([]);
-  const [libraries, setLibraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
   const [actionMessage, setActionMessage] = useState('');
   const [actionError, setActionError] = useState('');
 
@@ -26,8 +25,6 @@ export default function AdminLibrarians() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1, total: 0, from: null, to: null });
-  const [summary, setSummary] = useState({ total: 0, active: 0, inactive: 0, unassigned: 0 });
 
   // Modals
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -35,6 +32,35 @@ export default function AdminLibrarians() {
   const [selectedLibrarian, setSelectedLibrarian] = useState(null);
   const [statusModal, setStatusModal] = useState({ open: false, type: '', librarian: null });
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Query parameters
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    per_page: perPage,
+    search: searchQuery,
+    status: statusFilter,
+    library: libraryFilter,
+  }), [currentPage, perPage, searchQuery, statusFilter, libraryFilter]);
+
+  const { data: libRes, isLoading: loading, error: queryErr, refetch: loadData } = useAdminLibrarians(queryParams);
+  const { data: libListRes } = useAdminLibraries({ per_page: -1 });
+
+  const librarians = libRes?.data || [];
+  const libraries = libListRes?.data || [];
+  const pagination = libRes?.meta || { current_page: currentPage, last_page: 1, total: 0, from: null, to: null };
+  const summary = libRes?.summary || { total: 0, active: 0, inactive: 0, unassigned: 0 };
+  const error = queryErr ? 'Failed to load librarian directory.' : null;
+
+  // Prefetch next page for 0ms instant pagination
+  useEffect(() => {
+    if (pagination.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['admin', 'librarians', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => adminService.getLibrarians({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
+    }
+  }, [currentPage, queryParams, pagination.last_page, queryClient]);
 
   // Add Librarian Form
   const [newLib, setNewLib] = useState({
@@ -55,40 +81,6 @@ export default function AdminLibrarians() {
     status: 'active',
   });
 
-  const loadData = useCallback(async () => {
-    try {
-      if (librarians.length === 0) setLoading(true);
-      setError(null);
-      const [libRes, libListRes] = await Promise.all([
-        adminService.getLibrarians({
-          page: currentPage,
-          per_page: perPage,
-          search: searchQuery,
-          status: statusFilter,
-          library: libraryFilter,
-        }),
-        adminService.getLibraries({ per_page: -1 }),
-      ]);
-      setLibrarians(libRes.data || []);
-      setLibraries(libListRes.data || []);
-      setPagination(libRes.meta || pagination);
-      setSummary(libRes.summary || summary);
-      return libRes;
-    } catch {
-      setError('Failed to load librarian directory.');
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, perPage, searchQuery, statusFilter, libraryFilter]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, statusFilter, libraryFilter]);
-
   const filteredLibrarians = librarians;
   const paginatedLibrarians = librarians;
   const totalItems = pagination.total || 0;
@@ -107,8 +99,8 @@ export default function AdminLibrarians() {
     try {
       setActionLoading(true);
       await adminService.updateUserStatus(librarianId, newStatus);
-      const refreshed = await loadData();
-      if (!(refreshed?.data || []).length && currentPage > 1) setCurrentPage((page) => page - 1);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'librarians'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
       setActionMessage(`Librarian status updated to ${newStatus.toUpperCase()}.`);
       setTimeout(() => setActionMessage(''), 3500);
       setStatusModal({ open: false, type: '', librarian: null });
@@ -132,8 +124,9 @@ export default function AdminLibrarians() {
 
     try {
       setActionLoading(true);
-      const res = await adminService.createLibrarian(newLib);
-      await loadData();
+      await adminService.createLibrarian(newLib);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'librarians'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
       setActionMessage('Librarian account created successfully.');
       setTimeout(() => setActionMessage(''), 3500);
       setAddModalOpen(false);

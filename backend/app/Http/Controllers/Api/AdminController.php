@@ -113,42 +113,37 @@ class AdminController extends Controller
                     'Borrowings' => $borrows,
                 ];
             })->values();
-        } elseif ($chartRange === 'quarter') {
-            // Last 3 months breakdown
-            $activityTrend = collect(range(2, 0))->map(function ($i) {
-                $date = Carbon::now()->subMonths($i);
-                $year = $date->year;
-                $month = $date->month;
-                $monthName = $date->format('M');
-
-                $newLibs = Library::whereYear('created_at', $year)->whereMonth('created_at', $month)->count();
-                $newMebs = User::where('role', 'member')->whereYear('created_at', $year)->whereMonth('created_at', $month)->count();
-                $borrows = Borrowing::whereYear('created_at', $year)->whereMonth('created_at', $month)->count();
-
-                return [
-                    'month' => $monthName,
-                    'Libraries' => $newLibs,
-                    'Members' => $newMebs,
-                    'Borrowings' => $borrows,
-                ];
-            })->values();
         } else {
-            // 'year' or default: 6 months trend
-            $activityTrend = collect(range(5, 0))->map(function ($i) {
+            $monthCount = $chartRange === 'quarter' ? 3 : 6;
+            $since = Carbon::now()->subMonths($monthCount - 1)->startOfMonth();
+
+            $libCounts = Library::where('created_at', '>=', $since)
+                ->selectRaw('YEAR(created_at) as y, MONTH(created_at) as m, count(*) as total')
+                ->groupBy('y', 'm')
+                ->get()
+                ->keyBy(fn ($r) => $r->y . '-' . $r->m);
+
+            $memberCounts = User::where('role', 'member')
+                ->where('created_at', '>=', $since)
+                ->selectRaw('YEAR(created_at) as y, MONTH(created_at) as m, count(*) as total')
+                ->groupBy('y', 'm')
+                ->get()
+                ->keyBy(fn ($r) => $r->y . '-' . $r->m);
+
+            $borrowCounts = Borrowing::where('created_at', '>=', $since)
+                ->selectRaw('YEAR(created_at) as y, MONTH(created_at) as m, count(*) as total')
+                ->groupBy('y', 'm')
+                ->get()
+                ->keyBy(fn ($r) => $r->y . '-' . $r->m);
+
+            $activityTrend = collect(range($monthCount - 1, 0))->map(function ($i) use ($libCounts, $memberCounts, $borrowCounts) {
                 $date = Carbon::now()->subMonths($i);
-                $year = $date->year;
-                $month = $date->month;
-                $monthName = $date->format('M');
-
-                $newLibs = Library::whereYear('created_at', $year)->whereMonth('created_at', $month)->count();
-                $newMebs = User::where('role', 'member')->whereYear('created_at', $year)->whereMonth('created_at', $month)->count();
-                $borrows = Borrowing::whereYear('created_at', $year)->whereMonth('created_at', $month)->count();
-
+                $key = $date->year . '-' . $date->month;
                 return [
-                    'month' => $monthName,
-                    'Libraries' => $newLibs,
-                    'Members' => $newMebs,
-                    'Borrowings' => $borrows,
+                    'month' => $date->format('M'),
+                    'Libraries' => (int) ($libCounts->get($key)->total ?? 0),
+                    'Members' => (int) ($memberCounts->get($key)->total ?? 0),
+                    'Borrowings' => (int) ($borrowCounts->get($key)->total ?? 0),
                 ];
             })->values();
         }
@@ -594,13 +589,35 @@ class AdminController extends Controller
         })
         ->latest();
 
-        $summarySubscriptions = Subscription::with(['payments:id,subscription_id,amount,status', 'plan:id,price'])->get();
+        $today = Carbon::today()->toDateString();
+        $expiringDate = Carbon::today()->addDays(7)->toDateString();
+
+        $totalCount = Subscription::count();
+        $expiringCount = Subscription::where('status', 'active')
+            ->whereNotNull('end_date')
+            ->whereBetween('end_date', [$today, $expiringDate])
+            ->count();
+        $activeCount = Subscription::where('status', 'active')
+            ->where(function ($q) use ($expiringDate) {
+                $q->whereNull('end_date')
+                  ->orWhere('end_date', '>', $expiringDate);
+            })->count();
+        $expiredCount = Subscription::where(function ($q) use ($today) {
+            $q->whereIn('status', ['expired', 'cancelled'])
+              ->orWhere(function ($active) use ($today) {
+                  $active->where('status', 'active')
+                         ->whereNotNull('end_date')
+                         ->where('end_date', '<', $today);
+              });
+        })->count();
+        $revenue = (float) Payment::whereIn('status', ['paid', 'success', 'completed'])->whereNotNull('subscription_id')->sum('amount');
+
         $summary = [
-            'total' => $summarySubscriptions->count(),
-            'active' => $summarySubscriptions->filter(fn ($s) => $this->subscriptionDisplayStatus($s) === 'active')->count(),
-            'expiring' => $summarySubscriptions->filter(fn ($s) => $this->subscriptionDisplayStatus($s) === 'expiring_soon')->count(),
-            'expired' => $summarySubscriptions->filter(fn ($s) => in_array($this->subscriptionDisplayStatus($s), ['expired', 'cancelled']))->count(),
-            'revenue' => round((float) Payment::whereIn('status', ['paid', 'success', 'completed'])->sum('amount'), 2),
+            'total' => $totalCount,
+            'active' => $activeCount,
+            'expiring' => $expiringCount,
+            'expired' => $expiredCount,
+            'revenue' => round($revenue, 2),
         ];
 
         $paginator = $query->paginate($this->perPage($request));
@@ -789,16 +806,27 @@ class AdminController extends Controller
             })->filter()->values();
         }
 
-        $revenueTrend = collect(range(5, 0))->map(function ($i) {
-            $date = now()->subMonths($i);
-            $subRev = (float) Payment::whereIn('status', ['paid', 'success', 'completed'])
-                ->whereMonth(DB::raw('COALESCE(paid_at, created_at)'), $date->month)
-                ->whereYear(DB::raw('COALESCE(paid_at, created_at)'), $date->year)
-                ->sum('amount');
-            $fineRev = (float) Borrowing::where('fine_status', 'paid')
-                ->whereMonth(DB::raw('COALESCE(updated_at, created_at)'), $date->month)
-                ->whereYear(DB::raw('COALESCE(updated_at, created_at)'), $date->year)
-                ->sum('fine_amount');
+        $sixMonthsAgo = Carbon::now()->subMonths(5)->startOfMonth();
+
+        $subSums = Payment::whereIn('status', ['paid', 'success', 'completed'])
+            ->where(DB::raw('COALESCE(paid_at, created_at)'), '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(COALESCE(paid_at, created_at)) as y, MONTH(COALESCE(paid_at, created_at)) as m, sum(amount) as total')
+            ->groupBy('y', 'm')
+            ->get()
+            ->keyBy(fn ($r) => $r->y . '-' . $r->m);
+
+        $fineSums = Borrowing::where('fine_status', 'paid')
+            ->where(DB::raw('COALESCE(updated_at, created_at)'), '>=', $sixMonthsAgo)
+            ->selectRaw('YEAR(COALESCE(updated_at, created_at)) as y, MONTH(COALESCE(updated_at, created_at)) as m, sum(fine_amount) as total')
+            ->groupBy('y', 'm')
+            ->get()
+            ->keyBy(fn ($r) => $r->y . '-' . $r->m);
+
+        $revenueTrend = collect(range(5, 0))->map(function ($i) use ($subSums, $fineSums) {
+            $date = Carbon::now()->subMonths($i);
+            $key = $date->year . '-' . $date->month;
+            $subRev = (float) ($subSums->get($key)->total ?? 0);
+            $fineRev = (float) ($fineSums->get($key)->total ?? 0);
             return [
                 'month' => $date->format('M'),
                 'Subscriptions' => round($subRev, 2),

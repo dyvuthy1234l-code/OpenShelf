@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -12,10 +12,33 @@ import { SIDEBAR_SLIDE_VARIANTS, BACKDROP_MOTION_VARIANTS, DROPDOWN_MOTION_VARIA
 import { useNotifications } from '../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../hooks/queries/useNotificationMutations';
 
+// Prefetch all admin page chunks on layout mount so navigation is instant
+const ADMIN_CHUNKS = [
+  () => import('../pages/admin/AdminDashboard'),
+  () => import('../pages/admin/AdminLibraries'),
+  () => import('../pages/admin/AdminLibraryDetails'),
+  () => import('../pages/admin/AdminLibrarians'),
+  () => import('../pages/admin/AdminLibrarianDetails'),
+  () => import('../pages/admin/AdminMembers'),
+  () => import('../pages/admin/AdminMemberDetails'),
+  () => import('../pages/admin/AdminSubscriptions'),
+  () => import('../pages/admin/AdminSubscriptionDetails'),
+  () => import('../pages/admin/AdminPayments'),
+  () => import('../pages/admin/AdminPaymentDetails'),
+  () => import('../pages/admin/AdminNotifications'),
+  () => import('../pages/admin/AdminProfile'),
+];
+
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Prefetch all admin route chunks in background after initial paint
+  useEffect(() => {
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
+    idle(() => { ADMIN_CHUNKS.forEach((load) => load().catch(() => {})); });
+  }, []);
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -389,20 +412,9 @@ export default function AdminLayout() {
 
           {/* MAIN WORKSPACE CONTENT VIEWPORT */}
           <main className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col min-h-0 h-full w-full">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="flex-1 flex flex-col min-h-0 h-full w-full"
-              >
-                <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
-                  <Outlet />
-                </React.Suspense>
-              </motion.div>
-            </AnimatePresence>
+            <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
+              <Outlet />
+            </React.Suspense>
           </main>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
@@ -7,44 +7,22 @@ import {
   RefreshCw, AlertCircle, CheckCircle2, ArrowRight, Activity, 
   AlertTriangle, ChevronRight, TrendingUp, Sparkles 
 } from 'lucide-react';
-import adminService from '../../services/adminService';
+import { useAdminDashboard } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminDashboard() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   // Global Filter State
   const [headerRange, setHeaderRange] = useState('all');
 
-  const fetchDashboardData = useCallback(async (isSilent = false) => {
-    try {
-      if (!isSilent) setLoading(true);
-      setError(null);
-      // Map headerRange to backend chart_range dynamically
-      const chartRangeParam = headerRange === 'month' ? 'month' : 'year';
-      const res = await adminService.getDashboard({ range: headerRange, chart_range: chartRangeParam });
-      setData(res.data || null);
-    } catch (err) {
-      if (!isSilent) setError('Unable to load admin dashboard statistics.');
-    } finally {
-      if (!isSilent) setLoading(false);
-    }
-  }, [headerRange]);
+  const chartRangeParam = headerRange === 'month' ? 'month' : 'year';
+  const { data: rawRes, isLoading: loading, error: queryError, refetch } = useAdminDashboard({
+    range: headerRange,
+    chart_range: chartRangeParam,
+  });
 
-  useEffect(() => {
-    fetchDashboardData(false);
+  const data = rawRes?.data || rawRes || null;
+  const error = queryError ? 'Unable to load admin dashboard statistics.' : null;
 
-    // Background polling every 30s
-    const interval = setInterval(() => fetchDashboardData(true), 30000);
-    const handleFocus = () => fetchDashboardData(true);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [fetchDashboardData]);
+  const fetchDashboardData = () => refetch();
 
   // Derived Trend Data directly from backend activity_trend
   const trendData = data?.activity_trend || [];

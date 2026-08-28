@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   DollarSign, CreditCard, AlertCircle, CheckCircle2, Clock,
   TrendingUp, Download, Search, RotateCcw, Eye, ChevronLeft,
@@ -9,12 +10,10 @@ import {
 import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
+import { useAdminPayments, useAdminLibraries } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminPayments() {
-  const [payments, setPayments] = useState([]);
-  const [libraries, setLibraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,45 +25,38 @@ export default function AdminPayments() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1, total: 0, from: null, to: null });
-  const [summary, setSummary] = useState({ total_revenue: 0, subscription_revenue: 0, fine_revenue: 0, pending_count: 0, pending_total: 0 });
 
-  const loadData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const [payRes, libRes] = await Promise.all([
-        adminService.getPayments({
-          page: currentPage,
-          per_page: perPage,
-          search: searchQuery,
-          type: typeFilter,
-          status: statusFilter,
-          library: libraryFilter,
-          date: dateFilter,
-        }),
-        adminService.getLibraries({ per_page: -1 }),
-      ]);
-      const data = payRes.data || {};
-      setPayments(data.payments || []);
-      setLibraries(libRes.data || []);
-      setPagination(payRes.meta || pagination);
-      setSummary(payRes.summary || summary);
-      return payRes;
-    } catch {
-      setError('Failed to load financial records.');
-    } finally {
-      setLoading(false);
+  // Query parameters
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    per_page: perPage,
+    search: searchQuery,
+    type: typeFilter,
+    status: statusFilter,
+    library: libraryFilter,
+    date: dateFilter,
+  }), [currentPage, perPage, searchQuery, typeFilter, statusFilter, libraryFilter, dateFilter]);
+
+  const { data: payRes, isLoading: loading, error: queryErr, refetch: loadData } = useAdminPayments(queryParams);
+  const { data: libRes } = useAdminLibraries({ per_page: -1 });
+
+  const data = payRes?.data || {};
+  const payments = data.payments || payRes?.payments || [];
+  const libraries = libRes?.data || [];
+  const pagination = payRes?.meta || { current_page: currentPage, last_page: 1, total: 0, from: null, to: null };
+  const summary = payRes?.summary || { total_revenue: 0, subscription_revenue: 0, fine_revenue: 0, pending_count: 0, pending_total: 0 };
+  const error = queryErr ? 'Failed to load financial records.' : null;
+
+  // Prefetch next page for 0ms instant pagination
+  useEffect(() => {
+    if (pagination.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['admin', 'payments', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => adminService.getPayments({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
     }
-  }, [currentPage, perPage, searchQuery, typeFilter, statusFilter, libraryFilter, dateFilter]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, typeFilter, statusFilter, libraryFilter, dateFilter]);
+  }, [currentPage, queryParams, pagination.last_page, queryClient]);
 
   // Normalize the already-paginated server response into the table shape.
   const allPayments = useMemo(() => {

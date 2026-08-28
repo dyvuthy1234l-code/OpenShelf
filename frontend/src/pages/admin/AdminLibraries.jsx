@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Building2, CheckCircle2, Clock, XCircle, Search, Filter,
   RotateCcw, Plus, MoreVertical, Eye, Check, X, ShieldAlert,
@@ -10,11 +11,10 @@ import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import AdminPagination from '../../components/admin/AdminPagination';
 import ErrorState from '../../components/public/ErrorState';
+import { useAdminLibraries } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminLibraries() {
-  const [libraries, setLibraries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
   const [actionMessage, setActionMessage] = useState('');
   const [actionError, setActionError] = useState('');
 
@@ -26,8 +26,6 @@ export default function AdminLibraries() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1, total: 0, from: null, to: null });
-  const [summary, setSummary] = useState({ total: 0, active: 0, pending: 0, inactive: 0 });
 
   // Modals & Drawers State
   const [selectedLibrary, setSelectedLibrary] = useState(null);
@@ -36,6 +34,33 @@ export default function AdminLibraries() {
   const [actionModal, setActionModal] = useState({ open: false, type: '', library: null });
   const [rejectionReason, setRejectionReason] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Query parameters
+  const queryParams = useMemo(() => ({
+    page: currentPage,
+    per_page: perPage,
+    search: searchQuery,
+    status: statusFilter,
+    subscription: subFilter,
+  }), [currentPage, perPage, searchQuery, statusFilter, subFilter]);
+
+  const { data: resData, isLoading: loading, error: queryErr, refetch: loadLibraries } = useAdminLibraries(queryParams);
+
+  const libraries = resData?.data || [];
+  const pagination = resData?.meta || { current_page: currentPage, last_page: 1, total: 0, from: null, to: null };
+  const summary = resData?.summary || { total: 0, active: 0, pending: 0, inactive: 0 };
+  const error = queryErr ? 'Failed to load library network entries.' : null;
+
+  // Prefetch next page for 0ms instant pagination
+  useEffect(() => {
+    if (pagination.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['admin', 'libraries', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => adminService.getLibraries({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
+    }
+  }, [currentPage, queryParams, pagination.last_page, queryClient]);
 
   // Add Library Form
   const [newLib, setNewLib] = useState({
@@ -47,36 +72,6 @@ export default function AdminLibraries() {
     email: '',
     status: 'active',
   });
-
-  const loadLibraries = useCallback(async () => {
-    try {
-      if (libraries.length === 0) setLoading(true);
-      setError(null);
-      const res = await adminService.getLibraries({
-        page: currentPage,
-        per_page: perPage,
-        search: searchQuery,
-        status: statusFilter,
-        subscription: subFilter,
-      });
-      setLibraries(res.data || []);
-      setPagination(res.meta || pagination);
-      setSummary(res.summary || summary);
-      return res;
-    } catch {
-      setError('Failed to load library network entries.');
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, perPage, searchQuery, statusFilter, subFilter]);
-
-  useEffect(() => {
-    loadLibraries();
-  }, [loadLibraries]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, statusFilter, subFilter]);
 
   const filteredLibraries = libraries;
   const paginatedLibraries = libraries;
@@ -96,8 +91,8 @@ export default function AdminLibraries() {
     try {
       setActionLoading(true);
       await adminService.updateLibraryStatus(libraryId, newStatus, reason);
-      const refreshed = await loadLibraries();
-      if (!(refreshed?.data || []).length && currentPage > 1) setCurrentPage((page) => page - 1);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'libraries'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
       setActionMessage(`Library status successfully updated to ${newStatus.toUpperCase()}.`);
       setTimeout(() => setActionMessage(''), 3500);
       setActionModal({ open: false, type: '', library: null });
@@ -117,7 +112,8 @@ export default function AdminLibraries() {
     try {
       setActionLoading(true);
       await adminService.createLibrary(newLib);
-      await loadLibraries();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'libraries'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
       setActionMessage('New library branch created successfully.');
       setTimeout(() => setActionMessage(''), 3500);
       setAddModalOpen(false);
@@ -139,7 +135,8 @@ export default function AdminLibraries() {
     try {
       setActionLoading(true);
       await adminService.updateLibrary(editLib.id, editLib);
-      await loadLibraries();
+      queryClient.invalidateQueries({ queryKey: ['admin', 'libraries'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
       setActionMessage('Library branch details updated successfully.');
       setTimeout(() => setActionMessage(''), 3500);
       setEditModalOpen(false);

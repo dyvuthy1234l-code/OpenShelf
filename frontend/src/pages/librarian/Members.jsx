@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Users, AlertCircle, RefreshCw, RotateCcw,
   ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
+import { useLibrarianMembers } from '../../hooks/queries/useLibrarianQueries';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { ListSkeleton } from '../../components/librarian/common/Skeleton';
@@ -14,21 +16,17 @@ import MemberCard from '../../components/librarian/members/MemberCard';
 import MemberFilters from '../../components/librarian/members/MemberFilters';
 
 export default function MembersPage() {
-  const [members, setMembers] = useState([]);
-  const [summary, setSummary] = useState({ total_members: 0, active_borrowers: 0, overdue_borrowers: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Filters State
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: 5, total: 0 });
 
   const ITEMS_PER_PAGE = 5;
 
-  // 1. Debounce search input (350ms)
+  // Debounce search input (350ms)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -36,51 +34,39 @@ export default function MembersPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // 2. Automatically reset page to 1 when filters change
+  // Automatically reset page to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearch, filterStatus]);
 
-  // 3. Server-side fetch members
-  const fetchMembers = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const params = {
-        page: currentPage,
-        per_page: ITEMS_PER_PAGE,
-      };
-      if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
-      if (filterStatus && filterStatus !== 'all') params.filter = filterStatus;
-
-      const res = await librarianService.getMembers(params);
-      setMembers(res.data || []);
-      if (res.summary) setSummary(res.summary);
-
-      if (res.meta) {
-        setMeta(res.meta);
-      } else {
-        const total = res.data?.length || 0;
-        setMeta({ current_page: 1, last_page: 1, per_page: ITEMS_PER_PAGE, total });
-      }
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Session expired. Please log in again.');
-      } else if (err.response?.status === 403) {
-        setError('Access denied. You do not have permission to view members.');
-      } else if (err.response?.status === 422) {
-        setError(err.response?.data?.message || 'Invalid member query parameters.');
-      } else {
-        setError('Unable to load library member records from server.');
-      }
-    } finally {
-      setLoading(false);
-    }
+  // Query parameters
+  const queryParams = useMemo(() => {
+    const params = {
+      page: currentPage,
+      per_page: ITEMS_PER_PAGE,
+    };
+    if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+    if (filterStatus && filterStatus !== 'all') params.filter = filterStatus;
+    return params;
   }, [currentPage, debouncedSearch, filterStatus]);
 
+  const { data: resData, isLoading: loading, error: queryErr, refetch: fetchMembers } = useLibrarianMembers(queryParams);
+
+  const members = resData?.data || [];
+  const summary = resData?.summary || { total_members: 0, active_borrowers: 0, overdue_borrowers: 0 };
+  const meta = resData?.meta || { current_page: currentPage, last_page: 1, per_page: ITEMS_PER_PAGE, total: members.length };
+  const error = queryErr ? 'Unable to load library member records from server.' : null;
+
+  // Prefetch next page for 0ms instant pagination
   useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+    if (meta.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['librarian', 'members', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => librarianService.getMembers({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
+    }
+  }, [currentPage, queryParams, meta.last_page, queryClient]);
 
   const handleClearFilters = () => {
     setSearch('');

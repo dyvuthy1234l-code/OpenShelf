@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Inbox, CheckCircle2, AlertCircle, RefreshCw,
   ChevronLeft, ChevronRight, RotateCcw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import librarianService from '../../services/librarianService';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, MOBILE_GRID_VARIANTS, MOBILE_CARD_VARIANTS } from '../../constants/motionTokens';
+import { useLibrarianBorrowRequests } from '../../hooks/queries/useLibrarianQueries';
 
 import PageHeader from '../../components/librarian/common/PageHeader';
 import { ListSkeleton } from '../../components/librarian/common/Skeleton';
@@ -16,10 +18,7 @@ import ApproveModal from '../../components/librarian/borrowings/ApproveModal';
 import RejectModal from '../../components/librarian/borrowings/RejectModal';
 
 export default function BorrowRequestsPage() {
-  const [borrowings, setBorrowings] = useState([]);
-  const [meta, setMeta] = useState({ current_page: 1, last_page: 1, per_page: 5, total: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   // Filters State
   const [search, setSearch] = useState('');
@@ -34,7 +33,7 @@ export default function BorrowRequestsPage() {
 
   const ITEMS_PER_PAGE = 5;
 
-  // 1. Debounce search input (350ms)
+  // Debounce search input (350ms)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -42,70 +41,40 @@ export default function BorrowRequestsPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // 2. Automatically reset page to 1 when search or status changes
+  // Automatically reset page to 1 when search or status changes
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearch, status]);
 
-  // 3. Server-side fetch borrowings
-  const fetchBorrowRequests = useCallback(async (isSilent = false) => {
-    try {
-      if (!isSilent) setLoading(true);
-      setError(null);
-      const params = {
-        page: currentPage,
-        per_page: ITEMS_PER_PAGE,
-      };
-      if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
-      if (status) params.status = status;
-
-      const res = await librarianService.getBorrowings(params);
-      setBorrowings(res.data || []);
-      if (res.meta) {
-        setMeta(res.meta);
-      } else {
-        const total = res.data?.length || 0;
-        setMeta({
-          current_page: 1,
-          last_page: 1,
-          per_page: ITEMS_PER_PAGE,
-          total: total,
-        });
-      }
-    } catch (err) {
-      if (!isSilent) {
-        if (err.response?.status === 401) {
-          setError('Session expired. Please log in again.');
-        } else if (err.response?.status === 403) {
-          setError('Access denied. You do not have permission to view these borrowings.');
-        } else if (err.response?.status === 422) {
-          setError(err.response?.data?.message || 'Invalid request parameters.');
-        } else {
-          setError('Unable to load borrowing requests from server.');
-        }
-      }
-    } finally {
-      if (!isSilent) setLoading(false);
-    }
+  // Query parameters
+  const queryParams = useMemo(() => {
+    const params = { page: currentPage, per_page: ITEMS_PER_PAGE };
+    if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+    if (status) params.status = status;
+    return params;
   }, [currentPage, debouncedSearch, status]);
 
+  const { data: resData, isLoading: loading, error: queryErr, refetch: fetchBorrowRequests } = useLibrarianBorrowRequests(queryParams);
+
+  const borrowings = resData?.data || [];
+  const meta = resData?.meta || {
+    current_page: currentPage,
+    last_page: 1,
+    per_page: ITEMS_PER_PAGE,
+    total: borrowings.length,
+  };
+  const error = queryErr ? 'Unable to load borrowing requests from server.' : null;
+
+  // Prefetch next page for 0ms instant pagination
   useEffect(() => {
-    fetchBorrowRequests(false);
-
-    // Auto-refresh interval every 30 seconds
-    const interval = setInterval(() => {
-      fetchBorrowRequests(true);
-    }, 30000);
-
-    // Auto-refresh on window focus
-    const handleFocus = () => fetchBorrowRequests(true);
-    window.addEventListener('focus', handleFocus);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [fetchBorrowRequests]);
+    if (meta.last_page > currentPage) {
+      queryClient.prefetchQuery({
+        queryKey: ['librarian', 'borrow-requests', { ...queryParams, page: currentPage + 1 }],
+        queryFn: () => librarianService.getBorrowings({ ...queryParams, page: currentPage + 1 }),
+        staleTime: 1000 * 60 * 2,
+      });
+    }
+  }, [currentPage, queryParams, meta.last_page, queryClient]);
 
   const handleClearFilters = () => {
     setSearch('');
@@ -119,20 +88,24 @@ export default function BorrowRequestsPage() {
     await librarianService.approveBorrowing(id);
     setApprovingReq(null);
     setSuccessMessage('Borrowing request approved successfully.');
-    await fetchBorrowRequests();
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'borrow-requests'] });
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'reports'] });
   };
 
   const handleRejectSubmit = async (id, reason) => {
     await librarianService.rejectBorrowing(id, reason);
     setRejectingReq(null);
     setSuccessMessage('Borrowing request rejected.');
-    await fetchBorrowRequests();
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'borrow-requests'] });
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'reports'] });
   };
 
   const handlePickupConfirm = async (id) => {
     await librarianService.pickupBorrowing(id);
     setSuccessMessage('Book pickup confirmed. Loan is now active.');
-    await fetchBorrowRequests();
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'borrow-requests'] });
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'reports'] });
+    queryClient.invalidateQueries({ queryKey: ['librarian', 'returns'] });
   };
 
   const totalItems = meta.total ?? borrowings.length;
