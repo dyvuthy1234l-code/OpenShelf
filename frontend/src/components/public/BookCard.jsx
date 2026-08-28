@@ -90,10 +90,10 @@ export default function BookCard({ book, showDateAdded = false }) {
         )}
 
         {/* Hover overlay + quick action */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-navy-950/70 via-navy-950/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center pb-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-md px-3.5 py-1.5 text-xs font-bold text-navy-800 shadow-md">
-            <Eye className="w-3.5 h-3.5" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-navy-950/75 via-navy-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-md px-4 py-2 text-xs font-extrabold text-navy-900 shadow-lg border border-white/40">
+            <Eye className="w-4 h-4 text-gold-600" />
             View Details
           </span>
         </div>

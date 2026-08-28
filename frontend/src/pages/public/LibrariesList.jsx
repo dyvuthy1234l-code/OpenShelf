@@ -1,6 +1,6 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { 
-  Building2, Search, X, Sparkles, SlidersHorizontal, ArrowUpDown, RefreshCw, MapPin 
+  Building2, Search, X, Sparkles, SlidersHorizontal, ArrowUpDown, RefreshCw, MapPin, ChevronDown, Check 
 } from 'lucide-react';
 import { useLibraries } from '../../hooks/queries/useLibraries';
 import useDebounce from '../../hooks/useDebounce';
@@ -9,8 +9,236 @@ import FeaturedLibraryCard from '../../components/public/FeaturedLibraryCard';
 import AnimatedPagination from '../../components/common/AnimatedPagination';
 import ErrorState from '../../components/public/ErrorState';
 import LibrarySkeleton from '../../components/common/LibrarySkeleton';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
+
+const CAMBODIA_PROVINCES = [
+  { value: '', en: 'All Provinces', kh: 'ខេត្ត/ក្រុងទាំងអស់' },
+  { value: 'Phnom Penh', en: 'Phnom Penh', kh: 'ភ្នំពេញ' },
+  { value: 'Banteay Meanchey', en: 'Banteay Meanchey', kh: 'បន្ទាយមានជ័យ' },
+  { value: 'Battambang', en: 'Battambang', kh: 'បាត់ដំបង' },
+  { value: 'Kampong Cham', en: 'Kampong Cham', kh: 'កំពង់ចាម' },
+  { value: 'Kampong Chhnang', en: 'Kampong Chhnang', kh: 'កំពង់ឆ្នាំង' },
+  { value: 'Kampong Speu', en: 'Kampong Speu', kh: 'កំពង់ស្ពឺ' },
+  { value: 'Kampong Thom', en: 'Kampong Thom', kh: 'កំពង់ធំ' },
+  { value: 'Kampot', en: 'Kampot', kh: 'កំពត' },
+  { value: 'Kandal', en: 'Kandal', kh: 'កណ្តាល' },
+  { value: 'Kep', en: 'Kep', kh: 'កែប' },
+  { value: 'Koh Kong', en: 'Koh Kong', kh: 'កោះកុង' },
+  { value: 'Kratie', en: 'Kratie', kh: 'ក្រចេះ' },
+  { value: 'Mondulkiri', en: 'Mondulkiri', kh: 'មណ្ឌលគិរី' },
+  { value: 'Oddar Meanchey', en: 'Oddar Meanchey', kh: 'ឧត្តរមានជ័យ' },
+  { value: 'Pailin', en: 'Pailin', kh: 'ប៉ៃលិន' },
+  { value: 'Preah Sihanouk', en: 'Preah Sihanouk', kh: 'ព្រះសីហនុ' },
+  { value: 'Preah Vihear', en: 'Preah Vihear', kh: 'ព្រះវិហារ' },
+  { value: 'Prey Veng', en: 'Prey Veng', kh: 'ព្រៃវែង' },
+  { value: 'Pursat', en: 'Pursat', kh: 'ពោធិ៍សាត់' },
+  { value: 'Ratanakiri', en: 'Ratanakiri', kh: 'រតនគិរី' },
+  { value: 'Siem Reap', en: 'Siem Reap', kh: 'សៀមរាប' },
+  { value: 'Stung Treng', en: 'Stung Treng', kh: 'ស្ទឹងត្រែង' },
+  { value: 'Svay Rieng', en: 'Svay Rieng', kh: 'ស្វាយរៀង' },
+  { value: 'Takeo', en: 'Takeo', kh: 'តាកែវ' },
+  { value: 'Tboung Khmum', en: 'Tboung Khmum', kh: 'ត្បូងឃ្មុំ' },
+];
+
+function ProvinceDropdown({ selectedValue, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [filterQuery, setFilterQuery] = useState('');
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const selectedItem = CAMBODIA_PROVINCES.find((p) => p.value === selectedValue) || CAMBODIA_PROVINCES[0];
+
+  const filteredProvinces = useMemo(() => {
+    if (!filterQuery.trim()) return CAMBODIA_PROVINCES;
+    const q = filterQuery.toLowerCase().trim();
+    return CAMBODIA_PROVINCES.filter(
+      (p) => p.en.toLowerCase().includes(q) || p.kh.includes(q)
+    );
+  }, [filterQuery]);
+
+  return (
+    <div ref={dropdownRef} className="relative min-w-[200px] sm:min-w-[240px]">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`w-full h-10 pl-3.5 pr-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all duration-200 shadow-2xs ${
+          isOpen
+            ? 'bg-white border-gold-500 ring-2 ring-gold-500/20 text-navy-900'
+            : selectedValue
+            ? 'bg-gold-50/80 border-gold-300 text-navy-900 hover:bg-gold-100/60'
+            : 'bg-white border-brand-border/80 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+        }`}
+      >
+        <div className="flex items-center gap-2 truncate">
+          <MapPin className={`w-4 h-4 shrink-0 ${selectedValue ? 'text-gold-600' : 'text-slate-400'}`} />
+          <span className="truncate">
+            {selectedItem.value ? `${selectedItem.en} (${selectedItem.kh})` : 'All Provinces (ខេត្ត/ក្រុង)'}
+          </span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-gold-600' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="absolute right-0 top-12 z-50 w-72 sm:w-80 bg-white border border-brand-border/80 rounded-2xl shadow-2xl overflow-hidden p-2 space-y-2"
+          >
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search province in EN / ខ្មែរ..."
+                value={filterQuery}
+                onChange={(e) => setFilterQuery(e.target.value)}
+                autoFocus
+                className="w-full h-8.5 pl-8.5 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-gold-500 focus:bg-white transition-all"
+              />
+              {filterQuery && (
+                <button
+                  type="button"
+                  onClick={() => setFilterQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            <div className="max-h-60 overflow-y-auto space-y-0.5 pr-1 text-xs no-scrollbar">
+              {filteredProvinces.length === 0 ? (
+                <div className="p-4 text-center text-slate-400 font-medium">
+                  No province found matching "{filterQuery}"
+                </div>
+              ) : (
+                filteredProvinces.map((prov) => {
+                  const isSelected = selectedValue === prov.value;
+                  return (
+                    <button
+                      key={prov.value || 'all'}
+                      type="button"
+                      onClick={() => {
+                        onChange(prov.value);
+                        setIsOpen(false);
+                        setFilterQuery('');
+                      }}
+                      className={`w-full px-3 py-2 rounded-xl flex items-center justify-between text-left transition-colors font-medium cursor-pointer ${
+                        isSelected
+                          ? 'bg-navy-900 text-gold-400 font-bold'
+                          : 'text-slate-700 hover:bg-navy-50 hover:text-navy-900'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate">
+                        <span className="font-semibold">{prov.en}</span>
+                        {prov.kh && (
+                          <span className={`text-[11px] ${isSelected ? 'text-gold-300/80' : 'text-slate-400'}`}>
+                            ({prov.kh})
+                          </span>
+                        )}
+                      </div>
+                      {isSelected && <Check className="w-4 h-4 text-gold-400 shrink-0 ml-2" />}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+const SORT_OPTIONS = [
+  { value: 'newest', label: 'Default (Newest)' },
+  { value: 'highest_rated', label: 'Highest Rated First' },
+  { value: 'most_books', label: 'Most Books' },
+  { value: 'name', label: 'Name (A-Z)' },
+];
+
+function SortDropdown({ selectedValue, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const selectedOption = SORT_OPTIONS.find((o) => o.value === selectedValue) || SORT_OPTIONS[0];
+
+  return (
+    <div ref={dropdownRef} className="relative min-w-[170px] sm:min-w-[190px]">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`w-full h-10 pl-3.5 pr-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all duration-200 shadow-2xs cursor-pointer ${
+          isOpen
+            ? 'bg-white border-gold-500 ring-2 ring-gold-500/20 text-navy-900'
+            : 'bg-white border-brand-border/80 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+        }`}
+      >
+        <div className="flex items-center gap-2 truncate">
+          <ArrowUpDown className="w-4 h-4 text-gold-600 shrink-0" />
+          <span className="truncate">{selectedOption.label}</span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-gold-600' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="absolute right-0 top-12 z-50 w-52 bg-white border border-brand-border/80 rounded-2xl shadow-2xl overflow-hidden p-1.5 space-y-0.5"
+          >
+            {SORT_OPTIONS.map((opt) => {
+              const isSelected = selectedValue === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt.value);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full px-3 py-2 rounded-xl flex items-center justify-between text-left text-xs transition-colors font-semibold cursor-pointer ${
+                    isSelected
+                      ? 'bg-navy-900 text-gold-400 font-bold'
+                      : 'text-slate-700 hover:bg-navy-50 hover:text-navy-900'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {isSelected && <Check className="w-4 h-4 text-gold-400 shrink-0 ml-2" />}
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function LibrariesList() {
   const directoryRef = useRef(null);
@@ -19,7 +247,7 @@ export default function LibrariesList() {
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearch = useDebounce(searchInput, 300);
   const [selectedProvince, setSelectedProvince] = useState('');
-  const [sortBy, setSortBy] = useState('most_books');
+  const [sortBy, setSortBy] = useState('newest');
   const [page, setPage] = useState(1);
 
   // Query Hooks (Cached with TanStack Query + keepPreviousData)
@@ -90,6 +318,8 @@ export default function LibrariesList() {
         const countB = b.books_count ?? (b.books ? b.books.length : 0);
         return countB - countA;
       });
+    } else if (sortBy === 'highest_rated') {
+      list.sort((a, b) => (Number(b.average_rating || b.reviews_avg_rating) || 0) - (Number(a.average_rating || a.reviews_avg_rating) || 0));
     } else if (sortBy === 'name') {
       list.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === 'newest') {
@@ -195,58 +425,17 @@ export default function LibrariesList() {
 
             {/* Selectors: All 25 Provinces of Cambodia & Sort Dropdown */}
             <div className="flex flex-wrap items-center gap-3 shrink-0">
-              {/* 25 Cambodian Provinces Dropdown */}
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-600 pointer-events-none" />
-                <select
-                  value={selectedProvince}
-                  onChange={(e) => handleProvinceChange(e.target.value)}
-                  aria-label="Filter by province"
-                  className="os-input h-10 pl-9 pr-4 text-xs font-semibold cursor-pointer max-w-[150px] sm:max-w-[210px] truncate"
-                >
-                  <option value="">All Provinces (ខេត្ត/ក្រុងទាំងអស់)</option>
-                  <option value="Phnom Penh">Phnom Penh (ភ្នំពេញ)</option>
-                  <option value="Banteay Meanchey">Banteay Meanchey (បន្ទាយមានជ័យ)</option>
-                  <option value="Battambang">Battambang (បាត់ដំបង)</option>
-                  <option value="Kampong Cham">Kampong Cham (កំពង់ចាម)</option>
-                  <option value="Kampong Chhnang">Kampong Chhnang (កំពង់ឆ្នាំង)</option>
-                  <option value="Kampong Speu">Kampong Speu (កំពង់ស្ពឺ)</option>
-                  <option value="Kampong Thom">Kampong Thom (កំពង់ធំ)</option>
-                  <option value="Kampot">Kampot (កំពត)</option>
-                  <option value="Kandal">Kandal (កណ្តាល)</option>
-                  <option value="Kep">Kep (កែប)</option>
-                  <option value="Koh Kong">Koh Kong (កោះកុង)</option>
-                  <option value="Kratie">Kratie (ក្រចេះ)</option>
-                  <option value="Mondulkiri">Mondulkiri (មណ្ឌលគិរី)</option>
-                  <option value="Oddar Meanchey">Oddar Meanchey (ឧត្តរមានជ័យ)</option>
-                  <option value="Pailin">Pailin (ប៉ៃលិន)</option>
-                  <option value="Preah Sihanouk">Preah Sihanouk (ព្រះសីហនុ)</option>
-                  <option value="Preah Vihear">Preah Vihear (ព្រះវិហារ)</option>
-                  <option value="Prey Veng">Prey Veng (ព្រៃវែង)</option>
-                  <option value="Pursat">Pursat (ពោធិ៍សាត់)</option>
-                  <option value="Ratanakiri">Ratanakiri (រតនគិរី)</option>
-                  <option value="Siem Reap">Siem Reap (សៀមរាប)</option>
-                  <option value="Stung Treng">Stung Treng (ស្ទឹងត្រែង)</option>
-                  <option value="Svay Rieng">Svay Rieng (ស្វាយរៀង)</option>
-                  <option value="Takeo">Takeo (តាកែវ)</option>
-                  <option value="Tboung Khmum">Tboung Khmum (ត្បូងឃ្មុំ)</option>
-                </select>
-              </div>
+              {/* Custom Animated 25 Cambodian Provinces Dropdown */}
+              <ProvinceDropdown
+                selectedValue={selectedProvince}
+                onChange={handleProvinceChange}
+              />
 
-              {/* Sort Dropdown */}
-              <div className="relative">
-                <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  aria-label="Sort libraries"
-                  className="os-input h-10 pl-9 pr-4 text-xs font-semibold cursor-pointer"
-                >
-                  <option value="most_books">Most Books</option>
-                  <option value="name">Name (A-Z)</option>
-                  <option value="newest">Newest First</option>
-                </select>
-              </div>
+              {/* Custom Animated Sort Dropdown */}
+              <SortDropdown
+                selectedValue={sortBy}
+                onChange={setSortBy}
+              />
             </div>
           </div>
         </div>

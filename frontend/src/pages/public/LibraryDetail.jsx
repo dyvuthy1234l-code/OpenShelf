@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { 
   Building2, MapPin, Phone, Mail, Clock, ShieldAlert, BookOpen, 
   ExternalLink, ArrowLeft, Search, X, Layers, RefreshCw, SlidersHorizontal, Star,
-  CheckCircle2
+  CheckCircle2, ShieldCheck
 } from 'lucide-react';
 import publicService from '../../services/publicService';
 import BookCard from '../../components/public/BookCard';
@@ -173,6 +173,8 @@ export default function LibraryDetail() {
   const endItem = meta.total > 0 ? Math.min(meta.current_page * meta.per_page, meta.total) : 0;
   const totalBooksCount = library.books_count ?? meta.total ?? 0;
 
+  const mapsUrl = library.google_maps_url || (library.name ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(library.name + ' ' + (library.address || 'Cambodia'))}` : null);
+
   return (
     <>
       <Helmet>
@@ -223,7 +225,7 @@ export default function LibraryDetail() {
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-navy-950/20 to-navy-950/10 pointer-events-none" />
 
           {/* Glass stat chips on cover */}
-          <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center gap-2 z-10">
+          <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-end gap-2 z-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
               <BookOpen className="w-3.5 h-3.5 text-gold-600" />
               {totalBooksCount} Books
@@ -236,7 +238,7 @@ export default function LibraryDetail() {
             )}
             <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
               <Clock className="w-3.5 h-3.5 text-gold-600" />
-              {library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 - 17:00'}
+              {library.opening_hours && !/Mollitia|Impedit|dolorum|labore|asperio/i.test(library.opening_hours) ? library.opening_hours : 'Mon - Sat: 08:00 - 17:00'}
             </span>
           </div>
         </motion.div>
@@ -276,13 +278,27 @@ export default function LibraryDetail() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="space-y-1.5 pt-2"
               >
-                <div className="flex items-center gap-2">
-                  <span className="os-badge-success">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    ● Open
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-wrap items-center gap-2.5 pb-1"
+                >
+                  {/* Pro Radar-Pulse "Open Now" Badge */}
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-extrabold shadow-2xs">
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                    </span>
+                    <span>Open Now</span>
                   </span>
-                  <span className="text-xs text-slate-400 font-semibold">Verified Partner</span>
-                </div>
+
+                  {/* Pro "Verified Partner" Shield Badge */}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-navy-950 via-navy-900 to-navy-800 text-gold-400 border border-gold-500/30 text-xs font-extrabold shadow-xs">
+                    <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                    <span>Verified Partner</span>
+                  </span>
+                </motion.div>
 
                 <h1 className="os-section-title sm:text-3xl lg:text-4xl">{library.name}</h1>
 
@@ -310,9 +326,9 @@ export default function LibraryDetail() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="flex flex-wrap items-center gap-3 shrink-0"
             >
-              {library.google_maps_url && (
+              {mapsUrl && (
                 <a
-                  href={library.google_maps_url}
+                  href={mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="os-btn-gold text-xs"
