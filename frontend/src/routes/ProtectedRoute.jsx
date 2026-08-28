@@ -11,25 +11,25 @@ export default function ProtectedRoute({ allowedRoles = [], publicWebsite = fals
     return <LoadingScreen message="Verifying authentication..." />;
   }
 
-  // 2. Public Website Routes (Guests and Members allowed, Staff redirected to workspaces)
-  if (publicWebsite) {
-    if (isAuthenticated && user) {
-      if (user.role === 'librarian') {
-        const isSubActive = subscription && subscription.status === 'active';
-        return isSubActive ? <Navigate to="/librarian" replace /> : <Navigate to="/librarian/subscription" replace />;
-      }
-      if (user.role === 'admin') {
-        return <Navigate to="/admin" replace />;
-      }
-    }
-    return <Outlet />;
-  }
-
-  // 3. Unauthenticated users must not access any non-public protected route
+  // 2. Unauthenticated users MUST login first before accessing any route in the project
   if (!isAuthenticated || !user) {
     const requestedUrl = `${location.pathname}${location.search}${location.hash}`;
-    const redirectQuery = requestedUrl !== '/' ? `?redirect=${encodeURIComponent(requestedUrl)}` : '';
+    const redirectQuery = requestedUrl !== '/' && requestedUrl !== '' && requestedUrl !== '/login'
+      ? `?redirect=${encodeURIComponent(requestedUrl)}`
+      : '';
     return <Navigate to={`/login${redirectQuery}`} replace />;
+  }
+
+  // 3. Authenticated Staff redirected to their dedicated workspaces from public layout
+  if (publicWebsite) {
+    if (user.role === 'librarian') {
+      const isSubActive = subscription && subscription.status === 'active';
+      return isSubActive ? <Navigate to="/librarian" replace /> : <Navigate to="/librarian/subscription" replace />;
+    }
+    if (user.role === 'admin') {
+      return <Navigate to="/admin" replace />;
+    }
+    return <Outlet />;
   }
 
   const isLibrarianSubActive = subscription && subscription.status === 'active';
