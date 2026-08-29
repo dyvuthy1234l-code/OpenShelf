@@ -49,17 +49,28 @@ export function AuthProvider({ children }) {
 
   // Check auth on mount against backend source of truth
   const checkAuth = useCallback(async () => {
-    // If we have a user in localStorage, or just generally want to verify session
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setUser(null);
+      setSubscription(null);
+      setFavoriteBookIds([]);
+      setLoading(false);
+      setInitialCheckDone(true);
+      return;
+    }
+
+    // Safety timeout: Never stay stuck on loading screen longer than 4 seconds even if API stalls
     const timer = setTimeout(() => {
       setLoading(false);
       setInitialCheckDone(true);
-    }, 2500);
+    }, 4000);
 
     try {
       const data = await authService.getMe();
       const userData = data.user || data.data;
 
       if (!userData || userData.status !== 'active') {
+        localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
         setSubscription(null);
@@ -70,12 +81,13 @@ export function AuthProvider({ children }) {
       setUser(userData);
       setSubscription(data.subscription || null);
       if (userData?.role === 'member') {
-        await loadFavorites('member').catch(() => {});
+        loadFavorites('member').catch(() => {});
       } else {
         setFavoriteBookIds([]);
       }
     } catch {
       // Session invalid or expired
+      localStorage.removeItem('token');
       localStorage.removeItem('user');
       setUser(null);
       setSubscription(null);
@@ -87,9 +99,11 @@ export function AuthProvider({ children }) {
     }
   }, [loadFavorites]);
 
+  // Execute auth check once on app mount
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isBookFavorite = useCallback((bookId) => {
     if (!bookId) return false;
