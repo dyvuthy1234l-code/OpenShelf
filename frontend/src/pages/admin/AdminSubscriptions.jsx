@@ -46,6 +46,23 @@ export default function AdminSubscriptions() {
   const [actionError, setActionError] = useState('');
   const [formError, setFormError] = useState('');
 
+  // New/Edit Plan Form State
+  const [planForm, setPlanForm] = useState({
+    name: '',
+    price: '',
+    duration_days: 30,
+    description: '',
+  });
+
+  // New/Edit Subscription Form State
+  const [subscriptionForm, setSubscriptionForm] = useState({
+    user_id: '',
+    plan_id: '',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+    status: 'active',
+  });
+
   // Query parameters
   const queryParams = useMemo(() => ({
     page: currentPage,
