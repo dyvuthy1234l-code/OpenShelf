@@ -166,7 +166,7 @@ export default function BookDetails() {
         {/* Left Column: Book Identity Card & Description */}
         <div className="lg:col-span-7 bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-2xs min-h-0 overflow-y-auto">
           <div className="flex items-start gap-4">
-            <div className="w-24 h-36 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-32 h-48 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0 shadow-md">
               {book.cover_image_url ? (
                 <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover" />
               ) : (

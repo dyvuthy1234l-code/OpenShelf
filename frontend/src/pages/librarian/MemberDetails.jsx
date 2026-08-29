@@ -93,7 +93,7 @@ export default function MemberDetails() {
       <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xs w-full">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-amber-500 text-slate-950 font-extrabold text-2xl flex items-center justify-center shrink-0 shadow-md overflow-hidden border-2 border-white">
+            <div className="w-24 h-24 rounded-2xl bg-amber-500 text-slate-950 font-extrabold text-3xl flex items-center justify-center shrink-0 shadow-md overflow-hidden border-2 border-white">
               {member.avatar_url || member.avatar ? (
                 <img src={member.avatar_url || member.avatar} alt={member.name} className="w-full h-full object-cover" />
               ) : (

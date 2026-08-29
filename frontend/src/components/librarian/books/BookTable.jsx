@@ -10,14 +10,14 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
         <table className="w-full text-left text-sm align-middle border-collapse table-fixed">
           <thead>
             <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
-              <th className="py-4 px-5 w-[25%]">Book</th>
+              <th className="py-4 px-5 w-[28%]">Book</th>
               <th className="py-4 px-4 w-[15%]">Author</th>
               <th className="py-4 px-4 w-[13%]">Category</th>
               <th className="py-4 px-3 w-[12%]">ISBN</th>
-              <th className="py-4 px-2 w-[7%] text-center">Copies</th>
+              <th className="py-4 px-2 w-[6%] text-center">Copies</th>
               <th className="py-4 px-3 w-[11%] text-center">Available</th>
-              <th className="py-4 px-3 w-[9%]">Status</th>
-              <th className="py-4 px-4 w-[8%] text-right">Actions</th>
+              <th className="py-4 px-3 w-[8%]">Status</th>
+              <th className="py-4 px-4 w-[7%] text-right">Actions</th>
             </tr>
           </thead>
           <motion.tbody
@@ -35,26 +35,26 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   key={book.id}
                   className="hover:bg-slate-50/80 transition-colors"
                 >
-                  {/* Book Title & Thumbnail */}
+                  {/* Book Title & Large Cover Thumbnail */}
                   <td className="py-3.5 px-5 min-w-0">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-12 bg-slate-100 border border-slate-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center shadow-2xs">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="w-12 h-16 bg-slate-100 border border-slate-200 rounded-xl overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
                         {book.cover_image_url ? (
                           <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover" />
                         ) : (
-                          <BookOpen className="w-4 h-4 text-amber-500/80" />
+                          <BookOpen className="w-6 h-6 text-amber-500/80" />
                         )}
                       </div>
-                      <div className="min-w-0 flex-1">
+                      <div className="min-w-0 flex-1 space-y-0.5">
                         <Link
                           to={`/librarian/books/${book.id}`}
-                          className="font-extrabold text-slate-900 hover:text-amber-600 transition-colors truncate block text-sm"
+                          className="font-extrabold text-slate-900 hover:text-amber-600 transition-colors truncate block text-base leading-tight"
                           title={book.title}
                         >
                           {book.title}
                         </Link>
                         {book.publication_year && (
-                          <span className="text-xs text-slate-400 block leading-tight">{book.publication_year}</span>
+                          <span className="text-xs font-semibold text-slate-400 block">{book.publication_year}</span>
                         )}
                       </div>
                     </div>
@@ -71,7 +71,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   <td className="py-3.5 px-4 whitespace-nowrap min-w-0">
                     {book.category?.name ? (
                       <span
-                        className="inline-flex items-center px-2.5 py-1 bg-amber-50 border border-amber-200/80 text-amber-800 rounded-md text-xs font-bold truncate max-w-full"
+                        className="inline-flex items-center px-3 py-1 bg-amber-50 border border-amber-200/80 text-amber-800 rounded-lg text-xs font-bold truncate max-w-full"
                         title={book.category.name}
                       >
                         {book.category.name}
@@ -96,7 +96,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   {/* Available Copies / Stock Status */}
                   <td className="py-3.5 px-3 text-center whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
                         isAvailable
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                           : 'bg-rose-50 text-rose-700 border-rose-200'
@@ -141,7 +141,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                       <Link
                         to={`/librarian/books/${book.id}`}
                         title="View Details"
-                        className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                       >
                         <Eye className="w-4 h-4" />
                       </Link>
@@ -149,7 +149,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                       <button
                         onClick={() => onEdit(book)}
                         title="Edit Book"
-                        className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                       >
                         <Edit3 className="w-4 h-4" />
                       </button>
@@ -157,7 +157,7 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                       <button
                         onClick={() => onDelete(book)}
                         title="Delete Book"
-                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

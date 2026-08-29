@@ -11,10 +11,10 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
         <table className="w-full text-left text-sm align-middle border-collapse table-fixed">
           <thead>
             <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
-              <th className="py-4 px-5 w-[22%]">Member</th>
+              <th className="py-4 px-5 w-[23%]">Member</th>
               <th className="py-4 px-4 w-[24%]">Book</th>
               <th className="py-4 px-4 w-[14%]">Requested</th>
-              <th className="py-4 px-4 w-[14%]">Due Date</th>
+              <th className="py-4 px-4 w-[13%]">Due Date</th>
               <th className="py-4 px-4 w-[10%]">Status</th>
               <th className="py-4 px-5 w-[16%] text-right">Actions</th>
             </tr>
@@ -32,10 +32,10 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                   key={req.id}
                   className="hover:bg-slate-50/80 transition-colors"
                 >
-                  {/* Member */}
-                  <td className="py-4 px-5 font-bold text-slate-900 whitespace-nowrap min-w-0">
+                  {/* Member with Large Avatar */}
+                  <td className="py-3.5 px-5 font-bold text-slate-900 whitespace-nowrap min-w-0">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-2xs">
+                      <div className="w-10 h-10 rounded-full bg-amber-500 text-slate-950 font-extrabold text-sm flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-xs">
                         {req.user?.avatar_url || req.user?.avatar ? (
                           <img
                             src={req.user.avatar_url || req.user.avatar}
@@ -49,7 +49,7 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="truncate block text-sm font-extrabold text-slate-900" title={req.user?.name || 'Member'}>
+                        <span className="truncate block text-base font-extrabold text-slate-900 leading-tight" title={req.user?.name || 'Member'}>
                           {req.user?.name || 'Member'}
                         </span>
                       </div>
@@ -57,7 +57,7 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                   </td>
 
                   {/* Book */}
-                  <td className="py-4 px-4 font-semibold text-slate-900 whitespace-nowrap min-w-0">
+                  <td className="py-3.5 px-4 font-semibold text-slate-900 whitespace-nowrap min-w-0">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <BookOpen className="w-4 h-4 text-amber-600 shrink-0" />
                       <div className="min-w-0 flex-1">
@@ -73,24 +73,24 @@ export default function BorrowRequestTable({ borrowings = [], onApprove, onRejec
                   </td>
 
                   {/* Requested Date */}
-                  <td className="py-4 px-4 text-slate-600 font-medium whitespace-nowrap text-sm">
+                  <td className="py-3.5 px-4 text-slate-600 font-medium whitespace-nowrap text-sm">
                     {req.created_at || req.requested_at
                       ? new Date(req.created_at || req.requested_at).toLocaleDateString()
                       : 'N/A'}
                   </td>
 
                   {/* Due Date */}
-                  <td className="py-4 px-4 text-slate-800 font-bold whitespace-nowrap text-sm">
+                  <td className="py-3.5 px-4 text-slate-800 font-bold whitespace-nowrap text-sm">
                     {req.due_date ? new Date(req.due_date).toLocaleDateString() : '—'}
                   </td>
 
                   {/* Status */}
-                  <td className="py-4 px-4 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <StatusBadge status={req.status} />
                   </td>
 
                   {/* Actions */}
-                  <td className="py-4 px-5 text-right whitespace-nowrap">
+                  <td className="py-3.5 px-5 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end gap-1.5">
                       {req.status === 'pending' && (
                         <>
