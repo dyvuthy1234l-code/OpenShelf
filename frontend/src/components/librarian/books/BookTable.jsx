@@ -5,41 +5,51 @@ import { TABLE_ROW_VARIANTS, TABLE_ROW_ITEM } from '../../../constants/motionTok
 
 export default function BookTable({ books = [], onEdit, onDelete }) {
   return (
-    <div className="os-panel overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-full max-w-[800px] text-left text-xs">
+    <div className="os-panel overflow-hidden border border-slate-200/90 rounded-2xl bg-white shadow-2xs">
+      <div className="overflow-x-auto scrollbar-thin">
+        <table className="w-full text-left text-xs align-middle border-collapse">
           <thead>
-            <tr className="bg-navy-50/60 border-b border-brand-border/60 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
-              <th className="py-4 px-6">Book</th>
-              <th className="py-4 px-4">Author</th>
-              <th className="py-4 px-4">Category</th>
-              <th className="py-4 px-4">ISBN</th>
-              <th className="py-4 px-4 text-center">Total Copies</th>
-              <th className="py-4 px-4 text-center">Available</th>
-              <th className="py-4 px-4">Status</th>
-              <th className="py-4 px-6 text-right">Actions</th>
+            <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
+              <th className="py-3.5 px-5">Book</th>
+              <th className="py-3.5 px-4">Author</th>
+              <th className="py-3.5 px-4">Category</th>
+              <th className="py-3.5 px-4">ISBN</th>
+              <th className="py-3.5 px-4 text-center">Total Copies</th>
+              <th className="py-3.5 px-4 text-center">Available</th>
+              <th className="py-3.5 px-4">Status</th>
+              <th className="py-3.5 px-5 text-right">Actions</th>
             </tr>
           </thead>
-          <motion.tbody variants={TABLE_ROW_VARIANTS} initial="initial" animate="animate" className="font-medium text-slate-800">
+          <motion.tbody
+            variants={TABLE_ROW_VARIANTS}
+            initial="initial"
+            animate="animate"
+            className="font-medium text-slate-800 divide-y divide-slate-100"
+          >
             {books.map((book) => {
               const isAvailable = (book.available_quantity ?? 0) > 0;
 
               return (
-                <motion.tr variants={TABLE_ROW_ITEM} key={book.id} className="border-b border-slate-100 hover:bg-navy-50/40 transition-colors">
+                <motion.tr
+                  variants={TABLE_ROW_ITEM}
+                  key={book.id}
+                  className="hover:bg-slate-50/80 transition-colors"
+                >
                   {/* Book Title & Thumbnail */}
-                  <td className="py-4 px-6">
+                  <td className="py-3 px-5">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-14 bg-slate-100 border border-slate-200 rounded-xl overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+                      <div className="w-9 h-12 bg-slate-100 border border-slate-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center shadow-2xs">
                         {book.cover_image_url ? (
                           <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover" />
                         ) : (
-                          <BookOpen className="w-5 h-5 text-gold-600/60" />
+                          <BookOpen className="w-4 h-4 text-amber-500/80" />
                         )}
                       </div>
                       <div className="min-w-0">
                         <Link
                           to={`/librarian/books/${book.id}`}
-                          className="font-extrabold text-slate-900 hover:text-gold-600 transition-colors truncate block max-w-[200px]"
+                          className="font-extrabold text-slate-900 hover:text-amber-600 transition-colors truncate block max-w-[240px]"
+                          title={book.title}
                         >
                           {book.title}
                         </Link>
@@ -51,14 +61,19 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   </td>
 
                   {/* Author */}
-                  <td className="py-4 px-4 font-semibold text-slate-700">
-                    <span className="truncate max-w-[140px] block">{book.author || 'Unknown'}</span>
+                  <td className="py-3 px-4 font-semibold text-slate-700 whitespace-nowrap">
+                    <span className="truncate max-w-[180px] block" title={book.author || 'Unknown'}>
+                      {book.author || 'Unknown'}
+                    </span>
                   </td>
 
                   {/* Category */}
-                  <td className="py-4 px-4">
+                  <td className="py-3 px-4 whitespace-nowrap">
                     {book.category?.name ? (
-                      <span className="os-badge-warning">
+                      <span
+                        className="inline-flex items-center px-2.5 py-1 bg-amber-50 border border-amber-200/80 text-amber-800 rounded-lg text-[11px] font-bold truncate max-w-[160px]"
+                        title={book.category.name}
+                      >
                         {book.category.name}
                       </span>
                     ) : (
@@ -67,70 +82,86 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
                   </td>
 
                   {/* ISBN */}
-                  <td className="py-4 px-4 text-slate-500 font-mono text-[11px]">
-                    {book.isbn || 'N/A'}
+                  <td className="py-3 px-4 text-slate-500 font-mono text-[11px] whitespace-nowrap">
+                    <span className="truncate max-w-[140px] block" title={book.isbn || 'N/A'}>
+                      {book.isbn || 'N/A'}
+                    </span>
                   </td>
 
                   {/* Total Copies */}
-                  <td className="py-4 px-4 text-center font-bold text-slate-900">
+                  <td className="py-3 px-4 text-center font-bold text-slate-900 whitespace-nowrap">
                     {book.quantity ?? 1}
                   </td>
 
                   {/* Available Copies / Stock Status */}
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-3 px-4 text-center whitespace-nowrap">
                     <span
-                      className={`os-badge-${isAvailable ? 'success' : 'danger'}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                        isAvailable
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                      }`}
                     >
-                      {isAvailable ? <CheckCircle2 className="w-3 h-3 text-emerald-600" /> : <XCircle className="w-3 h-3 text-rose-600" />}
-                      {isAvailable ? `${book.available_quantity} Available` : 'Out of Stock'}
+                      {isAvailable ? (
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                      ) : (
+                        <XCircle className="w-3 h-3 text-rose-600 shrink-0" />
+                      )}
+                      <span>{isAvailable ? `${book.available_quantity} Available` : 'Out of Stock'}</span>
                     </span>
                   </td>
 
                   {/* Status */}
-                  <td className="py-4 px-4">
-                    <span className={`uppercase ${
-                      (book.status || 'active') === 'active'
-                        ? 'os-badge-success'
-                        : (book.status === 'maintenance')
-                        ? 'os-badge-warning'
-                        : 'os-badge-info'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${
+                  <td className="py-3 px-4 whitespace-nowrap">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${
                         (book.status || 'active') === 'active'
-                          ? 'bg-emerald-500'
-                          : (book.status === 'maintenance')
-                          ? 'bg-gold-500'
-                          : 'bg-slate-400'
-                      }`} />
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : book.status === 'maintenance'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          (book.status || 'active') === 'active'
+                            ? 'bg-emerald-500'
+                            : book.status === 'maintenance'
+                            ? 'bg-amber-500'
+                            : 'bg-slate-400'
+                        }`}
+                      />
                       {book.status || 'active'}
                     </span>
                   </td>
 
                   {/* Actions */}
-                  <td className="py-4 px-6 text-right space-x-1">
-                    <Link
-                      to={`/librarian/books/${book.id}`}
-                      title="View Details"
-                      className="os-btn-ghost h-8 w-8 px-2"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Link>
+                  <td className="py-3 px-5 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1">
+                      <Link
+                        to={`/librarian/books/${book.id}`}
+                        title="View Details"
+                        className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Link>
 
-                    <button
-                      onClick={() => onEdit(book)}
-                      title="Edit Book"
-                      className="os-btn-ghost h-8 w-8 px-2"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
+                      <button
+                        onClick={() => onEdit(book)}
+                        title="Edit Book"
+                        className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
 
-                    <button
-                      onClick={() => onDelete(book)}
-                      title="Delete Book"
-                      className="os-btn-ghost h-8 w-8 px-2 hover:!text-rose-600"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <button
+                        onClick={() => onDelete(book)}
+                        title="Delete Book"
+                        className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </motion.tr>
               );

@@ -393,7 +393,7 @@ export default function AdminPayments() {
           </div>
         ) : (
           <div className="overflow-auto flex-1 min-h-0 h-full">
-            <table className="w-full min-w-full max-w-[800px] text-left text-xs border-collapse">
+            <table className="w-full text-left text-xs align-middle border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
                   <th className="py-2.5 px-3.5">Payment</th>
