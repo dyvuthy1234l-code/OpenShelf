@@ -37,13 +37,13 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
         <table className="w-full text-left text-xs align-middle border-collapse table-fixed">
           <thead>
             <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
-              <th className="py-3.5 px-4 w-[22%]">Member</th>
-              <th className="py-3.5 px-3 w-[24%]">Book</th>
-              <th className="py-3.5 px-3 w-[14%]">Borrowed</th>
-              <th className="py-3.5 px-3 w-[14%]">Due Date</th>
+              <th className="py-3.5 px-4 w-[20%]">Member</th>
+              <th className="py-3.5 px-3 w-[22%]">Book</th>
+              <th className="py-3.5 px-3 w-[12%]">Borrowed</th>
+              <th className="py-3.5 px-3 w-[12%]">Due Date</th>
               <th className="py-3.5 px-3 w-[10%]">Status</th>
               <th className="py-3.5 px-3 w-[10%]">Fine</th>
-              <th className="py-3.5 px-4 w-[6%] text-right">Actions</th>
+              <th className="py-3.5 px-4 w-[14%] text-right">Actions</th>
             </tr>
           </thead>
           <motion.tbody

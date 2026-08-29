@@ -11,13 +11,13 @@ export default function BookTable({ books = [], onEdit, onDelete }) {
           <thead>
             <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
               <th className="py-3.5 px-4 w-[24%]">Book</th>
-              <th className="py-3.5 px-3 w-[16%]">Author</th>
-              <th className="py-3.5 px-3 w-[14%]">Category</th>
-              <th className="py-3.5 px-3 w-[13%]">ISBN</th>
-              <th className="py-3.5 px-2 w-[8%] text-center">Copies</th>
-              <th className="py-3.5 px-3 w-[13%] text-center">Available</th>
-              <th className="py-3.5 px-2 w-[7%]">Status</th>
-              <th className="py-3.5 px-4 w-[5%] text-right">Actions</th>
+              <th className="py-3.5 px-3 w-[14%]">Author</th>
+              <th className="py-3.5 px-3 w-[12%]">Category</th>
+              <th className="py-3.5 px-3 w-[11%]">ISBN</th>
+              <th className="py-3.5 px-2 w-[7%] text-center">Copies</th>
+              <th className="py-3.5 px-3 w-[12%] text-center">Available</th>
+              <th className="py-3.5 px-3 w-[10%]">Status</th>
+              <th className="py-3.5 px-4 w-[10%] text-right">Actions</th>
             </tr>
           </thead>
           <motion.tbody
