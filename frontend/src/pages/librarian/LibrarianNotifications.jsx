@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import { 
   Bell, Inbox, ArrowLeftRight, CheckCircle2, 
-  Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink 
+  Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink, CreditCard, BookOpen, Users
 } from 'lucide-react';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
@@ -67,15 +67,38 @@ export default function LibrarianNotificationsPage() {
       handleMarkAsRead(notif.id);
     }
     const data = notif.data || {};
-    const title = (data.title || '').toLowerCase();
-    const message = (data.message || '').toLowerCase();
+    const title = (data.title || notif.title || '').toLowerCase();
+    const message = (data.message || notif.message || '').toLowerCase();
+    const type = (notif.type || data.type || '').toLowerCase();
+    const link = data.link || data.action_url || data.url || notif.link || '';
 
-    if (title.includes('return') || message.includes('return')) {
+    if (link) {
+      navigate(link);
+      return;
+    }
+
+    if (
+      title.includes('subscription') || 
+      message.includes('subscription') || 
+      type.includes('subscription') || 
+      title.includes('premium') || 
+      message.includes('premium')
+    ) {
+      navigate('/librarian/subscription');
+    } else if (title.includes('return') || message.includes('return') || type.includes('return')) {
       navigate('/librarian/returns');
-    } else if (title.includes('borrow') || message.includes('borrow') || title.includes('request')) {
+    } else if (title.includes('borrow') || message.includes('borrow') || title.includes('request') || message.includes('request')) {
       navigate('/librarian/borrow-requests');
+    } else if (title.includes('book') || message.includes('book')) {
+      navigate('/librarian/books');
+    } else if (title.includes('category') || message.includes('category')) {
+      navigate('/librarian/categories');
+    } else if (title.includes('member') || message.includes('member') || title.includes('user') || message.includes('user')) {
+      navigate('/librarian/members');
+    } else if (title.includes('library') || message.includes('library')) {
+      navigate('/librarian/my-library');
     } else {
-      // stay or default to dashboard
+      navigate('/librarian/subscription');
     }
   };
 
@@ -88,17 +111,26 @@ export default function LibrarianNotificationsPage() {
 
   const getNotifIcon = (title = '', message = '') => {
     const text = (title + ' ' + message).toLowerCase();
+    if (text.includes('subscription') || text.includes('premium')) {
+      return <CreditCard className="w-5 h-5 text-amber-600" />;
+    }
     if (text.includes('return')) {
       return <ArrowLeftRight className="w-5 h-5 text-indigo-600" />;
     }
     if (text.includes('borrow') || text.includes('request')) {
-      return <Inbox className="w-5 h-5 text-amber-600" />;
+      return <Inbox className="w-5 h-5 text-emerald-600" />;
+    }
+    if (text.includes('member') || text.includes('user')) {
+      return <Users className="w-5 h-5 text-blue-600" />;
+    }
+    if (text.includes('book')) {
+      return <BookOpen className="w-5 h-5 text-amber-600" />;
     }
     return <Bell className="w-5 h-5 text-slate-600" />;
   };
 
   return (
-    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col justify-between min-h-0 space-y-4 overflow-y-auto lg:overflow-hidden h-full max-w-5xl mx-auto w-full">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="w-full space-y-4 pb-12 overflow-y-auto">
       {/* Header */}
       <PageHeader
         eyebrow="Communication Hub"
@@ -114,7 +146,7 @@ export default function LibrarianNotificationsPage() {
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>{successMessage}</span>
             </div>
-            <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs">Dismiss</button>
+            <button onClick={() => setSuccessMessage('')} className="text-emerald-700 font-bold text-xs cursor-pointer">Dismiss</button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -126,7 +158,7 @@ export default function LibrarianNotificationsPage() {
               <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
               <span>{error}</span>
             </div>
-            <button onClick={() => fetchNotifications(false)} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0">
+            <button onClick={() => fetchNotifications(false)} className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer">
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Retry</span>
             </button>
@@ -186,15 +218,15 @@ export default function LibrarianNotificationsPage() {
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear inbox</span>
             </button>
-        )}
+          )}
+        </div>
       </div>
-    </div>
 
       {/* Notifications List Viewport */}
       {loading ? (
         <ListSkeleton rows={4} className="mt-0" />
       ) : filteredNotifications.length === 0 ? (
-        <div className="flex-1 bg-white border border-slate-200/90 rounded-3xl p-10 text-center flex flex-col items-center justify-center space-y-3 shadow-2xs">
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-10 text-center flex flex-col items-center justify-center space-y-3 shadow-2xs">
           <div className="w-16 h-16 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl flex items-center justify-center shadow-xs">
             <Bell className="w-8 h-8" />
           </div>
@@ -208,12 +240,12 @@ export default function LibrarianNotificationsPage() {
           </div>
         </div>
       ) : (
-        <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+        <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="space-y-2.5">
           {filteredNotifications.map((notif) => {
             const isUnread = !notif.read_at;
             const data = notif.data || {};
-            const title = data.title || 'System Notification';
-            const message = data.message || 'No details provided.';
+            const title = data.title || notif.title || 'System Notification';
+            const message = data.message || notif.message || 'No details provided.';
             const timeStr = formatNotificationTime(notif.created_at);
 
             return (
@@ -264,10 +296,17 @@ export default function LibrarianNotificationsPage() {
                   </p>
 
                   <div className="pt-1 flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-amber-700 group-hover:text-amber-800 group-hover:underline">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNavigateToTarget(notif);
+                      }}
+                      className="inline-flex items-center gap-1 text-[11px] font-extrabold text-amber-700 hover:text-amber-800 hover:underline cursor-pointer"
+                    >
                       <span>View details</span>
                       <ExternalLink className="w-3 h-3" />
-                    </span>
+                    </button>
                   </div>
                 </div>
 
@@ -275,21 +314,23 @@ export default function LibrarianNotificationsPage() {
                 <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                   {isUnread && (
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleMarkAsRead(notif.id);
                       }}
                       title="Mark as read"
-                      className="p-1.5 text-slate-400 hover:text-amber-700 hover:bg-amber-100 rounded-lg transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-amber-700 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer"
                     >
                       <CheckCircle2 className="w-4 h-4" />
                     </button>
                   )}
 
                   <button
+                    type="button"
                     onClick={(e) => handleDelete(e, notif.id)}
                     title="Delete message"
-                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
