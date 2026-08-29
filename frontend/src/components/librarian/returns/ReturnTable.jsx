@@ -12,20 +12,20 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
     const fmt = `$${parseFloat(amount).toFixed(2)}`;
     if (fineStatus === 'paid') {
       return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
           {fmt} (Paid)
         </span>
       );
     }
     if (fineStatus === 'waived') {
       return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-slate-100 text-slate-600 border border-slate-200">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-slate-100 text-slate-600 border border-slate-200">
           {fmt} (Waived)
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-rose-50 text-rose-700 border border-rose-200">
+      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-extrabold uppercase bg-rose-50 text-rose-700 border border-rose-200">
         {fmt} (Unpaid)
       </span>
     );
@@ -34,16 +34,16 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
   return (
     <div className="os-panel overflow-hidden border border-slate-200/90 rounded-2xl bg-white shadow-2xs w-full">
       <div className="w-full overflow-x-auto lg:overflow-x-hidden">
-        <table className="w-full text-left text-xs align-middle border-collapse table-fixed">
+        <table className="w-full text-left text-sm align-middle border-collapse table-fixed">
           <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-200/80 text-[11px] uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
-              <th className="py-3.5 px-4 w-[20%]">Member</th>
-              <th className="py-3.5 px-3 w-[22%]">Book</th>
-              <th className="py-3.5 px-3 w-[12%]">Borrowed</th>
-              <th className="py-3.5 px-3 w-[12%]">Due Date</th>
-              <th className="py-3.5 px-3 w-[10%]">Status</th>
-              <th className="py-3.5 px-3 w-[10%]">Fine</th>
-              <th className="py-3.5 px-4 w-[14%] text-right">Actions</th>
+            <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs uppercase tracking-wider text-slate-500 font-bold whitespace-nowrap">
+              <th className="py-4 px-5 w-[20%]">Member</th>
+              <th className="py-4 px-4 w-[22%]">Book</th>
+              <th className="py-4 px-4 w-[12%]">Borrowed</th>
+              <th className="py-4 px-4 w-[12%]">Due Date</th>
+              <th className="py-4 px-4 w-[10%]">Status</th>
+              <th className="py-4 px-4 w-[10%]">Fine</th>
+              <th className="py-4 px-5 w-[14%] text-right">Actions</th>
             </tr>
           </thead>
           <motion.tbody
@@ -62,9 +62,9 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
                   className="hover:bg-slate-50/80 transition-colors"
                 >
                   {/* Member */}
-                  <td className="py-3 px-4 font-bold text-slate-900 whitespace-nowrap min-w-0">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="w-7 h-7 rounded-full bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-2xs">
+                  <td className="py-4 px-5 font-bold text-slate-900 whitespace-nowrap min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-2xs">
                         {req.user?.avatar_url || req.user?.avatar ? (
                           <img
                             src={req.user.avatar_url || req.user.avatar}
@@ -78,7 +78,7 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="truncate block" title={req.user?.name || 'Member'}>
+                        <span className="truncate block font-extrabold text-sm text-slate-900" title={req.user?.name || 'Member'}>
                           {req.user?.name || 'Member'}
                         </span>
                       </div>
@@ -86,13 +86,13 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
                   </td>
 
                   {/* Book */}
-                  <td className="py-3 px-3 font-semibold text-slate-900 whitespace-nowrap min-w-0">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <BookOpen className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <td className="py-4 px-4 font-semibold text-slate-900 whitespace-nowrap min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <BookOpen className="w-4 h-4 text-amber-600 shrink-0" />
                       <div className="min-w-0 flex-1">
                         <Link
                           to={`/librarian/returns/${req.id}`}
-                          className="hover:text-amber-600 transition-colors truncate block font-extrabold"
+                          className="hover:text-amber-600 transition-colors truncate block font-extrabold text-sm"
                           title={req.book?.title || 'Book Title'}
                         >
                           {req.book?.title || 'Book Title'}
@@ -102,34 +102,34 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
                   </td>
 
                   {/* Borrowed Date */}
-                  <td className="py-3 px-3 text-slate-500 font-medium whitespace-nowrap">
+                  <td className="py-4 px-4 text-slate-600 font-medium whitespace-nowrap text-sm">
                     {req.borrowed_at || req.picked_up_at
                       ? new Date(req.borrowed_at || req.picked_up_at).toLocaleDateString()
                       : 'N/A'}
                   </td>
 
                   {/* Due Date */}
-                  <td className="py-3 px-3 text-slate-700 font-bold whitespace-nowrap">
+                  <td className="py-4 px-4 text-slate-800 font-bold whitespace-nowrap text-sm">
                     {req.due_date ? new Date(req.due_date).toLocaleDateString() : '—'}
                   </td>
 
                   {/* Status */}
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-4 px-4 whitespace-nowrap">
                     <StatusBadge status={req.status} />
                   </td>
 
                   {/* Fine */}
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-4 px-4 whitespace-nowrap">
                     {getFineBadge(req.fine_amount, req.fine_status)}
                   </td>
 
                   {/* Actions */}
-                  <td className="py-3 px-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1">
+                  <td className="py-4 px-5 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1.5">
                       {canReturn && (
                         <button
                           onClick={() => onConfirmReturn(req)}
-                          className="px-2.5 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-extrabold text-[10px] rounded-lg shadow-2xs transition-all active:scale-95 cursor-pointer"
+                          className="px-3 py-1.5 bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-extrabold text-xs rounded-xl shadow-2xs transition-all active:scale-95 cursor-pointer"
                         >
                           Return
                         </button>
@@ -137,7 +137,7 @@ export default function ReturnTable({ borrowings = [], onConfirmReturn }) {
 
                       <Link
                         to={`/librarian/returns/${req.id}`}
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg transition-colors cursor-pointer"
+                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-colors cursor-pointer"
                       >
                         Review
                       </Link>
