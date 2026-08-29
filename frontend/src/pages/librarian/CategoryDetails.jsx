@@ -143,7 +143,7 @@ export default function CategoryDetails() {
   }
 
   return (
-    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-5xl mx-auto space-y-8 pb-16">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="w-full space-y-6 pb-12 overflow-y-auto">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
         <div className="flex items-center gap-3">
