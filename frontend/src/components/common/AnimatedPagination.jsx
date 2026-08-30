@@ -11,56 +11,67 @@ export default function AnimatedPagination({ currentPage, lastPage, onPageChange
 
   // Sliding window logic to show limited pages
   const getVisiblePages = () => {
-    if (lastPage <= 5) return pages;
-    if (currentPage <= 3) return [1, 2, 3, 4, 5];
-    if (currentPage >= lastPage - 2) return [lastPage - 4, lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
-    return [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
+    if (safeLastPage <= 5) return pages;
+    if (safeCurrentPage <= 3) return [1, 2, 3, 4, 5];
+    if (safeCurrentPage >= safeLastPage - 2) return [safeLastPage - 4, safeLastPage - 3, safeLastPage - 2, safeLastPage - 1, safeLastPage];
+    return [safeCurrentPage - 2, safeCurrentPage - 1, safeCurrentPage, safeCurrentPage + 1, safeCurrentPage + 2];
   };
 
   const visiblePages = getVisiblePages();
 
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-center gap-1 sm:gap-2 mt-8">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
+    <nav aria-label="Pagination" className="flex items-center justify-center gap-1.5 sm:gap-2.5 mt-10 select-none">
+      {/* Previous Button */}
+      <motion.button
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
+        onClick={() => onPageChange(safeCurrentPage - 1)}
+        disabled={safeCurrentPage === 1}
         aria-label="Previous page"
-        className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
+        className="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-white border border-slate-200/90 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-amber-50 hover:border-amber-400 hover:text-amber-700 transition-colors shadow-2xs cursor-pointer"
       >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
+        <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+      </motion.button>
 
+      {/* Page Number Buttons */}
       {visiblePages.map((p) => {
-        const isActive = p === currentPage;
+        const isActive = p === safeCurrentPage;
         return (
-          <button
+          <motion.button
             key={p}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
             onClick={() => onPageChange(p)}
             aria-current={isActive ? 'page' : undefined}
-            className={`relative flex items-center justify-center w-11 h-11 rounded-xl text-xs sm:text-sm font-bold transition-colors shadow-sm ${
-              isActive ? 'text-amber-950 border border-amber-400' : 'text-slate-600 bg-white hover:bg-slate-50 border border-slate-200'
+            className={`relative flex items-center justify-center w-11 h-11 rounded-2xl text-xs sm:text-sm font-extrabold transition-all duration-200 cursor-pointer ${
+              isActive
+                ? 'text-slate-950 font-black shadow-md'
+                : 'text-slate-600 bg-white hover:bg-amber-50/80 border border-slate-200/90 hover:border-amber-300 hover:text-amber-700 shadow-2xs'
             }`}
           >
             {isActive && (
               <motion.div
-                layoutId="activePageIndicator"
-                className="absolute inset-0 bg-amber-400 rounded-xl"
-                transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                layoutId="activePagePill"
+                className="absolute inset-0 bg-gradient-to-tr from-amber-400 via-amber-400 to-amber-300 border border-amber-500 rounded-2xl shadow-md"
+                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
             <span className="relative z-10">{p}</span>
-          </button>
+          </motion.button>
         );
       })}
 
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === lastPage}
+      {/* Next Button */}
+      <motion.button
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
+        onClick={() => onPageChange(safeCurrentPage + 1)}
+        disabled={safeCurrentPage === safeLastPage}
         aria-label="Next page"
-        className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors shadow-sm"
+        className="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-white border border-slate-200/90 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-amber-50 hover:border-amber-400 hover:text-amber-700 transition-colors shadow-2xs cursor-pointer"
       >
-        <ChevronRight className="w-4 h-4" />
-      </button>
+        <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+      </motion.button>
     </nav>
   );
 }

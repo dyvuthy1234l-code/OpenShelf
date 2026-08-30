@@ -19,8 +19,11 @@ import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motion
 
 export default function Home() {
   const navigate = useNavigate();
-  const locationWord = 'Cambodia.';
+  const LOCATION_WORDS = useMemo(() => ['Cambodia.', 'Phnom Penh.', 'Siem Reap.', 'Battambang.'], []);
+  const [wordIdx, setWordIdx] = useState(0);
   const [typedLocation, setTypedLocation] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [libraries, setLibraries] = useState([]);
   const [availableBooks, setAvailableBooks] = useState([]);
   const [recentlyAddedBooks, setRecentlyAddedBooks] = useState([]);
@@ -30,24 +33,34 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Continuous back and forth typewriter animation effect
   useEffect(() => {
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      setTypedLocation(locationWord);
-      return undefined;
+    const currentWord = LOCATION_WORDS[wordIdx % LOCATION_WORDS.length];
+    let timer;
+
+    if (!isDeleting) {
+      if (typedLocation.length < currentWord.length) {
+        timer = setTimeout(() => {
+          setTypedLocation(currentWord.slice(0, typedLocation.length + 1));
+        }, 110);
+      } else {
+        timer = setTimeout(() => {
+          setIsDeleting(true);
+        }, 2200);
+      }
+    } else {
+      if (typedLocation.length > 0) {
+        timer = setTimeout(() => {
+          setTypedLocation(currentWord.slice(0, typedLocation.length - 1));
+        }, 55);
+      } else {
+        setIsDeleting(false);
+        setWordIdx((prev) => (prev + 1) % LOCATION_WORDS.length);
+      }
     }
 
-    let cursor = 0;
-    const timer = window.setInterval(() => {
-      cursor += 1;
-      setTypedLocation(locationWord.slice(0, cursor));
-      if (cursor === locationWord.length) {
-        window.clearInterval(timer);
-      }
-    }, 120);
-
-    return () => window.clearInterval(timer);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [typedLocation, isDeleting, wordIdx, LOCATION_WORDS]);
 
   useEffect(() => {
     async function loadHomeData() {
@@ -178,7 +191,7 @@ export default function Home() {
                   Discover books from libraries across{' '}
                   <span
                     className="inline-flex min-w-[9ch] text-amber-400 font-black drop-shadow-lg"
-                    aria-label={locationWord}
+                    aria-label={typedLocation || 'Cambodia.'}
                   >
                     {typedLocation}
                     <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-amber-400 rounded-full animate-pulse" aria-hidden="true" />

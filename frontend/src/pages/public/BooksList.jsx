@@ -271,18 +271,28 @@ export default function BooksList() {
         ) : (
           /* Real Book Cards Grid & Server-Side Pagination Bar */
           <div className={`space-y-8 transition-opacity duration-200 ${isFetching ? 'opacity-60 pointer-events-none' : 'opacity-100'}`}>
-            <motion.div
-              variants={LIST_STAGGER}
-              initial="initial"
-              animate="animate"
-              className="flex flex-wrap justify-center gap-5"
-            >
-              {books.map((b) => (
-                <motion.div key={b.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)]">
-                  <BookCard book={b} />
-                </motion.div>
-              ))}
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`page-${meta.current_page}-${categoryId}-${libraryId}-${sort}`}
+                initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -16, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5"
+              >
+                {books.map((b, idx) => (
+                  <motion.div
+                    key={b.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: idx * 0.03 }}
+                    className="h-full"
+                  >
+                    <BookCard book={b} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
 
             {/* Pagination Controls Bar */}
             <AnimatedPagination
