@@ -139,10 +139,11 @@ export default function BookCard({ book, showDateAdded = false }) {
       </div>
 
       {/* Info */}
-      <div className="p-4 flex flex-col flex-grow gap-1.5">
-        <h3 className="text-[15px] font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-2 leading-snug">
-          {book.title}
-        </h3>
+      <div className="p-4 flex flex-col flex-grow gap-1.5 justify-between">
+        <div className="space-y-1">
+          <h3 className="text-[15px] font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-2 leading-snug min-h-[2.5rem]">
+            {book.title}
+          </h3>
 
         {book.author && (
           <div className="flex items-center gap-1.5 text-slate-500 text-xs">
@@ -150,6 +151,7 @@ export default function BookCard({ book, showDateAdded = false }) {
             <span className="line-clamp-1">{book.author}</span>
           </div>
         )}
+        </div>
 
         {/* Meta row: rating + added time + library */}
         <div className="mt-auto pt-2 flex items-center justify-between gap-2">

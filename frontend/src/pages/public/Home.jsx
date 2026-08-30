@@ -70,7 +70,19 @@ export default function Home() {
         // Ensure strict availability: only active books with available_quantity > 0
         avail = avail.filter((b) => b.status !== 'inactive' && Number(b.available_quantity ?? b.quantity ?? 0) > 0);
 
-        setLibraries(libs);
+        // Sort libraries by highest rating, then reviews count, then books count to get Top 1 to 3
+        const sortedLibs = [...libs].sort((a, b) => {
+          const rateA = Number(a.rating || a.reviews_avg_rating || 0);
+          const rateB = Number(b.rating || b.reviews_avg_rating || 0);
+          if (rateB !== rateA) return rateB - rateA;
+
+          const booksA = Number(a.books_count ?? (a.books ? a.books.length : 0));
+          const booksB = Number(b.books_count ?? (b.books ? b.books.length : 0));
+          return booksB - booksA;
+        });
+
+        // Pass top 4 highest rated libraries
+        setLibraries(sortedLibs.slice(0, 4));
         setAvailableBooks(avail);
         setRecentlyAddedBooks(recent);
 
@@ -135,59 +147,65 @@ export default function Home() {
       </Helmet>
       
       <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
-          {/* 1. HERO SECTION — LIGHT PREMIUM LIBRARY WEBSITE */}
-        <section className="relative py-8 sm:py-12 lg:py-14 bg-[#FAF9F6] border-b border-slate-200/80 text-slate-900 overflow-hidden">
-          {/* Subtle Ambient Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] sm:w-[40rem] h-[16rem] sm:h-[24rem] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+          {/* 1. HERO SECTION — CUSTOM ANGKOR WAT & MODERN LIBRARY FUSION BACKGROUND */}
+        <section
+          className="relative py-14 sm:py-20 lg:py-24 bg-slate-950 bg-cover bg-center text-white overflow-hidden border-b border-slate-800"
+          style={{ backgroundImage: "url('/img/angkor_hero.jpg')" }}
+        >
+          {/* Light Subtle Gradient Overlay — Sharp, Bright & Crystal Clear Background Image */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#040C16]/65 via-[#061426]/35 to-black/20 pointer-events-none" />
+
+          {/* Decorative Ambient Warm Glow */}
+          <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-[32rem] h-72 sm:h-[32rem] bg-amber-500/12 rounded-full blur-[120px] pointer-events-none" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
-              {/* Left Content */}
+              {/* Left Content Column */}
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="lg:col-span-6 space-y-4 sm:space-y-5"
+                className="lg:col-span-6 space-y-3.5 sm:space-y-4"
               >
                 {/* Eyebrow / Badge */}
-                <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/90 text-amber-900 text-[11px] font-extrabold tracking-wider uppercase shadow-2xs">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-400 text-[11px] font-extrabold tracking-wider uppercase backdrop-blur-md shadow-md">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                   <span>OPEN SHELF COLLECTION</span>
                 </motion.div>
 
                 {/* Editorial Headline */}
-                <motion.h1 variants={itemVariants} className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-slate-900">
+                <motion.h1 variants={itemVariants} className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15] text-white break-words drop-shadow-md">
                   Discover books from libraries across{' '}
                   <span
-                    className="inline-flex min-w-[9ch] text-amber-600 font-black"
+                    className="inline-flex min-w-[9ch] text-amber-400 font-black drop-shadow-lg"
                     aria-label={locationWord}
                   >
                     {typedLocation}
-                    <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-amber-500 rounded-full animate-pulse" aria-hidden="true" />
+                    <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-amber-400 rounded-full animate-pulse" aria-hidden="true" />
                   </span>
                 </motion.h1>
 
                 {/* Supporting Text */}
-                <motion.p variants={itemVariants} className="text-slate-600 text-xs sm:text-sm max-w-lg leading-relaxed font-medium">
+                <motion.p variants={itemVariants} className="text-slate-200 text-xs sm:text-sm max-w-lg leading-relaxed font-semibold drop-shadow-xs">
                   Connect with community libraries, browse physical catalogue collections, and borrow books with ease. Knowledge belongs to everyone.
                 </motion.p>
 
                 {/* Search Bar */}
-                <motion.form variants={itemVariants} onSubmit={handleHeroSearch} className="pt-1 max-w-lg">
-                  <div className="relative flex flex-col sm:flex-row bg-white border border-slate-200/90 focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20 rounded-2xl p-1.5 shadow-md transition-all gap-1.5 sm:gap-0">
-                    <div className="flex flex-1 items-center">
-                      <Search className="w-4 h-4 text-slate-400 ml-2 shrink-0" />
+                <motion.form variants={itemVariants} onSubmit={handleHeroSearch} className="pt-1 max-w-lg w-full">
+                  <div className="relative flex flex-col sm:flex-row bg-white/95 border border-white/40 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/40 rounded-2xl p-1.5 shadow-2xl backdrop-blur-md transition-all gap-1.5 sm:gap-0 w-full">
+                    <div className="flex flex-1 items-center min-w-0">
+                      <Search className="w-4 h-4 text-slate-500 ml-2 shrink-0" />
                       <input
                         type="text"
                         placeholder="Search by book title, author, or library..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-transparent px-2.5 py-2 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none font-medium"
+                        className="w-full bg-transparent px-2.5 py-2 text-xs sm:text-sm text-slate-950 placeholder-slate-500 focus:outline-none font-bold truncate"
                       />
                     </div>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs sm:text-sm font-extrabold rounded-xl shadow-xs shrink-0 transition-all cursor-pointer"
+                      className="w-full sm:w-auto flex items-center justify-center px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs sm:text-sm font-black rounded-xl shadow-md shrink-0 transition-all cursor-pointer"
                     >
                       Search
                     </button>
@@ -195,13 +213,13 @@ export default function Home() {
                 </motion.form>
 
                 {/* Category Pills */}
-                <motion.div variants={itemVariants} className="pt-1 flex flex-wrap gap-1.5 items-center">
-                  <span className="text-slate-500 text-xs font-bold mr-1">Trending:</span>
+                <motion.div variants={itemVariants} className="pt-0.5 flex flex-wrap gap-1.5 items-center">
+                  <span className="text-slate-300 text-xs font-extrabold mr-1">Trending:</span>
                   {['Fiction', 'Technology', 'Science', 'Design'].map(cat => (
                     <Link
                       key={cat}
                       to={`/books?search=${cat}`}
-                      className="px-3 py-1 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs cursor-pointer"
+                      className="px-2.5 py-0.5 bg-slate-900/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-white/20 hover:border-amber-400 rounded-lg text-[11px] font-extrabold backdrop-blur-md transition-all shadow-xs cursor-pointer"
                     >
                       {cat}
                     </Link>
@@ -209,35 +227,35 @@ export default function Home() {
                 </motion.div>
 
                 {/* Action Buttons */}
-                <motion.div variants={itemVariants} className="flex flex-wrap gap-3 pt-1">
+                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-2.5 pt-1 w-full sm:w-auto">
                   <Link
                     to="/libraries"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl shadow-xs transition-all cursor-pointer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-lg transition-all cursor-pointer"
                   >
                     <Building2 className="w-4 h-4 text-slate-950" />
                     <span>Explore Libraries</span>
                   </Link>
                   <Link
                     to="/books"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm rounded-xl border border-slate-200/90 shadow-2xs transition-all cursor-pointer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs sm:text-sm rounded-xl border border-white/30 backdrop-blur-md transition-all cursor-pointer"
                   >
-                    <BookOpen className="w-4 h-4 text-amber-600" />
+                    <BookOpen className="w-4 h-4 text-amber-400" />
                     <span>Browse Books</span>
                   </Link>
                 </motion.div>
 
                 {/* Trust Indicators */}
-                <motion.div variants={itemVariants} className="pt-3 border-t border-slate-200/80 flex flex-wrap items-center gap-4 text-xs text-slate-600 font-semibold">
+                <motion.div variants={itemVariants} className="pt-2.5 border-t border-white/15 flex flex-wrap items-center gap-4 text-xs text-slate-200 font-extrabold">
                   <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
                     <span>Verified Libraries</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-amber-600" />
+                    <CheckCircle2 className="w-4 h-4 text-amber-400" />
                     <span>Real-time Availability</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-amber-500" />
+                    <Clock className="w-4 h-4 text-amber-400" />
                     <span>Easy Pickups</span>
                   </div>
                 </motion.div>
@@ -248,7 +266,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.15 }}
-                className="lg:col-span-6 flex justify-center lg:justify-end pt-2 lg:pt-0"
+                className="lg:col-span-6 flex justify-center lg:justify-end pt-3 lg:pt-0 w-full overflow-visible"
               >
                 <LibraryCardDeck libraries={libraries} />
               </motion.div>
@@ -256,17 +274,17 @@ export default function Home() {
           </div>
         </section>
 
-      {/* 1. DISCOVER LIBRARIES — WHITE / SOFT GRAY */}
+      {/* 1. DISCOVER LIBRARIES — TOP RATED 1 TO 4 */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4 border-b border-slate-200/80 pb-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1.5">
               <Building2 className="w-4 h-4" />
-              <span>Network Directory</span>
+              <span>FEATURED PARTNERS</span>
             </div>
-            <h2 className="os-section-title">Discover Libraries</h2>
+            <h2 className="os-section-title">Top Rated Libraries</h2>
             <p className="text-slate-500 text-xs sm:text-sm mt-1">
-              Community partner libraries open to readers across Cambodia.
+              Top 1 to 4 highest rated community partner libraries open to readers across Cambodia.
             </p>
           </div>
           <motion.div initial="rest" whileHover="hover" className="inline-flex">
@@ -289,8 +307,8 @@ export default function Home() {
             animate="show"
             className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-5 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
-            {[...Array(6)].map((_, i) => (
-              <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%_-_0.625rem)] lg:w-[calc(33.333%_-_0.833rem)] snap-center shrink-0">
+            {[...Array(4)].map((_, i) => (
+              <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%_-_0.625rem)] lg:w-[calc(25%_-_0.9375rem)] snap-center shrink-0">
                 <LibrarySkeleton />
               </div>
             ))}
@@ -309,9 +327,9 @@ export default function Home() {
             viewport={{ once: true, margin: '-60px' }}
             className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-5 pb-4 sm:pb-0 snap-x scrollbar-none"
           >
-            {libraries.map((library) => (
-              <motion.div key={library.id} variants={LIST_ITEM} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%_-_0.625rem)] lg:w-[calc(33.333%_-_0.833rem)] snap-center shrink-0">
-                <LibraryCard library={library} />
+            {libraries.map((library, idx) => (
+              <motion.div key={library.id} variants={LIST_ITEM} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%_-_0.625rem)] lg:w-[calc(25%_-_0.9375rem)] snap-center shrink-0">
+                <LibraryCard library={library} rankIndex={idx} />
               </motion.div>
             ))}
           </motion.div>

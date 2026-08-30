@@ -253,8 +253,16 @@ export default function LibrariesList() {
   // Query Hooks (Cached with TanStack Query + keepPreviousData)
   const { data: featuredRes } = useLibraries({ per_page: -1 });
   const featuredLibraries = (featuredRes?.data || featuredRes?.libraries || [])
-    .sort((a, b) => (b.reviews_avg_rating || 0) - (a.reviews_avg_rating || 0))
-    .slice(0, 2);
+    .sort((a, b) => {
+      const rateA = Number(a.rating || a.reviews_avg_rating || 0);
+      const rateB = Number(b.rating || b.reviews_avg_rating || 0);
+      if (rateB !== rateA) return rateB - rateA;
+
+      const booksA = Number(a.books_count ?? (a.books ? a.books.length : 0));
+      const booksB = Number(b.books_count ?? (b.books ? b.books.length : 0));
+      return booksB - booksA;
+    })
+    .slice(0, 4);
 
   const queryParams = {
     search: debouncedSearch || selectedProvince || undefined,
@@ -357,7 +365,7 @@ export default function LibrariesList() {
                 <Sparkles className="w-4 h-4 text-gold-500" />
                 <span>Featured Partners</span>
               </div>
-              <h2 className="os-section-title">Featured Libraries</h2>
+              <h2 className="os-section-title">Top Rated Libraries</h2>
             </div>
           </motion.div>
 
@@ -366,11 +374,11 @@ export default function LibrariesList() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="flex flex-wrap justify-center gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {featuredLibraries.map((lib) => (
-              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%_-_0.75rem)]">
-                <FeaturedLibraryCard library={lib} />
+            {featuredLibraries.map((lib, idx) => (
+              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="w-full">
+                <FeaturedLibraryCard library={lib} rankIndex={idx} />
               </motion.div>
             ))}
           </motion.div>

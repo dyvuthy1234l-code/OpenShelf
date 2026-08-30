@@ -6,7 +6,7 @@ import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
 
 import { CARD_MOTION_PROPS } from '../../constants/motionTokens';
 
-export default function LibraryCard({ library }) {
+export default function LibraryCard({ library, rankIndex }) {
   const [coverErr, setCoverErr] = useState(false);
   const [logoErr, setLogoErr] = useState(false);
 
@@ -15,7 +15,7 @@ export default function LibraryCard({ library }) {
 
   const bookCount = library.books_count ?? (library.books ? library.books.length : 0);
   const isFeatured = library.id === 1 || library.id === 3 || Boolean(library.is_featured);
-  const hasRating = Number(library.average_rating) > 0 && library.reviews_count > 0;
+  const hasRating = Number(library.average_rating || library.rating) > 0;
 
   const location = library.city || library.address || 'Phnom Penh';
   const hours =
@@ -49,7 +49,12 @@ export default function LibraryCard({ library }) {
 
         {/* Top badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-          {isFeatured ? (
+          {rankIndex !== undefined ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500 text-navy-950 text-[10px] font-black shadow-md uppercase tracking-wider">
+              <Star className="w-3 h-3 fill-navy-950 text-navy-950" />
+              #{rankIndex + 1} Top Rated
+            </span>
+          ) : isFeatured ? (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500 text-navy-950 text-[10px] font-extrabold shadow-sm uppercase tracking-wider">
               <Star className="w-3 h-3 fill-navy-950 text-navy-950" />
               Featured

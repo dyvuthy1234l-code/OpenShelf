@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Building2, MapPin, BookOpen, ArrowRight, Sparkles } from 'lucide-react';
+import { Building2, MapPin, BookOpen, ArrowRight, Sparkles, Star } from 'lucide-react';
 import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
 
-export default function FeaturedLibraryCard({ library }) {
+export default function FeaturedLibraryCard({ library, rankIndex }) {
   const [coverErr, setCoverErr] = useState(false);
   const [logoErr, setLogoErr] = useState(false);
 
@@ -15,8 +15,8 @@ export default function FeaturedLibraryCard({ library }) {
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [8, -8]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-8, 8]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [6, -6]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-6, 6]);
 
   const handleMouseMove = (e) => {
     if (!ref.current) return;
@@ -45,12 +45,12 @@ export default function FeaturedLibraryCard({ library }) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, willChange: 'transform' }}
-      whileHover={{ y: -6, scale: 1.01 }}
+      whileHover={{ y: -8, scale: 1.02 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="os-card group !bg-navy-900 !border-navy-700 hover:!border-navy-600 rounded-3xl p-4 shadow-xl hover:shadow-2xl hover:shadow-navy-950/40 transition-all duration-300 flex flex-col h-full relative select-none"
+      className="os-card group !bg-[#0A192F] !border-amber-400/40 hover:!border-amber-400 rounded-3xl p-3.5 sm:p-4 shadow-xl hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 flex flex-col h-full relative select-none"
     >
       {/* 1. COVER BANNER HEADER */}
-      <div className="relative h-44 sm:h-52 bg-navy-800 rounded-2xl overflow-hidden shrink-0 border border-white/10">
+      <div className="relative h-40 sm:h-48 bg-navy-800 rounded-2xl overflow-hidden shrink-0 border border-white/10">
         {coverUrl && !coverErr ? (
           <img
             src={coverUrl}
@@ -67,63 +67,68 @@ export default function FeaturedLibraryCard({ library }) {
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-navy-950/40 pointer-events-none" />
 
         {/* Top Badges */}
-        <div className="absolute top-4 left-4 z-10 pointer-events-none">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-navy-950/80 backdrop-blur-md text-gold-400 text-[11px] font-extrabold shadow-sm uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            FEATURED PARTNER
-          </span>
+        <div className="absolute top-3 left-3 z-10 pointer-events-none">
+          {rankIndex !== undefined ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 text-[10px] sm:text-[11px] font-black shadow-lg uppercase tracking-wider ring-2 ring-amber-400/40">
+              <Star className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+              #{rankIndex + 1} TOP RATED
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-navy-950/90 backdrop-blur-md text-amber-400 border border-amber-400/40 text-[10px] sm:text-[11px] font-extrabold shadow-sm uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              FEATURED PARTNER
+            </span>
+          )}
         </div>
 
         {/* Floating Book Count Pill */}
-        <div className="absolute bottom-4 right-4 z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-navy-950/80 backdrop-blur-md border border-white/10 text-gold-400 text-[11px] font-extrabold shadow-sm">
-            <BookOpen className="w-3.5 h-3.5" />
+        <div className="absolute bottom-3 right-3 z-10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-navy-950/85 backdrop-blur-md border border-white/15 text-amber-400 text-[11px] font-black shadow-md">
+            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
             <span>{bookCount} {bookCount === 1 ? 'Book' : 'Books'}</span>
           </span>
         </div>
+      </div>
 
-        {/* Overlapping Logo Avatar - inside the cover container but at the bottom edge */}
-        <div className="absolute -bottom-4 left-4 z-20">
-          <div className="w-16 h-16 rounded-xl bg-navy-800 p-1 border-2 border-navy-900 shadow-xl overflow-hidden shrink-0">
+      {/* 2. OVERLAPPING LOGO AVATAR & CARD CONTENT (Outside overflow-hidden so avatar is never clipped!) */}
+      <div className="px-2 flex flex-col flex-grow relative">
+        <div className="-mt-7 sm:-mt-8 mb-2.5 relative z-20 flex items-end justify-between">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white p-0.5 border-2 border-amber-400 shadow-xl overflow-hidden shrink-0 group-hover:scale-105 group-hover:border-amber-300 transition-all duration-300">
             {logoUrl && !logoErr ? (
               <img
                 src={logoUrl}
                 alt={`${library.name} Logo`}
                 onError={() => setLogoErr(true)}
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-xl"
               />
             ) : (
-              <div className="w-full h-full bg-navy-700 rounded-lg flex items-center justify-center text-slate-400">
-                <Building2 className="w-6 h-6" />
+              <div className="w-full h-full bg-amber-500 rounded-xl flex items-center justify-center text-slate-950 font-black text-lg">
+                <Building2 className="w-7 h-7 text-slate-950" />
               </div>
             )}
           </div>
         </div>
-      </div>
 
-      {/* 2. CARD CONTENT */}
-      <div className="pt-8 px-2 flex flex-col flex-grow relative">
-        
         {/* Title & Location */}
-        <div className="space-y-1.5 mb-5">
-          <h3 className="text-xl font-semibold text-white group-hover:text-gold-400 transition-colors line-clamp-1 tracking-tight">
+        <div className="space-y-1 mb-4">
+          <h3 className="text-base sm:text-lg font-black text-white group-hover:text-amber-400 transition-colors line-clamp-1 tracking-tight">
             {library.name}
           </h3>
 
-          <div className="flex items-center gap-1.5 text-slate-400 text-sm font-medium line-clamp-1">
-            <MapPin className="w-4 h-4 text-gold-500 shrink-0" />
-            <span className="truncate">{library.address || 'Location not specified'}</span>
+          <div className="flex items-center gap-1.5 text-slate-300 text-xs font-semibold line-clamp-1">
+            <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="truncate">{library.address || 'Phnom Penh, Cambodia'}</span>
           </div>
         </div>
 
-        {/* Push bottom section to the end */}
-        <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
+        {/* Action Link Footer */}
+        <div className="mt-auto pt-3 border-t border-white/10 flex items-center justify-between">
           <motion.div
             initial="rest"
             whileHover="hover"
-            className="inline-flex items-center gap-1.5 text-gold-400 font-bold text-sm hover:text-gold-300 transition-colors relative z-10"
+            className="inline-flex items-center gap-1.5 text-amber-400 font-extrabold text-xs sm:text-sm group-hover:text-amber-300 transition-colors relative z-10 cursor-pointer"
           >
-            Visit Library
+            <span>Visit Library</span>
             <motion.span
               variants={{
                 rest: { x: 0 },
@@ -131,19 +136,21 @@ export default function FeaturedLibraryCard({ library }) {
               }}
               style={{ willChange: 'transform' }}
             >
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-amber-400" />
             </motion.span>
           </motion.div>
-          <span className="text-[11px] font-semibold text-slate-500">
+          <span className="text-[10px] font-bold text-slate-400">
             OpenShelf Network
           </span>
         </div>
       </div>
-      
-      {/* Clickable Overlay */}
-      <Link to={`/libraries/${library.id}`} className="absolute inset-0 z-0">
-        <span className="sr-only">View {library.name}</span>
-      </Link>
+
+      {/* Clickable Card Link Overlay */}
+      <Link
+        to={`/libraries/${library.id}`}
+        className="absolute inset-0 z-30 rounded-3xl focus:outline-none"
+        aria-label={`View details for ${library.name}`}
+      />
     </motion.div>
   );
 }
