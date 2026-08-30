@@ -135,10 +135,10 @@ export default function Home() {
       </Helmet>
       
       <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
-          {/* 1. HERO SECTION — SLEEK COMPACT RICH NAVY BANNER */}
-        <section className="relative py-8 sm:py-12 lg:py-14 bg-gradient-to-b from-[#061120] via-[#091A30] to-[#0D2440] text-white overflow-hidden border-b border-[#0D2440]">
-          {/* Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] sm:w-[40rem] h-[16rem] sm:h-[24rem] bg-[#D9A83E]/10 rounded-full blur-[120px] pointer-events-none" />
+          {/* 1. HERO SECTION — LIGHT PREMIUM LIBRARY WEBSITE */}
+        <section className="relative py-8 sm:py-12 lg:py-14 bg-[#FAF9F6] border-b border-slate-200/80 text-slate-900 overflow-hidden">
+          {/* Subtle Ambient Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] sm:w-[40rem] h-[16rem] sm:h-[24rem] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
@@ -150,44 +150,44 @@ export default function Home() {
                 className="lg:col-span-6 space-y-4 sm:space-y-5"
               >
                 {/* Eyebrow / Badge */}
-                <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D9A83E]/10 border border-[#D9A83E]/30 text-[#D9A83E] text-[11px] font-extrabold tracking-wider uppercase">
-                  <Sparkles className="w-3.5 h-3.5 text-[#D9A83E]" />
+                <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/90 text-amber-900 text-[11px] font-extrabold tracking-wider uppercase shadow-2xs">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                   <span>OPEN SHELF COLLECTION</span>
                 </motion.div>
 
                 {/* Editorial Headline */}
-                <motion.h1 variants={itemVariants} className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-white">
+                <motion.h1 variants={itemVariants} className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-slate-900">
                   Discover books from libraries across{' '}
                   <span
-                    className="inline-flex min-w-[9ch] text-[#D9A83E]"
+                    className="inline-flex min-w-[9ch] text-amber-600 font-black"
                     aria-label={locationWord}
                   >
                     {typedLocation}
-                    <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-[#D9A83E] rounded-full animate-pulse" aria-hidden="true" />
+                    <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-amber-500 rounded-full animate-pulse" aria-hidden="true" />
                   </span>
                 </motion.h1>
 
                 {/* Supporting Text */}
-                <motion.p variants={itemVariants} className="text-[#CBD5E1] text-xs sm:text-sm max-w-lg leading-relaxed font-medium">
+                <motion.p variants={itemVariants} className="text-slate-600 text-xs sm:text-sm max-w-lg leading-relaxed font-medium">
                   Connect with community libraries, browse physical catalogue collections, and borrow books with ease. Knowledge belongs to everyone.
                 </motion.p>
 
                 {/* Search Bar */}
                 <motion.form variants={itemVariants} onSubmit={handleHeroSearch} className="pt-1 max-w-lg">
-                  <div className="relative flex flex-col sm:flex-row bg-[#091A30]/90 border border-[#DCE6F0]/20 focus-within:border-[#D9A83E] rounded-xl p-1.5 shadow-xl transition-all gap-1.5 sm:gap-0">
+                  <div className="relative flex flex-col sm:flex-row bg-white border border-slate-200/90 focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20 rounded-2xl p-1.5 shadow-md transition-all gap-1.5 sm:gap-0">
                     <div className="flex flex-1 items-center">
-                      <Search className="w-4 h-4 text-[#94A3B8] ml-2 shrink-0" />
+                      <Search className="w-4 h-4 text-slate-400 ml-2 shrink-0" />
                       <input
                         type="text"
                         placeholder="Search by book title, author, or library..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-transparent px-2.5 py-2 text-xs text-white placeholder-[#94A3B8] focus:outline-none font-medium"
+                        className="w-full bg-transparent px-2.5 py-2 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none font-medium"
                       />
                     </div>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] text-xs font-extrabold rounded-lg shadow-sm shrink-0 transition-all cursor-pointer"
+                      className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs sm:text-sm font-extrabold rounded-xl shadow-xs shrink-0 transition-all cursor-pointer"
                     >
                       Search
                     </button>
@@ -196,12 +196,12 @@ export default function Home() {
 
                 {/* Category Pills */}
                 <motion.div variants={itemVariants} className="pt-1 flex flex-wrap gap-1.5 items-center">
-                  <span className="text-[#94A3B8] text-xs font-bold mr-1">Trending:</span>
+                  <span className="text-slate-500 text-xs font-bold mr-1">Trending:</span>
                   {['Fiction', 'Technology', 'Science', 'Design'].map(cat => (
                     <Link
                       key={cat}
                       to={`/books?search=${cat}`}
-                      className="px-2.5 py-0.5 bg-[#091A30]/80 hover:bg-[#D9A83E] text-[#CBD5E1] hover:text-[#061120] border border-[#0D2440] hover:border-[#D9A83E] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+                      className="px-3 py-1 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 border border-slate-200 hover:border-amber-300 rounded-lg text-[11px] font-bold transition-all shadow-2xs cursor-pointer"
                     >
                       {cat}
                     </Link>
@@ -212,32 +212,32 @@ export default function Home() {
                 <motion.div variants={itemVariants} className="flex flex-wrap gap-3 pt-1">
                   <Link
                     to="/libraries"
-                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[#D9A83E] hover:bg-[#C9962F] text-[#061120] font-extrabold text-xs rounded-xl shadow-md transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl shadow-xs transition-all cursor-pointer"
                   >
-                    <Building2 className="w-4 h-4 text-[#061120]" />
+                    <Building2 className="w-4 h-4 text-slate-950" />
                     <span>Explore Libraries</span>
                   </Link>
                   <Link
                     to="/books"
-                    className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[#061120] hover:bg-[#091A30] text-white font-bold text-xs rounded-xl border border-[#DCE6F0]/20 hover:border-[#D9A83E]/40 transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm rounded-xl border border-slate-200/90 shadow-2xs transition-all cursor-pointer"
                   >
-                    <BookOpen className="w-4 h-4 text-[#D9A83E]" />
+                    <BookOpen className="w-4 h-4 text-amber-600" />
                     <span>Browse Books</span>
                   </Link>
                 </motion.div>
 
                 {/* Trust Indicators */}
-                <motion.div variants={itemVariants} className="pt-3 border-t border-[#0D2440] flex flex-wrap items-center gap-4 text-xs text-[#CBD5E1]">
+                <motion.div variants={itemVariants} className="pt-3 border-t border-slate-200/80 flex flex-wrap items-center gap-4 text-xs text-slate-600 font-semibold">
                   <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-[#2D8A61]" />
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     <span>Verified Libraries</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#D9A83E]" />
+                    <CheckCircle2 className="w-4 h-4 text-amber-600" />
                     <span>Real-time Availability</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-[#F59E0B]" />
+                    <Clock className="w-4 h-4 text-amber-500" />
                     <span>Easy Pickups</span>
                   </div>
                 </motion.div>
