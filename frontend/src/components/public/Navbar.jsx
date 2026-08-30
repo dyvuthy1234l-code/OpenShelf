@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2, Settings } from 'lucide-react';
+import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2, Settings, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import OpenShelfBrand from '../common/OpenShelfBrand';
 import { getAvatarUrl } from '../../utils/imageUrl';
 import { useNotifications } from '../../hooks/queries/useNotifications';
@@ -13,6 +14,7 @@ import SettingsDrawer from './SettingsDrawer';
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
+  const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -59,7 +61,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-brand-border shadow-xs">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-brand-border dark:border-slate-800 shadow-xs transition-colors duration-300">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Brand Logo */}
@@ -257,6 +259,27 @@ export default function Navbar() {
                           <span>My Profile</span>
                         </Link>
 
+                        {/* Night Mode Switch Option */}
+                        <button
+                          type="button"
+                          onClick={toggleDarkMode}
+                          className="flex items-center justify-between w-full px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-3">
+                            {darkMode ? (
+                              <Sun className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                            ) : (
+                              <Moon className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                            )}
+                            <span>{darkMode ? 'Light Mode' : 'Night Mode'}</span>
+                          </div>
+                          
+                          {/* Toggle Switch */}
+                          <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300'}`}>
+                            <div className={`w-3.5 h-3.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${darkMode ? 'translate-x-3.5' : 'translate-x-0'}`} />
+                          </div>
+                        </button>
+
                         <div className="my-1.5 border-t border-slate-100" />
 
                         <button
@@ -289,6 +312,27 @@ export default function Navbar() {
                           <Bookmark className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
                           <span>Register</span>
                         </Link>
+
+                        <div className="my-1 border-t border-slate-100" />
+
+                        <button
+                          type="button"
+                          onClick={toggleDarkMode}
+                          className="flex items-center justify-between w-full px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-3">
+                            {darkMode ? (
+                              <Sun className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                            ) : (
+                              <Moon className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                            )}
+                            <span>{darkMode ? 'Light Mode' : 'Night Mode'}</span>
+                          </div>
+                          
+                          <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300'}`}>
+                            <div className={`w-3.5 h-3.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${darkMode ? 'translate-x-3.5' : 'translate-x-0'}`} />
+                          </div>
+                        </button>
                       </div>
                     )}
                   </motion.div>

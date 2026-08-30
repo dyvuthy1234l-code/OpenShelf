@@ -136,14 +136,14 @@ export default function SearchModal({ isOpen, onClose }) {
               role="dialog"
               aria-modal="true"
               aria-label="Global Search"
-              className="w-full max-w-2xl bg-white border border-slate-200/90 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col"
+              className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col"
             >
               {/* Top Accent Gold Strip */}
-              <div className="h-1 bg-gradient-to-r from-gold-500 via-amber-400 to-gold-500" />
+              <div className="h-1 bg-gradient-to-r from-amber-400 via-gold-500 to-amber-400" />
 
               {/* Search Input Header with Close Button */}
-              <form onSubmit={handleSubmit} className="flex items-center gap-3 px-5 h-16 border-b border-slate-200/80 bg-slate-50/80">
-                <Search className="w-5 h-5 text-gold-600 shrink-0" />
+              <form onSubmit={handleSubmit} className="flex items-center gap-3 px-5 h-16 border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-950/90">
+                <Search className="w-5 h-5 text-amber-500 shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -153,10 +153,10 @@ export default function SearchModal({ isOpen, onClose }) {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   style={{ outline: 'none', boxShadow: 'none' }}
-                  className="flex-1 bg-transparent border-0 outline-none ring-0 focus:outline-none focus:ring-0 focus:border-0 focus-visible:outline-none focus-visible:ring-0 text-base text-navy-800 placeholder-slate-400 min-w-0 font-bold"
+                  className="flex-1 !bg-transparent border-0 outline-none ring-0 focus:outline-none focus:ring-0 focus:border-0 focus-visible:outline-none focus-visible:ring-0 text-base text-navy-950 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 min-w-0 font-bold"
                 />
 
-                <kbd className="hidden sm:inline-flex items-center h-6 px-2 rounded-md bg-white border border-slate-200/80 text-[10px] font-extrabold text-slate-500 shadow-2xs">
+                <kbd className="hidden sm:inline-flex items-center h-6 px-2 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-[10px] font-extrabold text-slate-500 dark:text-slate-300 shadow-2xs">
                   Esc
                 </kbd>
 
@@ -165,23 +165,23 @@ export default function SearchModal({ isOpen, onClose }) {
                   type="button"
                   onClick={onClose}
                   aria-label="Close search modal"
-                  className="flex h-9 w-9 items-center justify-center text-slate-400 hover:text-navy-800 hover:bg-slate-200/80 rounded-xl transition-all duration-200 shrink-0 cursor-pointer"
+                  className="flex h-9 w-9 items-center justify-center text-slate-400 hover:text-navy-950 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 shrink-0 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </form>
 
               {/* Search Content Body with Generous Fixed Min-Height (340px) */}
-              <div className="min-h-[340px] max-h-[55vh] overflow-y-auto bg-white flex flex-col">
+              <div className="min-h-[340px] max-h-[55vh] overflow-y-auto bg-white dark:bg-slate-900 flex flex-col">
                 {showResults ? (
                   searching && results.length === 0 ? (
                     <div className="p-3 space-y-2.5 flex-1">
                       {[...Array(4)].map((_, i) => (
-                        <div key={i} className="flex items-center gap-3.5 p-3 rounded-xl bg-slate-50 animate-pulse">
-                          <div className="w-11 h-14 rounded-lg bg-slate-200 shrink-0" />
+                        <div key={i} className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 animate-pulse">
+                          <div className="w-11 h-14 rounded-xl bg-slate-200 dark:bg-slate-700 shrink-0" />
                           <div className="flex-1 space-y-2">
-                            <div className="h-4 w-2/3 rounded bg-slate-200" />
-                            <div className="h-3 w-1/3 rounded bg-slate-150" />
+                            <div className="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-700" />
+                            <div className="h-3 w-1/3 rounded bg-slate-150 dark:bg-slate-750" />
                           </div>
                         </div>
                       ))}
@@ -192,18 +192,18 @@ export default function SearchModal({ isOpen, onClose }) {
                       animate={{ opacity: 1, y: 0 }}
                       className="px-6 py-16 text-center my-auto flex flex-col items-center justify-center flex-1"
                     >
-                      <div className="w-14 h-14 rounded-2xl bg-gold-50 border border-gold-200 flex items-center justify-center mb-3 text-gold-600 shadow-2xs">
+                      <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center mb-3 text-amber-500 shadow-xs">
                         <BookOpen className="w-7 h-7" />
                       </div>
-                      <p className="text-base text-navy-800 font-extrabold">
+                      <p className="text-base text-navy-950 dark:text-white font-extrabold">
                         No results found for "{searchQuery.trim()}"
                       </p>
-                      <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
                         Try searching for another book title or author name.
                       </p>
                     </motion.div>
                   ) : (
-                    <div className="p-3 space-y-1 flex-1" role="listbox">
+                    <div className="p-3 space-y-1.5 flex-1" role="listbox">
                       {results.map((book, i) => (
                         <motion.button
                           key={book.id}
@@ -216,14 +216,14 @@ export default function SearchModal({ isOpen, onClose }) {
                           onMouseEnter={() => setActiveIndex(i)}
                           role="option"
                           aria-selected={activeIndex === i}
-                          className={`w-full flex items-center gap-4 p-3 rounded-xl text-left transition-colors duration-150 group cursor-pointer ${
+                          className={`w-full flex items-center gap-4 p-3 rounded-2xl text-left transition-colors duration-150 group cursor-pointer ${
                             activeIndex === i
-                              ? 'bg-navy-50 border border-brand-border'
-                              : 'hover:bg-slate-50 border border-transparent'
+                              ? 'bg-amber-50/80 dark:bg-slate-800 border border-amber-400/60 dark:border-amber-400/60'
+                              : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 border border-transparent'
                           }`}
                         >
                           {/* Thumbnail */}
-                          <div className="w-11 h-14 rounded-lg bg-navy-50 overflow-hidden shrink-0 border border-slate-200/80 flex items-center justify-center shadow-2xs">
+                          <div className="w-11 h-14 rounded-xl bg-slate-950 overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center shadow-xs">
                             {getBookCoverUrl(book.cover_image_url || book.cover_image, 100) ? (
                               <img
                                 src={getBookCoverUrl(book.cover_image_url || book.cover_image, 100)}
@@ -231,20 +231,20 @@ export default function SearchModal({ isOpen, onClose }) {
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               />
                             ) : (
-                              <BookOpen className="w-5 h-5 text-amber-600/70" />
+                              <BookOpen className="w-5 h-5 text-amber-500" />
                             )}
                           </div>
 
                           {/* Info */}
                           <div className="min-w-0 flex-1 space-y-1">
-                            <p className="text-sm font-extrabold text-navy-800 group-hover:text-gold-600 transition-colors truncate">
+                            <p className="text-sm font-black text-navy-950 dark:text-white group-hover:text-amber-500 transition-colors truncate">
                               {book.title}
                             </p>
-                            <div className="flex items-center gap-2 text-xs text-slate-500 truncate font-medium">
+                            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 truncate font-semibold">
                               {book.author && <span>By {book.author}</span>}
                               {book.library?.name && (
-                                <span className="inline-flex items-center gap-1 text-[11px] text-gold-700 bg-gold-50 border border-gold-200 px-2 py-0.5 rounded-md font-semibold">
-                                  <Building2 className="w-3 h-3 text-gold-600" />
+                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2 py-0.5 rounded-lg font-bold">
+                                  <Building2 className="w-3 h-3 text-amber-500" />
                                   <span className="truncate">{book.library.name}</span>
                                 </span>
                               )}
@@ -253,7 +253,7 @@ export default function SearchModal({ isOpen, onClose }) {
 
                           <CornerDownLeft
                             className={`w-4 h-4 shrink-0 transition-opacity ${
-                              activeIndex === i ? 'text-gold-600 opacity-100' : 'text-slate-300 opacity-0'
+                              activeIndex === i ? 'text-amber-500 opacity-100' : 'text-slate-400 opacity-0'
                             }`}
                           />
                         </motion.button>
@@ -262,7 +262,7 @@ export default function SearchModal({ isOpen, onClose }) {
                       <button
                         type="button"
                         onClick={handleSubmit}
-                        className="w-full mt-2 flex items-center justify-center gap-2 p-3 rounded-xl text-xs font-extrabold text-gold-600 hover:bg-gold-50 border border-gold-200 transition-colors cursor-pointer"
+                        className="w-full mt-2 flex items-center justify-center gap-2 p-3 rounded-2xl text-xs font-black text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-amber-200 dark:border-amber-800 transition-colors cursor-pointer"
                       >
                         <Search className="w-4 h-4" />
                         <span>See all results for "{searchQuery.trim()}"</span>
@@ -270,15 +270,15 @@ export default function SearchModal({ isOpen, onClose }) {
                     </div>
                   )
                 ) : (
-                  /* Initial state when no query typed — Clean Light OpenShelf Theme */
+                  /* Initial state when no query typed — Clean OpenShelf Theme */
                   <div className="my-auto py-16 px-6 text-center flex flex-col items-center justify-center flex-1">
-                    <div className="w-16 h-16 rounded-2xl bg-gold-50 border border-gold-200 flex items-center justify-center mb-3 text-gold-600 shadow-2xs">
+                    <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center mb-3 text-amber-500 shadow-xs">
                       <Search className="w-8 h-8" />
                     </div>
-                    <h3 className="text-base font-extrabold text-navy-800">
+                    <h3 className="text-base font-black text-navy-950 dark:text-white">
                       Search OpenShelf Catalogue
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1 max-w-sm leading-relaxed font-semibold">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm leading-relaxed font-semibold">
                       Type a book title or author name to inspect real-time availability.
                     </p>
                   </div>
@@ -286,19 +286,19 @@ export default function SearchModal({ isOpen, onClose }) {
               </div>
 
               {/* Command Palette Footer */}
-              <div className="flex items-center justify-between px-5 py-3 bg-slate-50/90 border-t border-slate-200/80 text-[11px] text-slate-500 font-semibold">
+              <div className="flex items-center justify-between px-5 py-3 bg-slate-50/90 dark:bg-slate-950/90 border-t border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
                 <div className="flex items-center gap-4">
                   <span className="inline-flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-200/80 text-[10px] text-slate-600 font-bold shadow-2xs">↑↓</kbd>
+                    <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 font-bold shadow-2xs">↑↓</kbd>
                     <span>Navigate</span>
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-200/80 text-[10px] text-slate-600 font-bold shadow-2xs">↵</kbd>
+                    <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 font-bold shadow-2xs">↵</kbd>
                     <span>Select</span>
                   </span>
                 </div>
                 <span className="inline-flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-200/80 text-[10px] text-slate-600 font-bold shadow-2xs">Esc</kbd>
+                  <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 font-bold shadow-2xs">Esc</kbd>
                   <span>Close</span>
                 </span>
               </div>

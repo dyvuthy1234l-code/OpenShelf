@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Building2, MapPin, BookOpen, ArrowRight, Clock, Star, ShieldCheck } from 'lucide-react';
 import { getLibraryLogoUrl, getLibraryCoverUrl } from '../../utils/imageUrl';
-
 import { CARD_MOTION_PROPS } from '../../constants/motionTokens';
 
 export default function LibraryCard({ library, rankIndex }) {
@@ -15,7 +14,8 @@ export default function LibraryCard({ library, rankIndex }) {
 
   const bookCount = library.books_count ?? (library.books ? library.books.length : 0);
   const isFeatured = library.id === 1 || library.id === 3 || Boolean(library.is_featured);
-  const hasRating = Number(library.average_rating || library.rating) > 0;
+  const ratingValue = Number(library.average_rating || library.rating || 0);
+  const hasRating = ratingValue > 0;
 
   const location = library.city || library.address || 'Phnom Penh';
   const hours =
@@ -26,10 +26,10 @@ export default function LibraryCard({ library, rankIndex }) {
   return (
     <motion.div
       {...CARD_MOTION_PROPS}
-      className="os-card group rounded-2xl overflow-hidden flex flex-col h-full select-none"
+      className="group relative bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xs hover:shadow-2xl hover:border-amber-400/80 dark:hover:border-amber-400/80 transition-all duration-300 flex flex-col h-full select-none"
     >
-      {/* Cover banner */}
-      <div className="relative h-36 sm:h-40 bg-navy-950 overflow-hidden shrink-0">
+      {/* Cover Banner Area */}
+      <div className="relative h-40 sm:h-44 bg-slate-950 overflow-hidden shrink-0">
         {coverUrl && !coverErr ? (
           <img
             src={coverUrl}
@@ -37,54 +37,57 @@ export default function LibraryCard({ library, rankIndex }) {
             loading="lazy"
             decoding="async"
             onError={() => setCoverErr(true)}
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out will-change-transform opacity-90 group-hover:opacity-100"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-tr from-navy-950 via-navy-900 to-gold-600/20 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
-            <Building2 className="w-10 h-10 mb-1 text-gold-500/40" />
-            <span className="text-[11px] text-gold-200/80 font-bold uppercase tracking-wider">OpenShelf Partner Library</span>
+          <div className="w-full h-full bg-gradient-to-tr from-navy-950 via-navy-900 to-amber-900/30 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
+            <Building2 className="w-10 h-10 mb-1 text-gold-500/50" />
+            <span className="text-[11px] text-amber-200/90 font-black uppercase tracking-wider">OpenShelf Partner Library</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/30 to-transparent pointer-events-none" />
+        
+        {/* Dynamic Dark Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-slate-950/40 pointer-events-none" />
 
-        {/* Top badges */}
+        {/* Top Badges Bar */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
           {rankIndex !== undefined ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500 text-navy-950 text-[10px] font-black shadow-md uppercase tracking-wider">
-              <Star className="w-3 h-3 fill-navy-950 text-navy-950" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 via-gold-500 to-amber-400 text-navy-950 text-[11px] font-black shadow-lg uppercase tracking-wider">
+              <Star className="w-3.5 h-3.5 fill-navy-950 text-navy-950" />
               #{rankIndex + 1} Top Rated
             </span>
           ) : isFeatured ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500 text-navy-950 text-[10px] font-extrabold shadow-sm uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-navy-950 text-[10px] font-black shadow-md uppercase tracking-wider">
               <Star className="w-3 h-3 fill-navy-950 text-navy-950" />
               Featured
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-navy-950/80 backdrop-blur-md text-gold-300 border border-white/10 text-[10px] font-bold">
-              <ShieldCheck className="w-3 h-3 text-gold-400" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-950/80 backdrop-blur-md text-amber-300 border border-white/10 text-[10px] font-bold">
+              <ShieldCheck className="w-3 h-3 text-amber-400" />
               Verified
             </span>
           )}
 
-          <span className="os-badge-success backdrop-blur-md shadow-2xs">
-            <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-md border border-white/20 text-emerald-400 text-[10px] font-black shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Active
           </span>
         </div>
 
-        {/* Floating book count pill */}
+        {/* Floating Book Count Badge */}
         <div className="absolute bottom-3 right-3 z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-navy-950/85 backdrop-blur-md border border-white/10 text-gold-300 text-[11px] font-extrabold shadow-2xs">
-            <BookOpen className="w-3.5 h-3.5 text-gold-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/20 text-amber-300 text-xs font-black shadow-md">
+            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
             <span>{bookCount} {bookCount === 1 ? 'Book' : 'Books'}</span>
           </span>
         </div>
       </div>
 
-      {/* Overlapping logo + content */}
-      <div className="p-5 pt-0 flex flex-col flex-grow relative">
-        <div className="flex items-end justify-between -mt-9 sm:-mt-10 mb-3 z-20">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white p-1 border-2 border-white shadow-md overflow-hidden shrink-0 group-hover:shadow-lg transition-shadow">
+      {/* Body Information Area */}
+      <div className="p-5 pt-0 flex flex-col flex-1 justify-between gap-3 relative">
+        {/* Floating Avatar + Rating Badge Row (OUTSIDE overflow-hidden, 100% visible) */}
+        <div className="flex items-end justify-between -mt-7 mb-1 z-20">
+          <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 p-1 border-2 border-white dark:border-slate-800 shadow-xl overflow-hidden group-hover:scale-105 transition-transform duration-300 shrink-0">
             {logoUrl && !logoErr ? (
               <img
                 src={logoUrl}
@@ -93,64 +96,56 @@ export default function LibraryCard({ library, rankIndex }) {
                 className="w-full h-full object-cover rounded-xl"
               />
             ) : (
-              <div className="w-full h-full bg-gold-50 rounded-xl flex items-center justify-center text-gold-600 border border-gold-200">
-                <Building2 className="w-8 h-8" />
+              <div className="w-full h-full bg-amber-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <Building2 className="w-7 h-7" />
               </div>
             )}
           </div>
-        </div>
-
-        {/* Title + rating */}
-        <div className="space-y-1 mb-2">
-          <h3 className="text-base sm:text-lg font-semibold text-navy-800 group-hover:text-gold-600 transition-colors line-clamp-1 tracking-tight">
-            {library.name}
-          </h3>
 
           {hasRating && (
-            <div className="flex items-center gap-1.5">
-              <Star className="w-3.5 h-3.5 text-gold-500 fill-gold-400" />
-              <span className="text-xs font-bold text-slate-900 tabular-nums">{library.average_rating}</span>
-              <span className="text-[10px] text-slate-500">({library.reviews_count} reviews)</span>
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-black shrink-0 shadow-xs">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span>{ratingValue.toFixed(1)}</span>
+              <span className="text-[10px] text-slate-400 font-medium">({library.reviews_count || 0})</span>
             </div>
           )}
         </div>
 
-        {/* Description */}
-        <p className="text-slate-600 text-xs leading-relaxed line-clamp-2 mb-4">
-          {library.description || 'Discover academic titles, local collections, and quiet reading spaces at this community library.'}
-        </p>
-
-        {/* Single stats row */}
-        <div className="mt-auto pt-3 border-t border-slate-100">
-          <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-600 mb-3 min-w-0">
-            <span className="inline-flex items-center gap-1 min-w-0">
-              <MapPin className="w-3.5 h-3.5 text-gold-600 shrink-0" />
-              <span className="truncate">{location}</span>
-            </span>
-            <span className="w-px h-3 bg-slate-200 shrink-0" />
-            <span className="inline-flex items-center gap-1 min-w-0">
-              <Clock className="w-3.5 h-3.5 text-gold-600 shrink-0" />
-              <span className="truncate">{hours}</span>
-            </span>
+        <div>
+          {/* Header */}
+          <div className="mb-1.5">
+            <h3 className="text-base sm:text-lg font-black text-navy-950 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-1 tracking-tight">
+              {library.name}
+            </h3>
           </div>
 
-          <motion.div initial="rest" whileHover="hover">
-            <Link
-              to={`/libraries/${library.id}`}
-              className="os-btn-gold w-full justify-between px-4 text-xs"
-            >
-              <span>Explore Library</span>
-              <motion.span
-                variants={{
-                  rest: { x: 0 },
-                  hover: { x: 6, transition: { type: 'spring', stiffness: 400 } }
-                }}
-                style={{ willChange: 'transform' }}
-              >
-                <ArrowRight className="w-4 h-4 shrink-0" />
-              </motion.span>
-            </Link>
-          </motion.div>
+          {/* Description */}
+          <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed line-clamp-2 min-h-[2rem]">
+            {library.description || 'Discover academic titles, local collections, and quiet reading spaces at this community library.'}
+          </p>
+        </div>
+
+        {/* Location & Opening Hours Metadata */}
+        <div className="space-y-1.5 py-2.5 border-y border-slate-100 dark:border-slate-800/80 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-2 truncate">
+            <MapPin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="truncate">{location}</span>
+          </div>
+          <div className="flex items-center gap-2 truncate">
+            <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="truncate">{hours}</span>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="pt-1">
+          <Link
+            to={`/libraries/${library.id}`}
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-navy-950 font-black text-xs shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-200 group/btn cursor-pointer"
+          >
+            <span>Explore Library</span>
+            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-200 shrink-0" />
+          </Link>
         </div>
       </div>
     </motion.div>

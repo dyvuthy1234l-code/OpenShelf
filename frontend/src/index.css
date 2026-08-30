@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import 'tailwindcss';
+@variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* OpenShelf Bold & Rich Blue Visual System */
@@ -342,3 +343,203 @@ input:-webkit-autofill:focus {
   animation: os-shimmer 1.4s infinite linear;
   border-radius: 9999px;
 }
+
+/* ==========================================================================
+   Comprehensive Night / Dark Mode Global Theme System
+   ========================================================================== */
+html.dark,
+.dark {
+  --color-brand-text: #F8FAFC !important;
+  --color-brand-muted: #94A3B8 !important;
+  --color-brand-surface: #0B213D !important;
+  --color-brand-bg: #07172B !important;
+  --color-brand-border: #1E3A5F !important;
+}
+
+html.dark,
+.dark body {
+  background-color: #07172B !important;
+  color: #F8FAFC !important;
+  scrollbar-color: #1E3A5F #07172B;
+}
+
+html.dark main,
+.dark main,
+.dark #root {
+  background-color: transparent !important;
+  color: #F8FAFC !important;
+}
+
+/* All Headings & Titles in Dark Mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark .os-section-title,
+.dark [class*="os-section-title"] {
+  color: #F8FAFC !important;
+}
+
+/* Card & Surface Overrides in Dark Mode */
+.dark .bg-white {
+  background-color: #0B213D !important;
+  color: #F8FAFC !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-100,
+.dark .bg-navy-50,
+.dark .bg-brand-bg,
+.dark .bg-\[\#F7FAFD\],
+.dark [class*="bg-[#F7FAFD]"] {
+  background-color: #07172B !important;
+}
+
+.dark .bg-slate-100\/80,
+.dark .bg-slate-100\/90,
+.dark .bg-slate-200\/80 {
+  background-color: #0F2D52 !important;
+}
+
+/* Border Overrides in Dark Mode */
+.dark .border-slate-200,
+.dark .border-slate-200\/80,
+.dark .border-slate-200\/90,
+.dark .border-slate-100,
+.dark .border-slate-300,
+.dark .border-brand-border,
+.dark .border-brand-border\/70,
+.dark .border-brand-border\/80 {
+  border-color: #1E3A5F !important;
+}
+
+/* Text Colors in Dark Mode */
+.dark .text-slate-950,
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-navy-950,
+.dark .text-navy-900,
+.dark .text-navy-800,
+.dark .text-navy-700,
+.dark .text-navy-600,
+.dark .text-navy-500,
+.dark .text-brand-text,
+.dark [class*="text-navy-"],
+.dark [class*="text-slate-9"],
+.dark [class*="text-slate-8"] {
+  color: #F8FAFC !important;
+}
+
+.dark .text-slate-700,
+.dark .text-slate-600,
+.dark .text-slate-500,
+.dark .text-slate-400,
+.dark .text-navy-400,
+.dark .text-navy-300,
+.dark .text-brand-muted {
+  color: #94A3B8 !important;
+}
+
+/* Interactive Hover States in Dark Mode */
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-navy-50:hover,
+.dark .hover\:bg-amber-50:hover,
+.dark .hover\:bg-amber-50\/80:hover {
+  background-color: #14365D !important;
+}
+
+/* Input Fields in Dark Mode */
+.dark .os-input,
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not(.bg-transparent),
+.dark select,
+.dark textarea {
+  background-color: #07172B !important;
+  border-color: #1E3A5F !important;
+  color: #F8FAFC !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+/* Panel & Card Components in Dark Mode */
+.dark .os-panel,
+.dark .os-card {
+  background-color: #0B213D !important;
+  border-color: #1E3A5F !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Buttons in Dark Mode */
+.dark .os-btn-secondary {
+  background-color: #0F2D52 !important;
+  color: #F8FAFC !important;
+  border-color: #1E3A5F !important;
+}
+
+.dark .os-btn-secondary:hover:not(:disabled) {
+  background-color: #143E6B !important;
+}
+
+.dark .os-btn-ghost {
+  color: #CBD5E1 !important;
+}
+
+.dark .os-btn-ghost:hover:not(:disabled) {
+  background-color: #0F2D52 !important;
+  color: #F8FAFC !important;
+}
+
+/* Badges in Dark Mode */
+.dark .os-badge-info {
+  background-color: #0F2D52 !important;
+  color: #38BDF8 !important;
+  border-color: #1E3A5F !important;
+}
+
+.dark .os-badge-success {
+  background-color: #064E3B !important;
+  color: #34D399 !important;
+  border-color: #047857 !important;
+}
+
+.dark .os-badge-warning {
+  background-color: #451A03 !important;
+  color: #FBBF24 !important;
+  border-color: #78350F !important;
+}
+
+.dark .os-badge-danger {
+  background-color: #4C0519 !important;
+  color: #FB7185 !important;
+  border-color: #9F1239 !important;
+}
+
+/* Skeletons in Dark Mode */
+.dark .os-skeleton,
+.dark .os-skeleton-text,
+.dark .os-skeleton-circle {
+  background: linear-gradient(90deg, #0B213D 25%, #1E3A5F 37%, #0B213D 63%) !important;
+  background-size: 800px 100% !important;
+}
+
+/* Tables in Dark Mode */
+.dark table th {
+  background-color: #07172B !important;
+  color: #94A3B8 !important;
+  border-color: #1E3A5F !important;
+}
+
+.dark table td {
+  border-color: #1E3A5F !important;
+  color: #F8FAFC !important;
+}
+
+.dark table tr:hover td {
+  background-color: #0F2D52 !important;
+}
+

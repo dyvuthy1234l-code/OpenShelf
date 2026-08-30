@@ -17,11 +17,18 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     const root = document.documentElement;
+    const body = document.body;
     if (darkMode) {
       root.classList.add('dark');
+      body.classList.add('dark', 'bg-slate-950', 'text-slate-100');
+      body.style.backgroundColor = '#040C16';
+      body.style.color = '#F8FAFC';
       localStorage.setItem('theme', 'dark');
     } else {
       root.classList.remove('dark');
+      body.classList.remove('dark', 'bg-slate-950', 'text-slate-100');
+      body.style.backgroundColor = '';
+      body.style.color = '';
       localStorage.setItem('theme', 'light');
     }
   }, [darkMode]);

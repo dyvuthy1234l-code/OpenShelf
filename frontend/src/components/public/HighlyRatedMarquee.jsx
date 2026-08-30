@@ -89,9 +89,9 @@ export default function HighlyRatedMarquee({ books = [], loading = false, error 
         }
       `}</style>
 
-      {/* Edge Fade Gradients */}
-      <div className="absolute top-0 bottom-0 left-0 w-8 sm:w-16 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent z-10 pointer-events-none" />
-      <div className="absolute top-0 bottom-0 right-0 w-8 sm:w-16 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent z-10 pointer-events-none" />
+      {/* Edge Fade Gradients - matching page background in both light & dark mode */}
+      <div className="absolute top-0 bottom-0 left-0 w-8 sm:w-16 bg-gradient-to-r from-[#F7FAFD] dark:from-[#07172B] via-[#F7FAFD]/80 dark:via-[#07172B]/80 to-transparent z-10 pointer-events-none" />
+      <div className="absolute top-0 bottom-0 right-0 w-8 sm:w-16 bg-gradient-to-l from-[#F7FAFD] dark:from-[#07172B] via-[#F7FAFD]/80 dark:via-[#07172B]/80 to-transparent z-10 pointer-events-none" />
 
       <div
         className="w-full overflow-hidden"
@@ -99,15 +99,15 @@ export default function HighlyRatedMarquee({ books = [], loading = false, error 
         onMouseLeave={() => setIsPaused(false)}
       >
         <div
-          className="flex items-stretch gap-5 w-max animate-marquee-loop"
+          className="flex items-stretch gap-4 w-max animate-marquee-loop"
           style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
         >
           {duplicatedBooks.map((book, idx) => (
             <div
               key={`${book.id}-${idx}`}
-              className="w-48 sm:w-56 shrink-0 h-full transition-transform duration-200 hover:scale-[1.02]"
+              className="w-36 sm:w-44 shrink-0 h-full transition-transform duration-200 hover:scale-[1.03]"
             >
-              <BookCard book={book} />
+              <BookCard book={book} compact={true} />
             </div>
           ))}
         </div>
