@@ -15,7 +15,7 @@ import LoadingState from '../../components/public/LoadingState';
 import ErrorState from '../../components/public/ErrorState';
 import BookSkeleton from '../../components/common/BookSkeleton';
 import LibrarySkeleton from '../../components/common/LibrarySkeleton';
-import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motionTokens';
+import angkorHeroImg from '../../assets/angkor_hero.jpg';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -163,7 +163,7 @@ export default function Home() {
           {/* 1. HERO SECTION — CUSTOM ANGKOR WAT & MODERN LIBRARY FUSION BACKGROUND */}
         <section
           className="relative py-14 sm:py-20 lg:py-24 bg-slate-950 bg-cover bg-center text-white overflow-hidden border-b border-slate-800"
-          style={{ backgroundImage: "url('/img/angkor_hero.jpg')" }}
+          style={{ backgroundImage: `url(${angkorHeroImg})` }}
         >
           {/* Light Subtle Gradient Overlay — Sharp, Bright & Crystal Clear Background Image */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#040C16]/65 via-[#061426]/35 to-black/20 pointer-events-none" />
