@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2 } from 'lucide-react';
+import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2, Settings } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import OpenShelfBrand from '../common/OpenShelfBrand';
 import { getAvatarUrl } from '../../utils/imageUrl';
@@ -9,6 +9,7 @@ import { useNotifications } from '../../hooks/queries/useNotifications';
 import { DROPDOWN_MOTION_VARIANTS, BACKDROP_MOTION_VARIANTS } from '../../constants/motionTokens';
 
 import SearchModal from './SearchModal';
+import SettingsDrawer from './SettingsDrawer';
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -16,6 +17,7 @@ export default function Navbar() {
   const location = useLocation();
 
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -65,219 +67,234 @@ export default function Navbar() {
             <OpenShelfBrand role="member" size="sm" />
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 lg:gap-2">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'text-navy-800 bg-navy-50 font-extrabold border border-brand-border'
-                      : 'text-slate-500 hover:text-navy-800 hover:bg-navy-50'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Combined Navigation Links & Right Actions - Grouped close together */}
+          <div className="hidden md:flex items-center gap-4 lg:gap-5 xl:gap-6">
+            {/* Desktop Navigation Links (positioned right next to Search) */}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                const isForLibrarians = link.name === 'For Librarians';
 
-          {/* Right Side: Search + Member Shortcuts / Guest Auth */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-2.5 xl:gap-3.5">
-            {/* Search Input Trigger */}
-            <button
-              onClick={() => setSearchModalOpen(true)}
-              aria-label="Search books and libraries"
-              className="relative w-11 lg:w-44 xl:w-56 h-11 lg:h-9 flex items-center justify-center lg:justify-start bg-white hover:bg-navy-50 border border-brand-border hover:border-navy-600/50 rounded-xl lg:pl-3 lg:pr-2 text-left transition-all shadow-xs"
-            >
-              <Search className="w-4 h-4 text-navy-200 lg:mr-2 shrink-0" />
-              <span className="hidden lg:block text-xs text-navy-200 flex-1">Search...</span>
-              <div className="hidden xl:flex items-center gap-0.5 opacity-60">
-                <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">⌘</kbd>
-                <kbd className="bg-slate-200 border border-slate-300 rounded px-1 text-[9px] font-sans font-bold text-slate-500 shadow-sm">K</kbd>
-              </div>
-            </button>
-            <SearchModal isOpen={searchModalOpen} onClose={() => setSearchModalOpen(false)} />
-
-            {isAuthenticated && user ? (
-              <div className="flex items-center gap-2">
-                {/* Favorites Shortcut Icon */}
-                <Link
-                  to="/member/favorites"
-                  title="My Favorites"
-                  className="flex h-11 w-11 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors lg:h-9 lg:w-9"
-                >
-                  <Bookmark className="w-4 h-4" />
-                </Link>
-
-                {/* Notifications Bell Icon */}
-                <Link
-                  to="/member/notifications"
-                  title="Notifications"
-                  className="relative flex h-11 w-11 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors lg:h-9 lg:w-9"
-                >
-                  <Bell className="w-4 h-4" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold flex items-center justify-center shadow-xs">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </Link>
-
-                {/* Profile Dropdown Menu */}
-                <div className="relative">
-                  <button
-                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    aria-label="Open profile menu"
-                    aria-expanded={userDropdownOpen}
-                    className="flex min-h-11 min-w-11 items-center justify-center gap-2 px-2.5 bg-slate-100/80 border border-slate-200 hover:border-amber-500/50 rounded-xl transition-all lg:min-h-0 lg:min-w-0 lg:p-1 lg:pr-2.5"
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
-                      {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
-                        <img
-                          src={getAvatarUrl(user.avatar_url || user.avatar, 120)}
-                          alt={user.name}
-                          loading="eager"
-                          className="w-full h-full object-cover"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        />
-                      ) : (
-                        user.name ? user.name[0].toUpperCase() : 'U'
-                      )}
-                    </div>
-                    <span className="hidden lg:block text-xs font-semibold text-slate-800 max-w-[100px] truncate">
-                      {user.name}
-                    </span>
-                  </button>
-
-                  <AnimatePresence>
-                    {userDropdownOpen && (
+                if (isForLibrarians) {
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      className="relative overflow-hidden px-3.5 py-1.5 rounded-xl text-sm font-extrabold text-sky-950 bg-sky-100/90 hover:bg-sky-200/90 border border-sky-300/80 shadow-2xs transition-all duration-300 flex items-center group cursor-pointer"
+                    >
+                      {/* Shimmering light beam sweeping top-to-bottom back and forth */}
                       <motion.div
-                        {...DROPDOWN_MOTION_VARIANTS}
-                        style={{ transformOrigin: 'top right' }}
-                        className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50"
-                        onMouseLeave={() => setUserDropdownOpen(false)}
-                      >
-                      <div className="px-3 py-2 border-b border-slate-100 mb-1 flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-sm overflow-hidden shrink-0">
-                          {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
-                            <img
-                              src={getAvatarUrl(user.avatar_url || user.avatar, 120)}
-                              alt={user.name}
-                              loading="eager"
-                              className="w-full h-full object-cover"
-                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            />
-                          ) : (
-                            user.name ? user.name[0].toUpperCase() : 'U'
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
-                          <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
-                          <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded mt-0.5 border border-amber-200/60">
-                            {user.role}
-                          </span>
-                        </div>
-                      </div>
+                        animate={{ x: ['-120%', '220%'], y: ['-120%', '220%'] }}
+                        transition={{ repeat: Infinity, repeatType: 'reverse', duration: 2.2, ease: 'easeInOut' }}
+                        className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/85 to-transparent -rotate-45 pointer-events-none"
+                      />
+                      <span className="relative z-10">{link.name}</span>
+                    </Link>
+                  );
+                }
 
-                      {user.role === 'librarian' && (
-                        <Link
-                          to="/librarian"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 text-xs text-amber-900 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors font-bold my-1 border border-amber-200"
-                        >
-                          <Building2 className="w-4 h-4 text-amber-600" />
-                          Librarian Portal
-                        </Link>
-                      )}
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'text-navy-800 bg-navy-50 font-extrabold border border-brand-border'
+                        : 'text-slate-500 hover:text-navy-800 hover:bg-navy-50'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
 
-                      {user.role === 'admin' && (
-                        <Link
-                          to="/admin"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 text-xs text-amber-900 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors font-bold my-1 border border-amber-200"
-                        >
-                          <Building2 className="w-4 h-4 text-amber-600" />
-                          Admin Portal
-                        </Link>
-                      )}
-
-                      {user.role === 'member' && (
-                        <>
-                          <Link
-                            to="/member/borrowings"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-colors font-medium"
-                          >
-                            <Clock className="w-4 h-4 text-amber-600" />
-                            My Borrowings
-                          </Link>
-
-                          <Link
-                            to="/member/favorites"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-colors font-medium"
-                          >
-                            <Bookmark className="w-4 h-4 text-amber-600" />
-                            Saved Favorites
-                          </Link>
-
-                          <Link
-                            to="/member/notifications"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-colors font-medium"
-                          >
-                            <Bell className="w-4 h-4 text-amber-600" />
-                            Notifications
-                          </Link>
-                        </>
-                      )}
-
-                      <Link
-                        to={`/${user?.role || 'member'}/profile`}
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs text-slate-700 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-colors font-medium"
-                      >
-                        <User className="w-4 h-4 text-amber-600" />
-                        My Profile
-                      </Link>
-
-                      <button
-                        onClick={async () => {
-                          setUserDropdownOpen(false);
-                          await logout();
-                          navigate('/login');
-                        }}
-                        className="flex items-center gap-2 w-full text-left px-3 py-2 text-xs text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-medium border-t border-slate-100 mt-1 pt-2"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+            {/* Search + Member Shortcuts + User Avatar */}
+            <div className="flex items-center gap-2 lg:gap-2.5">
+              {/* Search Input Trigger */}
+              <button
+                onClick={() => setSearchModalOpen(true)}
+                aria-label="Search books and authors"
+                className="relative w-11 lg:w-44 xl:w-52 h-11 lg:h-9 flex items-center justify-center lg:justify-start bg-slate-100/80 hover:bg-amber-50 border border-slate-200/80 hover:border-amber-400 rounded-xl lg:pl-3 lg:pr-2 text-left transition-all shadow-2xs cursor-pointer"
+              >
+                <Search className="w-4 h-4 text-slate-500 lg:mr-2 shrink-0" />
+                <span className="hidden lg:block text-xs font-semibold text-slate-500 flex-1 truncate">Search books or authors...</span>
+                <div className="hidden xl:flex items-center gap-0.5 opacity-70 shrink-0">
+                  <kbd className="bg-white border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-sans font-bold text-slate-600 shadow-2xs">⌘K</kbd>
                 </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="os-btn-ghost px-3 lg:px-4 text-xs font-semibold whitespace-nowrap"
+              </button>
+              <SearchModal isOpen={searchModalOpen} onClose={() => setSearchModalOpen(false)} />
+
+              {isAuthenticated && user ? (
+                <div className="flex items-center gap-2">
+                  {/* Favorites Shortcut Icon */}
+                  <Link
+                    to="/member/favorites"
+                    title="My Favorites"
+                    className="flex h-11 w-11 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors lg:h-9 lg:w-9"
+                  >
+                    <Bookmark className="w-4 h-4" />
+                  </Link>
+
+                  {/* Notifications Bell Icon */}
+                  <Link
+                    to="/member/notifications"
+                    title="Notifications"
+                    className="relative flex h-11 w-11 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors lg:h-9 lg:w-9"
+                  >
+                    <Bell className="w-4 h-4" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold flex items-center justify-center shadow-xs">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  {/* Profile Avatar -> Enlarged Fully Rounded Circular Avatar */}
+                  <Link
+                    to={`/${user?.role || 'member'}/profile`}
+                    title={user.name || 'My Profile'}
+                    className="w-11 h-11 lg:w-10 lg:h-10 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center font-extrabold text-base overflow-hidden shrink-0 border-2 border-slate-200 hover:border-amber-500 shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    {getAvatarUrl(user.avatar_url || user.avatar, 120) ? (
+                      <img
+                        src={getAvatarUrl(user.avatar_url || user.avatar, 120)}
+                        alt={user.name}
+                        loading="eager"
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    ) : (
+                      user.name ? user.name[0].toUpperCase() : 'U'
+                    )}
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/login"
+                    className="os-btn-ghost px-3 lg:px-4 text-xs font-semibold whitespace-nowrap"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="os-btn-primary px-3 lg:px-4 py-1.5 text-xs font-bold whitespace-nowrap"
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Settings Cog Icon Button placed AFTER user avatar with Floating Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setSettingsOpen(!settingsOpen)}
+                title="Settings & Menu"
+                aria-label="Open settings menu"
+                className="flex h-11 w-11 lg:h-10 lg:w-10 items-center justify-center text-slate-600 hover:text-amber-600 bg-slate-100/80 hover:bg-amber-50 rounded-xl border border-slate-200/80 transition-colors shrink-0 cursor-pointer group"
+              >
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
+                  className="flex items-center justify-center"
                 >
-                  Sign In
-                </Link>
-                <Link
-                  to="/register"
-                  className="os-btn-gold px-3 lg:px-4 text-xs whitespace-nowrap"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
+                  <Settings className="w-4 h-4" />
+                </motion.div>
+              </button>
+
+              <AnimatePresence>
+                {settingsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.92, y: -8 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.94, y: -6 }}
+                    transition={{ type: 'spring', stiffness: 450, damping: 28 }}
+                    style={{ transformOrigin: 'top right' }}
+                    className="absolute right-0 mt-2.5 w-64 bg-white border border-slate-200/90 rounded-2xl shadow-2xl shadow-slate-900/10 p-2.5 z-50 overflow-hidden"
+                    onMouseLeave={() => setSettingsOpen(false)}
+                  >
+                    {/* Top Accent Gold Bar */}
+                    <div className="h-0.5 -mx-2.5 -mt-2.5 mb-2 bg-gradient-to-r from-amber-400 via-gold-500 to-amber-400" />
+
+                    {isAuthenticated && user ? (
+                      <>
+                        <Link
+                          to="/member/borrowings"
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group"
+                        >
+                          <Clock className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>My Borrowings</span>
+                        </Link>
+
+                        <Link
+                          to="/member/favorites"
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group"
+                        >
+                          <Bookmark className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>Saved Favorites</span>
+                        </Link>
+
+                        <Link
+                          to="/member/notifications"
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group"
+                        >
+                          <Bell className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>Notifications</span>
+                        </Link>
+
+                        <Link
+                          to={`/${user?.role || 'member'}/profile`}
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group"
+                        >
+                          <User className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>My Profile</span>
+                        </Link>
+
+                        <div className="my-1.5 border-t border-slate-100" />
+
+                        <button
+                          onClick={async () => {
+                            setSettingsOpen(false);
+                            await logout();
+                            navigate('/login');
+                          }}
+                          className="flex items-center gap-3 w-full text-left px-3.5 py-2.5 text-xs font-extrabold text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200 group cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4 text-rose-500 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>Sign Out</span>
+                        </button>
+                      </>
+                    ) : (
+                      <div className="p-1 space-y-1">
+                        <Link
+                          to="/login"
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group"
+                        >
+                          <User className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>Sign In</span>
+                        </Link>
+                        <Link
+                          to="/register"
+                          onClick={() => setSettingsOpen(false)}
+                          className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group"
+                        >
+                          <Bookmark className="w-4 h-4 text-gold-600 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span>Register</span>
+                        </Link>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Mobile Hamburger Button */}

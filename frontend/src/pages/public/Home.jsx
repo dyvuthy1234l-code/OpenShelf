@@ -19,7 +19,7 @@ import { LIST_STAGGER, LIST_ITEM, REVEAL_VARIANTS } from '../../constants/motion
 
 export default function Home() {
   const navigate = useNavigate();
-  const LOCATION_WORDS = useMemo(() => ['Cambodia.', 'Phnom Penh.', 'Siem Reap.', 'Battambang.'], []);
+  const LOCATION_WORDS = useMemo(() => ['Cambodia.', 'Phnom Penh.', 'Siem Reap.', 'Battambang.', 'Kampong Cham.'], []);
   const [wordIdx, setWordIdx] = useState(0);
   const [typedLocation, setTypedLocation] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -190,11 +190,11 @@ export default function Home() {
                 <motion.h1 variants={itemVariants} className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15] text-white break-words drop-shadow-md">
                   Discover books from libraries across{' '}
                   <span
-                    className="inline-flex min-w-[9ch] text-amber-400 font-black drop-shadow-lg"
+                    className="inline-flex min-w-[9ch] font-black text-amber-300 drop-shadow-[0_0_20px_rgba(251,191,36,0.9)] [text-shadow:_0_0_30px_rgb(251_191_36_/_80%),_0_0_50px_rgb(245_158_11_/_60%)] filter brightness-125 saturate-150 transition-all duration-300"
                     aria-label={typedLocation || 'Cambodia.'}
                   >
                     {typedLocation}
-                    <span className="ml-1 inline-block w-1 h-[0.78em] self-center bg-amber-400 rounded-full animate-pulse" aria-hidden="true" />
+                    <span className="ml-1.5 inline-block w-1.5 h-[0.78em] self-center bg-amber-300 rounded-full animate-pulse shadow-[0_0_15px_rgba(251,191,36,1)]" aria-hidden="true" />
                   </span>
                 </motion.h1>
 

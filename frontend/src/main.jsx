@@ -9,6 +9,7 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 import { clearChunkRetryFlag } from './utils/lazyWithRetry';
 
 import { HelmetProvider } from 'react-helmet-async';
+import { ThemeProvider } from './context/ThemeContext';
 
 clearChunkRetryFlag();
 
@@ -16,11 +17,13 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <MotionConfig reducedMotion="user">
-          <ErrorBoundary>
-            <AppRouter />
-          </ErrorBoundary>
-        </MotionConfig>
+        <ThemeProvider>
+          <MotionConfig reducedMotion="user">
+            <ErrorBoundary>
+              <AppRouter />
+            </ErrorBoundary>
+          </MotionConfig>
+        </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
   </StrictMode>
