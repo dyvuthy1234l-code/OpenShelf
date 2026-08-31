@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import { 
   CreditCard, CheckCircle2, Clock, AlertTriangle, XCircle, 
   DollarSign, Search, RotateCcw, Eye, ChevronLeft, ChevronRight, 
   X, Plus, Settings, Calendar, Building2, ShieldCheck,
-  Crown, Pencil, Trash2, Archive, ArrowLeft, MoreVertical
+  Crown, Pencil, Trash2, Archive, ArrowLeft, MoreVertical, LayoutGrid, List, MapPin
 } from 'lucide-react';
 import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
@@ -14,13 +14,15 @@ import AdminPagination from '../../components/admin/AdminPagination';
 import { useAdminSubscriptions, useAdminPlans, useAdminLibrarians } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminSubscriptions() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Search & Filters
+  // Search, Filters & View Mode
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [planFilter, setPlanFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
+  const [viewMode, setViewMode] = useState('table'); // 'table' | 'grid'
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -98,15 +100,20 @@ export default function AdminSubscriptions() {
   // Derived Subscriptions with Expiry Checks
   const enrichedSubscriptions = useMemo(() => {
     return subscriptions.map((sub) => {
-      const endDate = sub.end_date ? new Date(sub.end_date) : null;
-      const now = new Date();
-      const diffDays = endDate ? Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)) : 999;
-
       let calculatedStatus = sub.status || 'active';
-      if (sub.status === 'active' && endDate && diffDays <= 7 && diffDays >= 0) {
-        calculatedStatus = 'expiring_soon';
-      } else if (sub.status === 'active' && endDate && diffDays < 0) {
-        calculatedStatus = 'expired';
+      let diffDays = null;
+
+      if (sub.end_date) {
+        const end = new Date(sub.end_date);
+        const now = new Date();
+        const diffMs = end - now;
+        diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+          calculatedStatus = 'expired';
+        } else if (diffDays <= 7 && calculatedStatus === 'active') {
+          calculatedStatus = 'expiring_soon';
+        }
       }
 
       return {
@@ -131,10 +138,30 @@ export default function AdminSubscriptions() {
     setCurrentPage(1);
   };
 
-  // Plan Management Handlers
+  // Plan Handlers
+  const handleOpenAddPlan = () => {
+    setPlanForm({ name: '', price: '', duration_days: 30, description: '' });
+    setFormError('');
+    setEditingPlan(null);
+    setAddPlanOpen(true);
+  };
+
+  const handleOpenEditPlan = (plan) => {
+    setPlanForm({
+      name: plan.name || '',
+      price: plan.price || '',
+      duration_days: plan.duration_days || 30,
+      description: plan.description || '',
+    });
+    setFormError('');
+    setEditingPlan(plan);
+    setAddPlanOpen(true);
+  };
+
   const handleSavePlan = async (e) => {
     e.preventDefault();
     if (actionLoading) return;
+
     try {
       setActionLoading(true);
       setFormError('');
@@ -143,59 +170,14 @@ export default function AdminSubscriptions() {
         setActionMessage('Subscription plan updated successfully.');
       } else {
         await adminService.createPlan(planForm);
-        setActionMessage('New subscription plan created successfully.');
+        setActionMessage('New subscription plan created.');
       }
       setTimeout(() => setActionMessage(''), 3500);
       setAddPlanOpen(false);
       setEditingPlan(null);
-      setPlanForm({ name: '', price: '', duration_days: 30, description: '' });
       queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Failed to save subscription plan.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleStopNewSubscriptionsConfirm = async () => {
-    if (!stoppingPlan || actionLoading) return;
-    try {
-      setActionLoading(true);
-      setFormError('');
-      await adminService.updatePlan(stoppingPlan.id, {
-        name: stoppingPlan.name,
-        price: stoppingPlan.price,
-        duration_days: stoppingPlan.duration_days,
-        description: stoppingPlan.description || '',
-        status: 'closed',
-      });
-      setActionMessage(`New subscriptions stopped for "${stoppingPlan.name}". Existing subscribers remain active.`);
-      setTimeout(() => setActionMessage(''), 3500);
-      setStoppingPlan(null);
-      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
-    } catch (err) {
-      setFormError(err?.response?.data?.message || 'Failed to stop new subscriptions.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleReopenPlan = async (plan) => {
-    try {
-      setActionLoading(true);
-      setFormError('');
-      await adminService.updatePlan(plan.id, {
-        name: plan.name,
-        price: plan.price,
-        duration_days: plan.duration_days,
-        description: plan.description || '',
-        status: 'active',
-      });
-      setActionMessage(`Plan "${plan.name}" re-opened for new subscriptions.`);
-      setTimeout(() => setActionMessage(''), 3500);
-      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
-    } catch (err) {
-      setFormError(err?.response?.data?.message || 'Failed to re-open plan.');
     } finally {
       setActionLoading(false);
     }
@@ -279,8 +261,7 @@ export default function AdminSubscriptions() {
       setTimeout(() => setActionMessage(''), 3500);
       setAddSubscriptionOpen(false);
       setEditingSubscription(null);
-      queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions'] });
-      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+      await loadData();
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Failed to save subscription.');
     } finally {
@@ -296,8 +277,7 @@ export default function AdminSubscriptions() {
       setActionMessage(`Subscription for "${cancelingSubscription.user?.name || 'Librarian'}" has been cancelled.`);
       setTimeout(() => setActionMessage(''), 3500);
       setCancelingSubscription(null);
-      queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions'] });
-      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+      await loadData();
     } catch (err) {
       setActionError(err?.response?.data?.message || 'Failed to cancel subscription.');
       setTimeout(() => setActionError(''), 3500);
@@ -314,8 +294,7 @@ export default function AdminSubscriptions() {
       setActionMessage('Subscription record deleted.');
       setTimeout(() => setActionMessage(''), 3500);
       setDeletingSubscription(null);
-      queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions'] });
-      queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+      await loadData();
     } catch (err) {
       setActionError(err?.response?.data?.message || 'Cannot delete subscription with payment history. Please cancel instead.');
       setTimeout(() => setActionError(''), 3500);
@@ -332,31 +311,33 @@ export default function AdminSubscriptions() {
 
   return (
     <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
-      {/* 1. PAGE HEADER (CLIENT-READY BILLING & ACCESS) */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
+      {/* 1. PAGE HEADER (COMPACT EXECUTIVE STRIP) */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div>
-          <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-block">
-            Billing & Access Management
-          </span>
-          <h1 className="text-lg sm:text-xl font-black text-slate-900 leading-tight mt-0.5">Subscriptions</h1>
-          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-            Manage platform subscriptions, plans, and subscription status.
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-block">
+              Billing & Access • {pagination.total} Records
+            </span>
+          </div>
+          <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight mt-0.5">Library Subscriptions</h1>
+          <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
+            Manage library plan subscriptions, renewals, pricing tiers, and active status.
           </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleOpenAddSubscription}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 h-9 sm:h-10 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 h-8.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>Add Subscription</span>
           </button>
           <button
             onClick={() => setPlansModalOpen(true)}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 h-9 sm:h-10 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 h-8.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-2xs transition-all cursor-pointer"
           >
-            <Settings className="w-4 h-4 text-amber-400" />
+            <Settings className="w-3.5 h-3.5 text-amber-400" />
             <span>Manage Plans</span>
           </button>
         </div>
@@ -364,7 +345,7 @@ export default function AdminSubscriptions() {
 
       {/* Action Notification Banner */}
       {actionMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
           <span>{actionMessage}</span>
           <button onClick={() => setActionMessage('')} className="text-emerald-600 hover:text-emerald-900 cursor-pointer">
             <X className="w-4 h-4" />
@@ -374,7 +355,7 @@ export default function AdminSubscriptions() {
 
       {/* Action Error Banner */}
       {actionError && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{actionError}</span>
@@ -385,56 +366,72 @@ export default function AdminSubscriptions() {
         </div>
       )}
 
-      {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
-        {/* Card 1: Active Subscriptions */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Active Subscriptions</span>
-            <span className="text-xl font-black text-emerald-950 tracking-tight block leading-tight mt-0.5">{countActive}</span>
-            <span className="inline-block text-[9px] font-bold text-emerald-700 mt-0.5">Active plans</span>
+      {/* 2. COMPACT 4-COLUMN STAT STRIP (Interactive Click-to-Filter) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('active'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-emerald-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            statusFilter === 'active' ? 'ring-2 ring-emerald-500/30 border-emerald-500 bg-emerald-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Active Plans</span>
+            <span className="text-base font-black text-emerald-700 leading-none">{countActive}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+          <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+            <CheckCircle2 className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </button>
 
-        {/* Card 2: Expiring Soon */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Expiring Soon (7 Days)</span>
-            <span className="text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">{countExpiring}</span>
-            <span className="inline-block text-[9px] font-bold text-amber-700 mt-0.5">Needs renewal</span>
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('expiring_soon'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-amber-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            statusFilter === 'expiring_soon' ? 'ring-2 ring-amber-500/30 border-amber-500 bg-amber-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Expiring (7 Days)</span>
+            <span className="text-base font-black text-amber-800 leading-none">{countExpiring}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
-            <Clock className="w-3.5 h-3.5 text-amber-600" />
+          <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0">
+            <Clock className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </button>
 
-        {/* Card 3: Expired */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Expired Subscriptions</span>
-            <span className="text-xl font-black text-rose-950 tracking-tight block leading-tight mt-0.5">{countExpired}</span>
-            <span className="inline-block text-[9px] font-bold text-rose-700 mt-0.5">Inactive plans</span>
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('expired'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-rose-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            statusFilter === 'expired' ? 'ring-2 ring-rose-500/30 border-rose-500 bg-rose-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Expired Plans</span>
+            <span className="text-base font-black text-rose-700 leading-none">{countExpired}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-rose-50 border border-rose-200/80 text-rose-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
-            <XCircle className="w-3.5 h-3.5 text-rose-600" />
+          <div className="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200/80 text-rose-700 flex items-center justify-center font-bold shrink-0">
+            <XCircle className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </button>
 
-        {/* Card 4: Subscription Revenue */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Subscription Revenue</span>
-            <span className="text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">${subscriptionRevenue.toFixed(2)}</span>
-            <span className="inline-block text-[9px] font-bold text-blue-700 mt-0.5">Plan payments</span>
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('all'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-blue-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            statusFilter === 'all' ? 'ring-2 ring-blue-500/30 border-blue-500 bg-blue-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Subscription Revenue</span>
+            <span className="text-base font-black text-slate-900 leading-none">${subscriptionRevenue.toFixed(2)}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
-            <DollarSign className="w-3.5 h-3.5 text-blue-600" />
+          <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0">
+            <DollarSign className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
-      </motion.div>
+        </button>
+      </div>
 
       {/* 3. FILTER & SEARCH TOOLBAR */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
@@ -449,12 +446,20 @@ export default function AdminSubscriptions() {
               setCurrentPage(1);
             }}
             placeholder="Search by library or librarian..."
-            className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+            className="w-full pl-9 pr-8 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
           />
+          {searchQuery && (
+            <button
+              onClick={() => { setSearchQuery(''); setCurrentPage(1); }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
-        {/* Right: Dropdowns & Reset */}
-        <div className="flex items-center gap-2">
+        {/* Right: Filters, View Toggle & Clear */}
+        <div className="flex items-center gap-1.5 flex-wrap">
           {/* Status Filter */}
           <select
             value={statusFilter}
@@ -462,13 +467,12 @@ export default function AdminSubscriptions() {
               setStatusFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
             <option value="expiring_soon">Expiring Soon</option>
             <option value="expired">Expired</option>
-            <option value="cancelled">Cancelled</option>
           </select>
 
           {/* Plan Filter */}
@@ -478,7 +482,7 @@ export default function AdminSubscriptions() {
               setPlanFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer max-w-[150px] truncate"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer max-w-[130px] truncate"
           >
             <option value="all">All Plans</option>
             {plans.map((p) => (
@@ -495,7 +499,7 @@ export default function AdminSubscriptions() {
               setDateFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Time</option>
             <option value="month">This Month</option>
@@ -503,27 +507,50 @@ export default function AdminSubscriptions() {
             <option value="year">This Year</option>
           </select>
 
+          {/* View Switcher: Table vs Grid */}
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/80">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'table' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-900'
+              }`}
+              title="Table View"
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'grid' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-900'
+              }`}
+              title="Grid View"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           {/* Clear Filters */}
           <button
             onClick={handleResetFilters}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+            title="Reset Filters"
           >
             <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-            <span>Clear</span>
+            <span className="hidden sm:inline">Clear</span>
           </button>
         </div>
       </div>
 
-      {/* 4. MAIN SUBSCRIPTIONS TABLE CONTAINER (EXPANDS VERTICALLY TO FILL AVAILABLE HEIGHT) */}
+      {/* 4. MAIN SUBSCRIPTIONS CONTAINER */}
       <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex-1 min-h-0 flex flex-col justify-between h-full">
         {loading ? (
-          <div className="p-6 text-center text-xs text-slate-400 font-medium animate-pulse">
+          <div className="p-8 text-center text-xs text-slate-400 font-medium animate-pulse">
             Loading subscription records...
           </div>
         ) : filteredSubscriptions.length === 0 ? (
-          <div className="py-8 text-center p-6 space-y-2">
-            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto">
-              <CreditCard className="w-7 h-7 text-slate-400" />
+          <div className="py-12 text-center p-6 space-y-2 flex-1 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto border border-amber-200/80">
+              <CreditCard className="w-6 h-6 text-amber-600" />
             </div>
             <h3 className="text-sm font-black text-slate-800">
               {searchQuery || statusFilter !== 'all' || planFilter !== 'all' || dateFilter !== 'all'
@@ -538,25 +565,25 @@ export default function AdminSubscriptions() {
             {(searchQuery || statusFilter !== 'all' || planFilter !== 'all' || dateFilter !== 'all') && (
               <button
                 onClick={handleResetFilters}
-                className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-2xs"
+                className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-2xs"
               >
                 Clear Filters
               </button>
             )}
           </div>
-        ) : (
+        ) : viewMode === 'table' ? (
+          /* TABLE VIEW MODE */
           <div className="overflow-auto flex-1 min-h-0 h-full">
             <table className="w-full text-left text-xs align-middle border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
-                  <th className="py-2.5 px-3.5">Library</th>
-                  <th className="py-2.5 px-3.5">Librarian</th>
-                  <th className="py-2.5 px-3.5">Plan</th>
-                  <th className="py-2.5 px-3.5">Amount</th>
-                  <th className="py-2.5 px-3.5">Start Date</th>
-                  <th className="py-2.5 px-3.5">Expiry Date</th>
-                  <th className="py-2.5 px-3.5">Status</th>
-                  <th className="py-2.5 px-3.5 text-right">Actions</th>
+                <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-black uppercase text-[9.5px] tracking-wider sticky top-0 bg-slate-50 z-10">
+                  <th className="py-2 px-3.5">Library Branch</th>
+                  <th className="py-2 px-3.5">Librarian Account</th>
+                  <th className="py-2 px-3.5">Active Plan</th>
+                  <th className="py-2 px-3.5">Amount</th>
+                  <th className="py-2 px-3.5">Timeline (Start → End)</th>
+                  <th className="py-2 px-3.5">Status</th>
+                  <th className="py-2 px-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
@@ -568,85 +595,87 @@ export default function AdminSubscriptions() {
                   const st = sub.calculatedStatus;
 
                   return (
-                    <tr key={sub.id} className="hover:bg-amber-50/30 transition-colors">
-                      {/* Library Column */}
-                      <td className="py-2.5 px-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8.5 h-8.5 rounded-full bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-2xs">
+                    <tr
+                      key={sub.id}
+                      onClick={() => navigate(`/admin/subscriptions/${sub.id}`)}
+                      className="hover:bg-amber-50/40 transition-colors cursor-pointer group"
+                    >
+                      {/* 1. Library Column */}
+                      <td className="py-2 px-3.5">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center overflow-hidden shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                             {sub.user?.library?.image_url ? (
                               <img src={sub.user.library.image_url} alt={libName} className="w-full h-full object-cover" />
                             ) : (
                               libName[0].toUpperCase()
                             )}
                           </div>
-                          <div>
-                            {sub.user?.library ? (
-                              <Link
-                                to={`/admin/libraries/${sub.user.library.id}`}
-                                className="font-extrabold text-slate-900 hover:text-amber-600 transition-colors block text-xs leading-tight"
-                              >
-                                {libName}
-                              </Link>
-                            ) : (
-                              <span className="font-extrabold text-slate-900 block text-xs leading-tight">{libName}</span>
-                            )}
-                            <span className="text-[10px] text-slate-400 block font-medium mt-0.5">
-                              {sub.user?.library?.city || 'Location N/A'}
+                          <div className="min-w-0">
+                            <span className="font-black text-slate-900 group-hover:text-amber-700 transition-colors block text-xs leading-tight truncate">
+                              {libName}
+                            </span>
+                            <span className="text-[10px] text-slate-400 block font-medium mt-0.5 truncate">
+                              {sub.user?.library?.city || 'Cambodia'}
                             </span>
                           </div>
                         </div>
                       </td>
 
-                      {/* Librarian Column */}
-                      <td className="py-2.5 px-3.5">
-                        <div>
-                          {sub.user ? (
-                            <Link
-                              to={`/admin/librarians/${sub.user.id}`}
-                              className="font-bold text-slate-900 hover:text-amber-600 transition-colors block text-xs"
-                            >
-                              {userName}
-                            </Link>
-                          ) : (
-                            <span className="font-bold text-slate-900 block text-xs">{userName}</span>
-                          )}
-                          <span className="text-[10px] text-slate-400 block font-medium mt-0.5">{sub.user?.email || 'N/A'}</span>
+                      {/* 2. Librarian Column */}
+                      <td className="py-2 px-3.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 text-slate-800 font-bold text-[10px] flex items-center justify-center overflow-hidden shrink-0">
+                            {sub.user?.avatar_url || sub.user?.avatar ? (
+                              <img src={sub.user.avatar_url || sub.user.avatar} alt={userName} className="w-full h-full object-cover" />
+                            ) : (
+                              <img
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=fef3c7&color=b45309&bold=true`}
+                                alt={userName}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <span className="font-bold text-slate-900 block text-xs leading-tight truncate">{userName}</span>
+                            <span className="text-[10px] text-slate-400 block font-medium truncate">{sub.user?.email || 'N/A'}</span>
+                          </div>
                         </div>
                       </td>
 
-                      {/* Plan Column */}
-                      <td className="py-2.5 px-3.5">
-                        <span className="font-extrabold text-slate-900">{planName}</span>
+                      {/* 3. Plan Column */}
+                      <td className="py-2 px-3.5">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-2xs">
+                          <Crown className="w-3 h-3 text-amber-500" />
+                          {planName}
+                        </span>
                       </td>
 
-                      {/* Amount Column */}
-                      <td className="py-2.5 px-3.5 font-black text-slate-900 tabular-nums">
+                      {/* 4. Amount Column */}
+                      <td className="py-2 px-3.5 font-black text-slate-900 tabular-nums text-xs">
                         ${amount.toFixed(2)}
                       </td>
 
-                      {/* Start Date Column */}
-                      <td className="py-2.5 px-3.5 text-slate-400 text-[11px]">
-                        {sub.start_date
-                          ? new Date(sub.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                          : 'N/A'}
+                      {/* 5. Timeline Column */}
+                      <td className="py-2 px-3.5 text-[11px]">
+                        <div className="space-y-0.5">
+                          <span className="text-slate-600 font-semibold block">
+                            {sub.start_date ? new Date(sub.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'} →{' '}
+                            <strong className={st === 'expiring_soon' ? 'text-amber-700' : st === 'expired' ? 'text-rose-600' : 'text-slate-900'}>
+                              {sub.end_date ? new Date(sub.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Active'}
+                            </strong>
+                          </span>
+                          {st === 'expiring_soon' && (
+                            <span className="text-[9px] text-amber-700 font-extrabold flex items-center gap-0.5">
+                              <AlertTriangle className="w-2.5 h-2.5 text-amber-600" />
+                              Expires in {sub.diffDays} days
+                            </span>
+                          )}
+                        </div>
                       </td>
 
-                      {/* Expiry Date Column */}
-                      <td className="py-2.5 px-3.5 text-[11px]">
-                        <span className={st === 'expiring_soon' ? 'text-amber-700 font-extrabold flex items-center gap-1' : st === 'expired' ? 'text-rose-600 font-bold' : 'text-slate-600 font-medium'}>
-                          {st === 'expiring_soon' && <AlertTriangle className="w-3 h-3 shrink-0 text-amber-600" />}
-                          {sub.end_date
-                            ? new Date(sub.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                            : 'Active'}
-                        </span>
-                        {st === 'expiring_soon' && (
-                          <span className="text-[9px] text-amber-600 font-bold block">Expires in {sub.diffDays} days</span>
-                        )}
-                      </td>
-
-                      {/* Status Column */}
-                      <td className="py-2.5 px-3.5">
-                        <span className={`inline-block text-[9px] uppercase font-black px-2.5 py-0.5 rounded-full border ${
+                      {/* 6. Status Column with Live Pulse Dot */}
+                      <td className="py-2 px-3.5">
+                        <span className={`inline-flex items-center gap-1.5 text-[9px] uppercase font-black px-2.5 py-0.5 rounded-full border shadow-2xs ${
                           st === 'active'
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200/90'
                             : st === 'expiring_soon'
@@ -655,13 +684,25 @@ export default function AdminSubscriptions() {
                             ? 'bg-rose-50 text-rose-700 border-rose-200/90'
                             : 'bg-slate-100 text-slate-600 border-slate-200/90'
                         }`}>
-                          {st === 'expiring_soon' ? 'EXPIRING SOON' : (st ? st.toUpperCase() : 'INACTIVE')}
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                            st === 'active' ? 'bg-emerald-500' : st === 'expiring_soon' ? 'bg-amber-500' : st === 'expired' ? 'bg-rose-500' : 'bg-slate-400'
+                          }`} />
+                          {st === 'expiring_soon' ? 'EXPIRING' : (st ? st.toUpperCase() : 'INACTIVE')}
                         </span>
                       </td>
 
-                      {/* Actions Column */}
-                      <td className="py-2.5 px-3.5 text-right">
+                      {/* 7. Actions Column */}
+                      <td className="py-2 px-3.5 text-right relative" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => navigate(`/admin/subscriptions/${sub.id}`)}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-slate-700 hover:text-amber-900 bg-slate-100 hover:bg-amber-100/70 rounded-lg text-[10.5px] font-black transition-all cursor-pointer shadow-2xs"
+                            title="View Subscription"
+                          >
+                            <Eye className="w-3 h-3 text-slate-600 group-hover:text-amber-700" />
+                            <span>View</span>
+                          </button>
+
                           <button
                             onClick={() => {
                               setEditingSubscription(sub);
@@ -675,29 +716,21 @@ export default function AdminSubscriptions() {
                               setFormError('');
                               setAddSubscriptionOpen(true);
                             }}
-                            className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg transition-colors cursor-pointer"
+                            className="p-1 text-slate-600 hover:text-amber-800 bg-slate-100 hover:bg-amber-100/70 rounded-lg transition-all cursor-pointer shadow-2xs"
                             title="Edit Subscription"
                           >
-                            Edit
+                            <Pencil className="w-3.5 h-3.5" />
                           </button>
 
                           {sub.status === 'active' && (
                             <button
                               onClick={() => setCancelingSubscription(sub)}
-                              className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[10px] rounded-lg border border-amber-200 transition-colors cursor-pointer"
+                              className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-black text-[10px] rounded-lg border border-amber-200/80 transition-colors cursor-pointer shadow-2xs"
                               title="Cancel Subscription"
                             >
                               Cancel
                             </button>
                           )}
-
-                          <Link
-                            to={`/admin/subscriptions/${sub.id}`}
-                            className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                            title="View Subscription Details"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </Link>
                         </div>
                       </td>
                     </tr>
@@ -706,19 +739,100 @@ export default function AdminSubscriptions() {
               </tbody>
             </table>
           </div>
+        ) : (
+          /* CARD GRID VIEW MODE */
+          <div className="p-3.5 overflow-y-auto flex-1 min-h-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {paginatedSubscriptions.map((sub) => {
+                const libName = sub.user?.library?.name || 'Library Branch';
+                const userName = sub.user?.name || 'Librarian';
+                const planName = sub.plan?.name || 'Standard Plan';
+                const amount = Number(sub.plan?.price || 0);
+                const st = sub.calculatedStatus;
+
+                return (
+                  <div
+                    key={sub.id}
+                    onClick={() => navigate(`/admin/subscriptions/${sub.id}`)}
+                    className="bg-white border border-slate-200/90 hover:border-amber-400 rounded-2xl p-3.5 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                  >
+                    <div>
+                      {/* Top row: Plan + Price + Status */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="inline-flex items-center gap-1 text-[11px] font-black text-slate-900 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80">
+                            <Crown className="w-3 h-3 text-amber-600" />
+                            {planName}
+                          </span>
+                          <span className="text-sm font-black text-slate-900 block mt-1">${amount.toFixed(2)}</span>
+                        </div>
+
+                        <span className={`inline-flex items-center gap-1 text-[8.5px] uppercase font-black px-2 py-0.5 rounded-full border shrink-0 ${
+                          st === 'active'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : st === 'expiring_soon'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : st === 'expired'
+                            ? 'bg-rose-50 text-rose-700 border-rose-200'
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}>
+                          <span className={`w-1 h-1 rounded-full ${st === 'active' ? 'bg-emerald-500' : st === 'expiring_soon' ? 'bg-amber-500' : 'bg-rose-500'}`} />
+                          {st === 'expiring_soon' ? 'Expiring' : st}
+                        </span>
+                      </div>
+
+                      {/* Library & Librarian Chips */}
+                      <div className="mt-3 p-2 bg-slate-50 rounded-xl border border-slate-200/60 space-y-1">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Building2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                          <span className="font-black text-slate-900 text-xs truncate">{libName}</span>
+                        </div>
+                        <p className="text-[10.5px] text-slate-500 font-medium truncate">
+                          Staff: <strong className="text-slate-800">{userName}</strong>
+                        </p>
+                      </div>
+
+                      {/* Timeline */}
+                      <div className="mt-2 text-[11px] text-slate-600">
+                        <span>Expiry: </span>
+                        <strong className="text-slate-900">
+                          {sub.end_date ? new Date(sub.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Active'}
+                        </strong>
+                      </div>
+                    </div>
+
+                    {/* Card Footer */}
+                    <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => navigate(`/admin/subscriptions/${sub.id}`)}
+                        className="flex-1 inline-flex items-center justify-center gap-1 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-[11px] font-black shadow-2xs transition-all cursor-pointer"
+                      >
+                        <Eye className="w-3 h-3" />
+                        <span>View Details</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
 
-        <AdminPagination
-          currentPage={currentPage}
-          lastPage={totalPages}
-          total={totalItems}
-          from={pagination.from}
-          to={pagination.to}
-          perPage={perPage}
-          onPageChange={setCurrentPage}
-          onPerPageChange={(value) => { setPerPage(value); setCurrentPage(1); }}
-          label="subscriptions"
-        />
+        {/* Clean Pinned Pagination Footer */}
+        <div className="shrink-0">
+          <AdminPagination
+            currentPage={currentPage}
+            lastPage={totalPages}
+            total={totalItems}
+            from={pagination.from}
+            to={pagination.to}
+            perPage={perPage}
+            onPageChange={setCurrentPage}
+            onPerPageChange={(value) => { setPerPage(value); setCurrentPage(1); }}
+            label="subscriptions"
+            showDetails={true}
+          />
+        </div>
       </div>
 
       {/* 5. ADD / EDIT SUBSCRIPTION MODAL */}

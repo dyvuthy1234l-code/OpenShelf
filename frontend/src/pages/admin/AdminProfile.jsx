@@ -187,37 +187,46 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-y-auto lg:overflow-hidden h-full pr-1 pb-1 font-sans">
-      {/* 1. PAGE HEADER */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
+    <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-y-auto h-full pr-1 pb-1 font-sans">
+      {/* 1. PAGE HEADER (EXECUTIVE STANDARD) */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div>
-          <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-700 border border-blue-500/20">
-              ACCOUNT SETTINGS
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-block">
+              ACCOUNT SECURITY &amp; CREDENTIALS
             </span>
-            <span className="text-slate-300 font-normal text-xs">•</span>
-            <span className="text-xs font-bold text-slate-500">Administrator Profile</span>
           </div>
-          <h1 className="text-lg sm:text-xl font-black text-slate-900 leading-tight tracking-tight">My Profile</h1>
-          <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
-            Manage your administrator account, security, and account information.
+          <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight mt-0.5">My Profile &amp; Settings</h1>
+          <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
+            Manage your administrator credentials, personal information, and password security.
           </p>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="inline-flex items-center gap-1.5 text-[9.5px] uppercase font-black px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            Active Administrator
+          </span>
         </div>
       </div>
 
-      {/* 2. TWO-COLUMN BALANCED LAYOUT (FIT SINGLE SCREEN) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-1 min-h-0 overflow-hidden">
+      {/* 2. TWO-COLUMN BALANCED LAYOUT */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 flex-1 min-h-0">
         {/* LEFT COLUMN: PROFILE OVERVIEW & SECURITY SUMMARY (~35%) */}
-        <div className="lg:col-span-4 space-y-3 flex flex-col justify-start min-h-0 overflow-y-auto lg:overflow-visible">
+        <div className="lg:col-span-4 space-y-2.5 flex flex-col justify-start">
           {/* Profile Hero Card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs space-y-3 text-center">
-            {/* Avatar Section (80-90px) */}
-            <div className="relative w-20 h-20 sm:w-22 sm:h-22 mx-auto">
-              <div className="w-full h-full rounded-full bg-amber-500 text-slate-950 font-black text-2xl sm:text-3xl flex items-center justify-center overflow-hidden border-3 border-white shadow-sm">
-                {user?.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 shadow-2xs space-y-3 text-center">
+            {/* Avatar Section */}
+            <div className="relative w-20 h-20 mx-auto">
+              <div className="w-full h-full rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center overflow-hidden border-2 border-white shadow-2xs">
+                {user?.avatar_url || user?.avatar ? (
+                  <img src={user.avatar_url || user.avatar} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  user?.name ? user.name[0].toUpperCase() : 'A'
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'Admin')}&background=fef3c7&color=b45309&bold=true`}
+                    alt={user?.name || 'Admin'}
+                    className="w-full h-full object-cover"
+                  />
                 )}
               </div>
 
@@ -237,18 +246,18 @@ export default function AdminProfile() {
                 type="button"
                 disabled={avatarLoading}
                 onClick={() => fileInputRef.current?.click()}
-                className="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[11px] rounded-lg flex items-center gap-1 cursor-pointer shadow-2xs transition-colors"
+                className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[11px] rounded-xl flex items-center gap-1 cursor-pointer shadow-2xs transition-colors"
               >
                 <Upload className="w-3 h-3" />
                 <span>{avatarLoading ? 'Uploading...' : 'Change Photo'}</span>
               </button>
 
-              {user?.avatar_url && (
+              {(user?.avatar_url || user?.avatar) && (
                 <button
                   type="button"
                   disabled={avatarLoading}
                   onClick={handleRemoveAvatar}
-                  className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] rounded-lg border border-rose-200 flex items-center gap-1 cursor-pointer transition-colors"
+                  className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] rounded-xl border border-rose-200 flex items-center gap-1 cursor-pointer transition-colors"
                 >
                   <Trash2 className="w-3 h-3" />
                   <span>Remove</span>
@@ -258,33 +267,30 @@ export default function AdminProfile() {
 
             {/* Name, Email, & Badges */}
             <div className="space-y-0.5">
-              <h2 className="text-base font-black text-slate-900 leading-snug">{user?.name || 'Administrator'}</h2>
+              <h2 className="text-sm sm:text-base font-black text-slate-900 leading-snug">{user?.name || 'Administrator'}</h2>
               <p className="text-[11px] text-slate-500 font-medium">{user?.email || 'N/A'}</p>
               
-              <div className="flex items-center justify-center gap-1.5 pt-1.5">
-                <span className="inline-block text-[8px] uppercase font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-                  SYSTEM ADMIN
-                </span>
-                <span className="inline-block text-[8px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  ACTIVE
+              <div className="flex items-center justify-center gap-1.5 pt-1">
+                <span className="inline-block text-[8.5px] uppercase font-black px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200">
+                  PLATFORM ROOT ADMIN
                 </span>
               </div>
             </div>
 
             {/* Account Details Box */}
-            <div className="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl space-y-1.5 text-xs text-left">
+            <div className="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl space-y-1 text-xs text-left">
               <div className="flex items-center justify-between pb-1 border-b border-slate-200/60">
                 <span className="text-slate-500 font-medium text-[11px]">Role:</span>
-                <span className="font-bold text-slate-900 uppercase text-[10px]">{user?.role || 'ADMIN'}</span>
+                <span className="font-black text-slate-900 uppercase text-[10px]">{user?.role || 'ADMIN'}</span>
               </div>
               <div className="flex items-center justify-between pb-1 border-b border-slate-200/60">
                 <span className="text-slate-500 font-medium text-[11px]">Status:</span>
-                <span className="font-bold text-emerald-700 uppercase text-[10px]">{user?.status || 'ACTIVE'}</span>
+                <span className="font-black text-emerald-700 uppercase text-[10px]">{user?.status || 'ACTIVE'}</span>
               </div>
               <div className="flex items-center justify-between pt-0.5">
-                <span className="text-slate-500 font-medium text-[11px]">Account Created:</span>
+                <span className="text-slate-500 font-medium text-[11px]">Member Since:</span>
                 <span className="font-bold text-slate-900 text-[11px]">
-                  {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                  {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                 </span>
               </div>
             </div>

@@ -20,7 +20,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'range' => ['nullable', 'string', 'in:all,today,month,year'],
-            'chart_range' => ['nullable', 'string', 'in:month,quarter,year,all'],
+            'chart_range' => ['nullable', 'string', 'in:today,month,quarter,year,all'],
         ]);
 
         $range = $request->input('range', 'all');
@@ -93,29 +93,95 @@ class AdminController extends Controller
         $pendingLibrariesCount = Library::where('status', 'pending')->count();
         $inactiveLibrariesCount = Library::whereIn('status', ['inactive', 'suspended'])->count();
 
-        // 4. Platform Activity Trend (Backend filtered based on chartRange)
-        if ($chartRange === 'month') {
-            // Weekly breakdown for current month (4 weeks)
-            $startOfMonth = now()->startOfMonth();
-            $activityTrend = collect(range(0, 3))->map(function ($weekIdx) use ($startOfMonth) {
-                $wStart = (clone $startOfMonth)->addDays($weekIdx * 7);
-                $wEnd = $weekIdx === 3 ? now()->endOfMonth() : (clone $wStart)->addDays(6)->endOfDay();
-                $label = "W" . ($weekIdx + 1);
+        // 4. Platform Activity Trend (Accurately partitioned by today, month, year, all)
+        if ($chartRange === 'today') {
+            // Hourly breakdown for Today across 6 time intervals (00:00 - 23:59)
+            $startOfDay = Carbon::today();
+            $activityTrend = collect([
+                ['label' => '4AM', 's' => 0, 'e' => 4],
+                ['label' => '8AM', 's' => 4, 'e' => 8],
+                ['label' => '12PM', 's' => 8, 'e' => 12],
+                ['label' => '4PM', 's' => 12, 'e' => 16],
+                ['label' => '8PM', 's' => 16, 'e' => 20],
+                ['label' => '12AM', 's' => 20, 'e' => 24],
+            ])->map(function ($slot) use ($startOfDay) {
+                $s = (clone $startOfDay)->addHours($slot['s']);
+                $e = $slot['e'] === 24 ? (clone $startOfDay)->endOfDay() : (clone $startOfDay)->addHours($slot['e']);
 
-                $newLibs = Library::whereBetween('created_at', [$wStart, $wEnd])->count();
-                $newMebs = User::where('role', 'member')->whereBetween('created_at', [$wStart, $wEnd])->count();
-                $borrows = Borrowing::whereBetween('created_at', [$wStart, $wEnd])->count();
+                $newLibs = Library::whereBetween('created_at', [$s, $e])->count();
+                $newMebs = User::where('role', 'member')->whereBetween('created_at', [$s, $e])->count();
+                $borrows = Borrowing::whereBetween('created_at', [$s, $e])->count();
 
                 return [
-                    'month' => $label,
+                    'month' => $slot['label'],
                     'Libraries' => $newLibs,
                     'Members' => $newMebs,
                     'Borrowings' => $borrows,
                 ];
             })->values();
+        } elseif ($chartRange === 'month') {
+            // Weekly breakdown for current month (4 discrete weekly blocks)
+            $startOfMonth = Carbon::now()->startOfMonth();
+            $daysInMonth = Carbon::now()->daysInMonth;
+            $activityTrend = collect([
+                ['label' => 'Week 1', 's' => 1, 'e' => 7],
+                ['label' => 'Week 2', 's' => 8, 'e' => 14],
+                ['label' => 'Week 3', 's' => 15, 'e' => 21],
+                ['label' => 'Week 4', 's' => 22, 'e' => $daysInMonth],
+            ])->map(function ($slot) use ($startOfMonth) {
+                $s = (clone $startOfMonth)->day($slot['s'])->startOfDay();
+                $e = (clone $startOfMonth)->day($slot['e'])->endOfDay();
+
+                $newLibs = Library::whereBetween('created_at', [$s, $e])->count();
+                $newMebs = User::where('role', 'member')->whereBetween('created_at', [$s, $e])->count();
+                $borrows = Borrowing::whereBetween('created_at', [$s, $e])->count();
+
+                return [
+                    'month' => $slot['label'],
+                    'Libraries' => $newLibs,
+                    'Members' => $newMebs,
+                    'Borrowings' => $borrows,
+                ];
+            })->values();
+        } elseif ($chartRange === 'year') {
+            // Months of the current calendar year
+            $currentYear = Carbon::now()->year;
+            $currentMonth = Carbon::now()->month;
+            $monthsToShow = max($currentMonth, 6);
+
+            $libCounts = Library::whereYear('created_at', $currentYear)
+                ->selectRaw('MONTH(created_at) as m, count(*) as total')
+                ->groupBy('m')
+                ->get()
+                ->keyBy('m');
+
+            $memberCounts = User::where('role', 'member')
+                ->whereYear('created_at', $currentYear)
+                ->selectRaw('MONTH(created_at) as m, count(*) as total')
+                ->groupBy('m')
+                ->get()
+                ->keyBy('m');
+
+            $borrowCounts = Borrowing::whereYear('created_at', $currentYear)
+                ->selectRaw('MONTH(created_at) as m, count(*) as total')
+                ->groupBy('m')
+                ->get()
+                ->keyBy('m');
+
+            $activityTrend = collect(range(1, $monthsToShow))->map(function ($m) use ($currentYear, $libCounts, $memberCounts, $borrowCounts) {
+                $date = Carbon::create($currentYear, $m, 1);
+                return [
+                    'month' => $date->format('M'),
+                    'Libraries' => (int) ($libCounts->get($m)->total ?? 0),
+                    'Members' => (int) ($memberCounts->get($m)->total ?? 0),
+                    'Borrowings' => (int) ($borrowCounts->get($m)->total ?? 0),
+                ];
+            })->values();
         } else {
-            $monthCount = $chartRange === 'quarter' ? 3 : 6;
-            $since = Carbon::now()->subMonths($monthCount - 1)->startOfMonth();
+            // 'all' / multi-month overview: Last 6 calendar months (using subMonthsNoOverflow to prevent duplicate month overflow)
+            $monthCount = 6;
+            $startMonth = Carbon::now()->startOfMonth();
+            $since = (clone $startMonth)->subMonthsNoOverflow($monthCount - 1);
 
             $libCounts = Library::where('created_at', '>=', $since)
                 ->selectRaw('YEAR(created_at) as y, MONTH(created_at) as m, count(*) as total')
@@ -136,8 +202,8 @@ class AdminController extends Controller
                 ->get()
                 ->keyBy(fn ($r) => $r->y . '-' . $r->m);
 
-            $activityTrend = collect(range($monthCount - 1, 0))->map(function ($i) use ($libCounts, $memberCounts, $borrowCounts) {
-                $date = Carbon::now()->subMonths($i);
+            $activityTrend = collect(range($monthCount - 1, 0))->map(function ($i) use ($startMonth, $libCounts, $memberCounts, $borrowCounts) {
+                $date = (clone $startMonth)->subMonthsNoOverflow($i);
                 $key = $date->year . '-' . $date->month;
                 return [
                     'month' => $date->format('M'),

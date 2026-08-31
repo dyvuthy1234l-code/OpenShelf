@@ -252,28 +252,33 @@ body {
   }
 }
 
-/* Custom Scrollbars for Accessibility and Brand Consistency */
+/* Universally hide scrollbar indicators across all browsers while maintaining smooth scrolling functionality */
+html,
+body,
+#root,
 * {
-  scrollbar-width: thin;
-  scrollbar-color: #C8D7E6 transparent;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+  display: none !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #C8D7E6;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #94A3B8;
+*::-webkit-scrollbar-thumb {
+  background: transparent !important;
+  display: none !important;
 }
 
 /* Focus styles */
@@ -360,7 +365,6 @@ html.dark,
 .dark body {
   background-color: #07172B !important;
   color: #F8FAFC !important;
-  scrollbar-color: #1E3A5F #07172B;
 }
 
 html.dark main,

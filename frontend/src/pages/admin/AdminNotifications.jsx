@@ -186,20 +186,18 @@ export default function AdminNotifications() {
   };
 
   return (
-    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-3.5 overflow-y-auto lg:overflow-hidden h-full pr-1 pb-2 font-sans">
-      {/* 1. PAGE HEADER */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
+      {/* 1. PAGE HEADER (COMPACT EXECUTIVE STRIP) */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         <div>
-          <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 border border-amber-500/20">
-              SYSTEM CENTER
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-block">
+              SYSTEM CENTER • {totalItems} ALERTS
             </span>
-            <span className="text-slate-300 font-normal text-xs">•</span>
-            <span className="text-xs font-bold text-slate-500">Administrative Alerts</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight tracking-tight">Notifications</h1>
-          <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Stay updated with important platform activity and administrative alerts.
+          <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight mt-0.5">Platform Notifications</h1>
+          <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
+            Administrative alerts, subscriber updates, and system activity logs.
           </p>
         </div>
 
@@ -207,7 +205,7 @@ export default function AdminNotifications() {
         <button
           onClick={handleMarkAllAsRead}
           disabled={countUnread === 0}
-          className={`inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl font-extrabold text-xs shadow-2xs transition-all cursor-pointer shrink-0 ${
+          className={`inline-flex items-center justify-center gap-1.5 px-3.5 h-8.5 rounded-xl font-black text-xs shadow-2xs transition-all cursor-pointer shrink-0 ${
             countUnread > 0
               ? 'bg-slate-900 hover:bg-slate-800 text-white cursor-pointer shadow-md shadow-slate-900/10'
               : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
@@ -220,9 +218,9 @@ export default function AdminNotifications() {
 
       {/* Action Notification Banner */}
       {actionMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-3 rounded-xl text-xs font-bold flex items-center justify-between shadow-2xs animate-fadeIn shrink-0">
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between shadow-2xs animate-fadeIn shrink-0">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{actionMessage}</span>
           </div>
           <button onClick={() => setActionMessage('')} className="text-emerald-700 hover:text-emerald-950 cursor-pointer">
@@ -232,9 +230,9 @@ export default function AdminNotifications() {
       )}
 
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-900 p-3 rounded-xl text-xs font-bold flex items-center justify-between shadow-2xs animate-fadeIn shrink-0">
+        <div className="bg-rose-50 border border-rose-200 text-rose-900 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between shadow-2xs animate-fadeIn shrink-0">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600" />
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
           </div>
           <button onClick={() => setError(null)} className="text-rose-700 hover:text-rose-950 cursor-pointer">
@@ -243,69 +241,91 @@ export default function AdminNotifications() {
         </div>
       )}
 
-      {/* 2. SUMMARY CARDS (4 COMPACT CARDS ~85px) */}
-      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-1 sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
+      {/* 2. COMPACT 4-COLUMN STAT STRIP (Interactive Click-to-Filter) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 shrink-0">
         {/* Card 1: All Notifications */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">All Notifications</span>
-            <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{countTotal}</span>
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('all'); setPriorityFilter('all'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-blue-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            statusFilter === 'all' && priorityFilter === 'all' ? 'ring-2 ring-blue-500/30 border-blue-500 bg-blue-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">All Notifications</span>
+            <span className="text-base font-black text-slate-900 leading-none">{countTotal}</span>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
-            <Bell className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-200/80 text-blue-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+            <Bell className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </button>
 
         {/* Card 2: Unread Alerts */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-amber-300 transition-all">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">Unread Alerts</span>
-            <span className="text-xl sm:text-2xl font-black text-amber-900 tracking-tight">{countUnread}</span>
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('unread'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-amber-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            statusFilter === 'unread' ? 'ring-2 ring-amber-500/30 border-amber-500 bg-amber-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Unread Alerts</span>
+            <span className="text-base font-black text-amber-900 leading-none">{countUnread}</span>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
-            <Clock className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+            <Clock className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </button>
 
         {/* Card 3: Requires Attention */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-rose-300 transition-all">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">Requires Attention</span>
-            <span className="text-xl sm:text-2xl font-black text-rose-900 tracking-tight">{countRequiresAttention}</span>
+        <button
+          type="button"
+          onClick={() => { setPriorityFilter('high'); setCurrentPage(1); }}
+          className={`text-left bg-white border rounded-xl p-2 sm:px-3 shadow-2xs hover:border-rose-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer ${
+            priorityFilter === 'high' ? 'ring-2 ring-rose-500/30 border-rose-500 bg-rose-50/20' : 'border-slate-200/90'
+          }`}
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">High Priority</span>
+            <span className="text-base font-black text-rose-900 leading-none">{countRequiresAttention}</span>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
-            <ShieldAlert className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200/80 text-rose-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+            <ShieldAlert className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
+        </button>
 
         {/* Card 4: Received Today */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs flex items-center justify-between group hover:border-slate-300 transition-all">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-widest text-slate-400 block mb-0.5">Received Today</span>
-            <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">{countToday}</span>
+        <button
+          type="button"
+          onClick={() => { setStatusFilter('all'); setCurrentPage(1); }}
+          className="text-left bg-white border border-slate-200/90 rounded-xl p-2 sm:px-3 shadow-2xs hover:border-emerald-400 hover:shadow-xs transition-all flex items-center justify-between h-[52px] cursor-pointer"
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Received Today</span>
+            <span className="text-base font-black text-slate-800 leading-none">{countToday}</span>
           </div>
-          <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold shrink-0 group-hover:scale-105 transition-transform">
-            <CheckCircle2 className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+            <CheckCircle2 className="w-3.5 h-3.5" />
           </div>
-        </motion.div>
-      </motion.div>
+        </button>
+      </div>
 
       {/* 3. FILTER TOOLBAR (SEARCH + FILTERS) */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-2.5 shrink-0">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         {/* Search Primary Input */}
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 max-w-md">
           <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by title, message, or type..."
-            className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+            placeholder="Search alerts by title or content..."
+            className="w-full pl-8 pr-8 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -313,7 +333,7 @@ export default function AdminNotifications() {
         </div>
 
         {/* Compact Filters & Reset */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {/* Status Filter */}
           <select
             value={statusFilter}
@@ -321,7 +341,7 @@ export default function AdminNotifications() {
               setStatusFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Status</option>
             <option value="unread">Unread</option>
@@ -335,7 +355,7 @@ export default function AdminNotifications() {
               setTypeFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Types</option>
             <option value="library">Library</option>
@@ -351,7 +371,7 @@ export default function AdminNotifications() {
               setPriorityFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-amber-500 cursor-pointer"
+            className="px-2.5 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
           >
             <option value="all">All Priority</option>
             <option value="high">High Priority</option>
@@ -363,9 +383,10 @@ export default function AdminNotifications() {
           <button
             onClick={handleResetFilters}
             className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+            title="Reset Filters"
           >
-            <RotateCcw className="w-3 h-3 text-slate-500" />
-            <span>Reset</span>
+            <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+            <span className="hidden sm:inline">Reset</span>
           </button>
         </div>
       </div>
@@ -539,7 +560,7 @@ export default function AdminNotifications() {
         )}
 
         {/* 5. PAGINATION */}
-        <div className="pt-3 border-t border-slate-100 shrink-0">
+        <div className="shrink-0">
           <AdminPagination
             currentPage={currentPage}
             lastPage={totalPages}
@@ -550,6 +571,7 @@ export default function AdminNotifications() {
             onPageChange={setCurrentPage}
             onPerPageChange={(value) => { setPerPage(value); setCurrentPage(1); }}
             label="notifications"
+            showDetails={true}
           />
         </div>
       </div>

@@ -11,7 +11,8 @@ export function useAdminDashboard(params = {}, options = {}) {
   return useQuery({
     queryKey: ['admin', 'dashboard', params],
     queryFn: () => adminService.getDashboard(params),
-    staleTime: DEFAULT_STALE_TIME,
+    staleTime: 1000 * 5, // 5s fresh cache
+    retry: 1,
     placeholderData: keepPreviousData,
     refetchInterval: options.refetchInterval ?? 30000, // 30s background poll
     ...options,

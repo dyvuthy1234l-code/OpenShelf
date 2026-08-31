@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Building2, CheckCircle2, Clock, XCircle, Search, Filter,
   RotateCcw, Plus, MoreVertical, Eye, Check, X, ShieldAlert,
-  ChevronLeft, ChevronRight, Phone, Mail, MapPin, AlertCircle
+  ChevronLeft, ChevronRight, Phone, Mail, MapPin, AlertCircle,
+  LayoutGrid, List, BookOpen, ExternalLink
 } from 'lucide-react';
 import adminService from '../../services/adminService';
 import { PAGE_MOTION_VARIANTS, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
@@ -14,14 +15,16 @@ import ErrorState from '../../components/public/ErrorState';
 import { useAdminLibraries } from '../../hooks/queries/useAdminQueries';
 
 export default function AdminLibraries() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [actionMessage, setActionMessage] = useState('');
   const [actionError, setActionError] = useState('');
 
-  // Filters & Search
+  // Filters, Search & View Mode
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [subFilter, setSubFilter] = useState('all');
+  const [viewMode, setViewMode] = useState('table'); // 'table' | 'grid'
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -158,109 +161,146 @@ export default function AdminLibraries() {
   const countInactive = summary.inactive;
 
   return (
-    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 overflow-y-auto h-full pr-1 pb-1 font-sans">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="flex-1 flex flex-col min-h-0 space-y-2 h-full pr-1 pb-1 font-sans overflow-hidden">
       {/* 1. PAGE HEADER (COMPACT CLIENT-READY NETWORK MANAGEMENT) */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
-        <div>
-          <span className="text-[9px] uppercase font-black tracking-widest text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-block">
-            Network Management
-          </span>
-          <h1 className="text-lg sm:text-xl font-black text-slate-900 leading-tight mt-0.5">Libraries</h1>
-          <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-            Manage and monitor all registered OpenShelf libraries.
-          </p>
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-extrabold shadow-2xs shrink-0">
+            <Building2 className="w-4 h-4 text-slate-950" />
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight">Libraries Network</h1>
+              <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200/80">
+                {countTotal} Branches
+              </span>
+            </div>
+            <p className="text-[10.5px] text-slate-500 font-medium leading-none mt-0.5">
+              Manage library branch directory, verify librarians, and monitor book circulation.
+            </p>
+          </div>
         </div>
 
         <button
           onClick={() => setAddModalOpen(true)}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 h-9 sm:h-10 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-2xs transition-all cursor-pointer shrink-0"
+          className="inline-flex items-center justify-center gap-1.5 px-3.5 h-8 sm:h-9 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-2xs transition-all cursor-pointer shrink-0"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>Add Library</span>
         </button>
       </div>
 
       {/* Action Notification Banner */}
       {actionMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
           <span>{actionMessage}</span>
           <button onClick={() => setActionMessage('')} className="text-emerald-600 hover:text-emerald-900 cursor-pointer">
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {/* Action Error Banner */}
       {actionError && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between shadow-2xs shrink-0">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
             <span>{actionError}</span>
           </div>
           <button onClick={() => setActionError('')} className="text-rose-600 hover:text-rose-900 cursor-pointer">
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
-      {/* 2. SUMMARY CARDS (2x2 GRID ON MOBILE, 4-COL ON DESKTOP) */}
-      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 shrink-0">
-        {/* Card 1: Total Libraries */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Total Libraries</span>
-            <span className="text-xl font-black text-slate-900 tracking-tight block leading-tight mt-0.5">{countTotal}</span>
-            <span className="inline-block text-[9px] font-bold text-slate-500 mt-0.5">Network total</span>
+      {/* 2. INTERACTIVE SUMMARY KPI STRIP (CLICKABLE TO FILTER BY STATUS) */}
+      <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
+        {/* Card 1: Total */}
+        <motion.div
+          variants={LIST_ITEM}
+          onClick={() => { setStatusFilter('all'); setCurrentPage(1); }}
+          className={`rounded-xl p-2 sm:px-3 shadow-2xs flex items-center justify-between h-[52px] cursor-pointer transition-all ${
+            statusFilter === 'all'
+              ? 'bg-amber-500/15 border-2 border-amber-500 ring-2 ring-amber-500/20'
+              : 'bg-gradient-to-r from-amber-50/50 to-white border border-slate-200/90 hover:border-amber-300 hover:shadow-xs'
+          }`}
+          title="Click to view all libraries"
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Total Branches</span>
+            <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-none mt-0.5">{countTotal}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-700 flex items-center justify-center font-bold shrink-0">
             <Building2 className="w-3.5 h-3.5 text-amber-600" />
           </div>
         </motion.div>
 
-        {/* Card 2: Active Libraries */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Active Libraries</span>
-            <span className="text-xl font-black text-emerald-950 tracking-tight block leading-tight mt-0.5">{countActive}</span>
-            <span className="inline-block text-[9px] font-bold text-emerald-700 mt-0.5">Operating branches</span>
+        {/* Card 2: Active */}
+        <motion.div
+          variants={LIST_ITEM}
+          onClick={() => { setStatusFilter('active'); setCurrentPage(1); }}
+          className={`rounded-xl p-2 sm:px-3 shadow-2xs flex items-center justify-between h-[52px] cursor-pointer transition-all ${
+            statusFilter === 'active'
+              ? 'bg-emerald-500/15 border-2 border-emerald-500 ring-2 ring-emerald-500/20'
+              : 'bg-gradient-to-r from-emerald-50/50 to-white border border-slate-200/90 hover:border-emerald-300 hover:shadow-xs'
+          }`}
+          title="Click to filter active libraries"
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Active Operating</span>
+            <span className="text-base sm:text-lg font-black text-emerald-950 tracking-tight leading-none mt-0.5">{countActive}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-700 flex items-center justify-center font-bold shrink-0">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
           </div>
         </motion.div>
 
-        {/* Card 3: Pending / Review */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Pending / Review</span>
-            <span className="text-xl font-black text-amber-950 tracking-tight block leading-tight mt-0.5">{countPending}</span>
-            <span className="inline-block text-[9px] font-bold text-amber-700 mt-0.5">
-              {countPending === 0 ? 'No pending reviews' : 'Needs review'}
-            </span>
+        {/* Card 3: Pending */}
+        <motion.div
+          variants={LIST_ITEM}
+          onClick={() => { setStatusFilter('pending'); setCurrentPage(1); }}
+          className={`rounded-xl p-2 sm:px-3 shadow-2xs flex items-center justify-between h-[52px] cursor-pointer transition-all ${
+            statusFilter === 'pending'
+              ? 'bg-amber-500/20 border-2 border-amber-500 ring-2 ring-amber-500/20'
+              : 'bg-gradient-to-r from-amber-50/50 to-white border border-slate-200/90 hover:border-amber-300 hover:shadow-xs'
+          }`}
+          title="Click to filter pending libraries"
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Pending Approval</span>
+            <span className="text-base sm:text-lg font-black text-amber-950 tracking-tight leading-none mt-0.5">{countPending}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-700 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-700 flex items-center justify-center font-bold shrink-0">
             <Clock className="w-3.5 h-3.5 text-amber-600" />
           </div>
         </motion.div>
 
-        {/* Card 4: Inactive / Suspended */}
-        <motion.div variants={LIST_ITEM} className="bg-white border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between h-[82px]">
-          <div>
-            <span className="text-[9px] uppercase font-black tracking-wider text-slate-500 block">Inactive / Suspended</span>
-            <span className="text-xl font-black text-slate-700 tracking-tight block leading-tight mt-0.5">{countInactive}</span>
-            <span className="inline-block text-[9px] font-bold text-slate-500 mt-0.5">Disabled branches</span>
+        {/* Card 4: Inactive */}
+        <motion.div
+          variants={LIST_ITEM}
+          onClick={() => { setStatusFilter('inactive'); setCurrentPage(1); }}
+          className={`rounded-xl p-2 sm:px-3 shadow-2xs flex items-center justify-between h-[52px] cursor-pointer transition-all ${
+            statusFilter === 'inactive'
+              ? 'bg-slate-200 border-2 border-slate-500 ring-2 ring-slate-400/20'
+              : 'bg-gradient-to-r from-slate-50/80 to-white border border-slate-200/90 hover:border-slate-300 hover:shadow-xs'
+          }`}
+          title="Click to filter disabled branches"
+        >
+          <div className="min-w-0">
+            <span className="text-[8.5px] uppercase font-black tracking-wider text-slate-500 block truncate">Disabled Branches</span>
+            <span className="text-base sm:text-lg font-black text-slate-700 tracking-tight leading-none mt-0.5">{countInactive}</span>
           </div>
-          <div className="w-7.5 h-7.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center font-bold shrink-0 shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center font-bold shrink-0">
             <XCircle className="w-3.5 h-3.5 text-slate-500" />
           </div>
         </motion.div>
       </motion.div>
 
-      {/* 3. FILTER & SEARCH TOOLBAR */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-2 sm:p-2.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
+      {/* 3. SEARCH, STATUS TABS & VIEW TOGGLE TOOLBAR */}
+      <div className="bg-white border border-slate-200/90 rounded-xl p-1.5 sm:p-2 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
         {/* Left: Search Input */}
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
@@ -269,56 +309,75 @@ export default function AdminLibraries() {
               setCurrentPage(1);
             }}
             placeholder="Search libraries by name, email, or librarian..."
-            className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
+            className="w-full pl-8.5 pr-4 py-1.5 bg-slate-50 border border-slate-200/80 rounded-lg text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
           />
         </div>
 
-        {/* Right: Dropdowns & Reset */}
-        <div className="flex items-center gap-2">
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-3 py-1.5 bg-slate-50 border border-slate-200/90 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 cursor-pointer"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="pending">Pending</option>
-            <option value="inactive">Inactive</option>
-            <option value="suspended">Suspended</option>
-          </select>
+        {/* Right: Status Tabs + View Switcher + Reset */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Status Tabs */}
+          <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[10.5px] font-black">
+            {[
+              { key: 'all', label: 'All', count: countTotal },
+              { key: 'active', label: 'Active', count: countActive },
+              { key: 'pending', label: 'Pending', count: countPending },
+              { key: 'inactive', label: 'Inactive', count: countInactive },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => {
+                  setStatusFilter(tab.key);
+                  setCurrentPage(1);
+                }}
+                className={`px-2.5 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                  statusFilter === tab.key
+                    ? 'bg-white text-slate-950 font-black shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className="text-[9px] opacity-70">({tab.count})</span>
+              </button>
+            ))}
+          </div>
 
-          {/* Hidden Subscription Filter */}
-          <select
-            value={subFilter}
-            onChange={(e) => {
-              setSubFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="hidden"
-          >
-            <option value="all">All Plans</option>
-            <option value="active">Active Plan</option>
-            <option value="trial">Trial</option>
-            <option value="expired">Expired</option>
-          </select>
+          {/* View Mode Switcher (Table vs Grid) */}
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/70">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                viewMode === 'table' ? 'bg-white text-slate-950 shadow-2xs font-bold' : 'text-slate-400 hover:text-slate-700'
+              }`}
+              title="Table View (List)"
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                viewMode === 'grid' ? 'bg-white text-slate-950 shadow-2xs font-bold' : 'text-slate-400 hover:text-slate-700'
+              }`}
+              title="Card Grid View"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
-          {/* Clear Filters */}
-          <button
-            onClick={handleResetFilters}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-            <span>Clear</span>
-          </button>
+          {/* Clear Filters Button */}
+          {(searchQuery || statusFilter !== 'all') && (
+            <button
+              onClick={handleResetFilters}
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10.5px] rounded-lg transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3 h-3 text-slate-500" />
+              <span>Clear</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {/* 4. MAIN LIBRARIES TABLE CONTAINER (EXPANDS VERTICALLY TO FILL AVAILABLE HEIGHT) */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex-1 min-h-0 flex flex-col justify-between h-full">
+      {/* 4. MAIN LIBRARIES DISPLAY CONTAINER (TABLE VIEW OR GRID VIEW) */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex-1 min-h-0 flex flex-col justify-between">
         {loading ? (
           <div className="p-6 text-center text-xs text-slate-400 font-medium animate-pulse">
             Loading library network records...
@@ -328,49 +387,52 @@ export default function AdminLibraries() {
             <ErrorState message={error} onRetry={loadLibraries} />
           </div>
         ) : filteredLibraries.length === 0 ? (
-          <div className="py-8 text-center p-6 space-y-2">
-            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto">
-              <Building2 className="w-7 h-7 text-slate-400" />
+          <div className="py-8 text-center p-6 space-y-2 flex-1 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto text-amber-600">
+              <Building2 className="w-6 h-6" />
             </div>
             <h3 className="text-sm font-black text-slate-800">
-              {searchQuery || statusFilter !== 'all' || subFilter !== 'all'
+              {searchQuery || statusFilter !== 'all'
                 ? 'No libraries match your current filters.'
                 : 'No libraries registered yet.'}
             </h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
-              {searchQuery || statusFilter !== 'all' || subFilter !== 'all'
+              {searchQuery || statusFilter !== 'all'
                 ? 'Try adjusting your search query or resetting filters.'
                 : 'New libraries will appear here once registered on OpenShelf.'}
             </p>
-            {searchQuery || statusFilter !== 'all' || subFilter !== 'all' ? (
+            {searchQuery || statusFilter !== 'all' ? (
               <button
                 onClick={handleResetFilters}
-                className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-2xs"
+                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-2xs"
               >
                 Clear Filters
               </button>
             ) : (
               <button
                 onClick={() => setAddModalOpen(true)}
-                className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-2xs"
+                className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-slate-950 font-black text-xs rounded-xl cursor-pointer shadow-2xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Library</span>
               </button>
             )}
           </div>
-        ) : (
-          <div className="overflow-auto flex-1 min-h-0 h-full">
+        ) : viewMode === 'table' ? (
+          /* ============================================================ */
+          /* 📋 TABLE VIEW: COMPACT, HIGHLY VISIBLE, ZERO REDUNDANCY     */
+          /* ============================================================ */
+          <div className="overflow-y-auto flex-1 min-h-0">
             <table className="w-full text-left text-xs align-middle border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[10px] tracking-wider sticky top-0 bg-slate-50 z-10">
-                  <th className="py-2.5 px-3.5">Library</th>
-                  <th className="py-2.5 px-3.5">Managed By</th>
-                  <th className="py-2.5 px-3.5">Location</th>
-                  <th className="py-2.5 px-3.5">Books</th>
-                  <th className="py-2.5 px-3.5">Status</th>
-                  <th className="py-2.5 px-3.5">Created</th>
-                  <th className="py-2.5 px-3.5 text-right">Actions</th>
+                <tr className="bg-slate-50/95 backdrop-blur-xs border-b border-slate-200/80 text-slate-500 font-extrabold uppercase text-[9.5px] tracking-wider sticky top-0 z-10">
+                  <th className="py-2 px-3.5">Library Branch</th>
+                  <th className="py-2 px-3.5">Managed By</th>
+                  <th className="py-2 px-3.5">Contact & Reach</th>
+                  <th className="py-2 px-3.5">Catalog</th>
+                  <th className="py-2 px-3.5">Status</th>
+                  <th className="py-2 px-3.5">Created</th>
+                  <th className="py-2 px-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
@@ -380,88 +442,119 @@ export default function AdminLibraries() {
                   return (
                     <tr
                       key={lib.id}
-                      onClick={() => {
-                        setSelectedLibrary(lib);
-                        setDrawerOpen(true);
-                      }}
-                      className="hover:bg-amber-50/30 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/admin/libraries/${lib.id}`)}
+                      className="hover:bg-amber-50/40 transition-colors cursor-pointer group"
                     >
-                      {/* Library Column */}
-                      <td className="py-2.5 px-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-extrabold flex items-center justify-center overflow-hidden shrink-0 border border-white shadow-2xs">
+                      {/* 1. Library Branch Column (Avatar + Name + Location Pin) */}
+                      <td className="py-2 px-3.5">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 text-slate-950 font-black flex items-center justify-center overflow-hidden shrink-0 border border-slate-200/80 shadow-2xs group-hover:scale-105 transition-transform">
                             {lib.image_url ? (
                               <img src={lib.image_url} alt={lib.name} className="w-full h-full object-cover" />
                             ) : (
                               lib.name[0].toUpperCase()
                             )}
                           </div>
-                          <div>
-                            <span className="font-extrabold text-slate-900 block text-xs leading-tight">
+                          <div className="min-w-0">
+                            <span className="font-black text-slate-900 block text-xs leading-tight group-hover:text-amber-700 transition-colors">
                               {lib.name}
                             </span>
-                            <span className="text-[10px] text-slate-400 block font-medium mt-0.5">
+                            <span className="text-[10px] text-slate-500 flex items-center gap-1 font-medium mt-0.5 truncate">
+                              <MapPin className="w-2.5 h-2.5 text-amber-600 shrink-0" />
                               {lib.city || lib.address || 'Location unassigned'}
                             </span>
                           </div>
                         </div>
                       </td>
 
-                      {/* Managed By Column */}
-                      <td className="py-2.5 px-3.5">
+                      {/* 2. Managed By Column (Avatar + Name + Verified Badge) */}
+                      <td className="py-2 px-3.5">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 font-extrabold text-[10px] flex items-center justify-center shrink-0">
-                            {lib.owner?.name ? lib.owner.name[0].toUpperCase() : 'U'}
+                          <div className="w-7 h-7 rounded-full bg-amber-100 border border-slate-200/80 text-slate-700 font-black text-[10px] flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                            {lib.owner?.avatar_url || lib.owner?.avatar ? (
+                              <img
+                                src={lib.owner.avatar_url || lib.owner.avatar}
+                                alt={lib.owner?.name || 'Librarian'}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <img
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(lib.owner?.name || 'L')}&background=fef3c7&color=b45309&bold=true`}
+                                alt={lib.owner?.name || 'Librarian'}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
                           </div>
-                          <div>
-                            <span className="font-extrabold text-slate-900 block text-xs">{lib.owner?.name || 'Unassigned'}</span>
-                            <span className="text-[9.5px] text-slate-400 block font-medium">Librarian</span>
+                          <div className="min-w-0">
+                            <span className="font-black text-slate-900 block text-xs truncate leading-tight">{lib.owner?.name || 'Unassigned'}</span>
+                            <span className="text-[9px] font-bold text-blue-700 bg-blue-50 px-1 py-0.2 rounded border border-blue-200/60 inline-block leading-none mt-0.5">
+                              Librarian
+                            </span>
                           </div>
                         </div>
                       </td>
 
-                      {/* Location Column */}
-                      <td className="py-2.5 px-3.5 text-slate-700 font-semibold truncate max-w-[140px]">
-                        {lib.city ? `${lib.city}` : lib.address || 'N/A'}
+                      {/* 3. Contact & Reach Column (Replaced duplicate Location with Phone & Email) */}
+                      <td className="py-2 px-3.5">
+                        <div className="space-y-0.5">
+                          {lib.phone ? (
+                            <span className="flex items-center gap-1 text-[10.5px] font-bold text-slate-700">
+                              <Phone className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              {lib.phone}
+                            </span>
+                          ) : null}
+                          {lib.email ? (
+                            <span className="flex items-center gap-1 text-[10px] font-medium text-slate-500 truncate max-w-[150px] block">
+                              <Mail className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              {lib.email}
+                            </span>
+                          ) : !lib.phone ? (
+                            <span className="text-[10.5px] text-slate-400 italic">No contact info</span>
+                          ) : null}
+                        </div>
                       </td>
 
-                      {/* Books Column */}
-                      <td className="py-2.5 px-3.5">
-                        <span className="inline-flex items-center gap-1 font-extrabold text-slate-900 text-xs px-2.5 py-0.5 bg-slate-100 rounded-md border border-slate-200/80">
-                          {bookCount} <span className="text-[9.5px] text-slate-500 font-semibold">Books</span>
+                      {/* 4. Catalog Column */}
+                      <td className="py-2 px-3.5">
+                        <span className="inline-flex items-center gap-1 font-black text-slate-900 text-[11px] px-2 py-0.5 bg-slate-100 rounded-lg border border-slate-200/80 shadow-2xs">
+                          📚 {bookCount} <span className="text-[9px] text-slate-500 font-semibold">Books</span>
                         </span>
                       </td>
 
-                      {/* Status Column */}
-                      <td className="py-2.5 px-3.5">
-                        <span className={`inline-block text-[9px] uppercase font-black px-2.5 py-0.5 rounded-full border ${
+                      {/* 5. Status Column with Live Pulse Dot */}
+                      <td className="py-2 px-3.5">
+                        <span className={`inline-flex items-center gap-1.5 text-[9px] uppercase font-black px-2.5 py-0.5 rounded-full border shadow-2xs ${
                           lib.status === 'active'
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200/90'
                             : lib.status === 'pending'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200/90'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200/90 animate-pulse'
                             : 'bg-slate-100 text-slate-600 border-slate-200/90'
                         }`}>
-                          {lib.status || 'inactive'}
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                            lib.status === 'active' ? 'bg-emerald-500' : lib.status === 'pending' ? 'bg-amber-500' : 'bg-slate-400'
+                          }`} />
+                          {lib.status || 'Active'}
                         </span>
                       </td>
 
-                      {/* Created Column */}
-                      <td className="py-2.5 px-3.5 text-slate-400 text-[11px]">
+                      {/* 6. Created Column */}
+                      <td className="py-2 px-3.5 text-slate-400 text-[10.5px] font-semibold">
                         {lib.created_at ? new Date(lib.created_at).toLocaleDateString() : 'N/A'}
                       </td>
 
-                      {/* Actions Column: [ Eye ] [ Edit ] [ ⋮ ] Icon Buttons with Tooltips */}
-                      <td className="py-2.5 px-3.5 text-right relative" onClick={(e) => e.stopPropagation()}>
+                      {/* 7. Actions Column: Polished Micro-Buttons */}
+                      <td className="py-2 px-3.5 text-right relative" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1">
                           <button
-                            onClick={() => {
-                              setSelectedLibrary(lib);
-                              setDrawerOpen(true);
-                            }}
-                            className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                            title="View"
+                            onClick={() => navigate(`/admin/libraries/${lib.id}`)}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-slate-700 hover:text-amber-900 bg-slate-100 hover:bg-amber-100/70 rounded-lg text-[10.5px] font-black transition-all cursor-pointer shadow-2xs"
+                            title="View Branch Details"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-3 h-3 text-slate-600 group-hover:text-amber-700" />
+                            <span>View</span>
                           </button>
 
                           <button
@@ -469,52 +562,88 @@ export default function AdminLibraries() {
                               setEditLib(lib);
                               setEditModalOpen(true);
                             }}
-                            className="p-1.5 text-slate-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
-                            title="Edit"
+                            className="p-1 text-slate-600 hover:text-amber-800 bg-slate-100 hover:bg-amber-100/70 rounded-lg transition-all cursor-pointer shadow-2xs"
+                            title="Edit Library"
                           >
-                            <Building2 className="w-4 h-4" />
+                            <Building2 className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Row More Options Menu */}
                           <div className="relative">
                             <button
                               onClick={() => setActionMenuId(actionMenuId === lib.id ? null : lib.id)}
-                              className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                              title="More"
+                              className="p-1 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all cursor-pointer shadow-2xs"
+                              title="More Options"
                             >
-                              <MoreVertical className="w-4 h-4" />
+                              <MoreVertical className="w-3.5 h-3.5" />
                             </button>
 
                             {actionMenuId === lib.id && (
                               <>
                                 <div className="fixed inset-0 z-20" onClick={() => setActionMenuId(null)} />
-                                <div className="absolute right-0 mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-1 text-left">
+                                <div className="absolute right-0 mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-xl z-30 py-1 text-left">
                                   <button
-                                  onClick={() => {
-                                    setActionMenuId(null);
-                                    setSelectedLibrary(lib);
-                                    setDrawerOpen(true);
-                                  }}
-                                  className="w-full px-3 py-1.5 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-2 cursor-pointer"
-                                >
-                                  <Eye className="w-3.5 h-3.5 text-slate-400" />
-                                  <span>View Details</span>
-                                </button>
+                                    onClick={() => {
+                                      setActionMenuId(null);
+                                      navigate(`/admin/libraries/${lib.id}`);
+                                    }}
+                                    className="w-full px-3 py-1.5 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-2 cursor-pointer"
+                                  >
+                                    <Eye className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>View Details</span>
+                                  </button>
 
-                                <button
-                                  onClick={() => {
-                                    setActionMenuId(null);
-                                    setEditLib(lib);
-                                    setEditModalOpen(true);
-                                  }}
-                                  className="w-full px-3 py-1.5 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-2 cursor-pointer"
-                                >
-                                  <Building2 className="w-3.5 h-3.5 text-slate-400" />
-                                  <span>Edit Library</span>
-                                </button>
+                                  <button
+                                    onClick={() => {
+                                      setActionMenuId(null);
+                                      setEditLib(lib);
+                                      setEditModalOpen(true);
+                                    }}
+                                    className="w-full px-3 py-1.5 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-2 cursor-pointer"
+                                  >
+                                    <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>Edit Library</span>
+                                  </button>
 
-                                {lib.status === 'pending' && (
-                                  <>
+                                  {lib.status === 'pending' && (
+                                    <>
+                                      <button
+                                        onClick={() => {
+                                          setActionMenuId(null);
+                                          handleStatusChange(lib.id, 'active');
+                                        }}
+                                        className="w-full px-3 py-1.5 hover:bg-emerald-50 text-xs font-bold text-emerald-700 flex items-center gap-2 cursor-pointer"
+                                      >
+                                        <Check className="w-3.5 h-3.5" />
+                                        <span>Approve Library</span>
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          setActionMenuId(null);
+                                          setActionModal({ open: true, type: 'reject', library: lib });
+                                        }}
+                                        className="w-full px-3 py-1.5 hover:bg-rose-50 text-xs font-bold text-rose-700 flex items-center gap-2 cursor-pointer"
+                                      >
+                                        <X className="w-3.5 h-3.5" />
+                                        <span>Reject Library</span>
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {lib.status === 'active' && (
+                                    <button
+                                      onClick={() => {
+                                        setActionMenuId(null);
+                                        setActionModal({ open: true, type: 'deactivate', library: lib });
+                                      }}
+                                      className="w-full px-3 py-1.5 hover:bg-rose-50 text-xs font-bold text-rose-700 flex items-center gap-2 cursor-pointer"
+                                    >
+                                      <XCircle className="w-3.5 h-3.5" />
+                                      <span>Deactivate</span>
+                                    </button>
+                                  )}
+
+                                  {(lib.status === 'inactive' || lib.status === 'suspended') && (
                                     <button
                                       onClick={() => {
                                         setActionMenuId(null);
@@ -522,48 +651,11 @@ export default function AdminLibraries() {
                                       }}
                                       className="w-full px-3 py-1.5 hover:bg-emerald-50 text-xs font-bold text-emerald-700 flex items-center gap-2 cursor-pointer"
                                     >
-                                      <Check className="w-3.5 h-3.5" />
-                                      <span>Approve Library</span>
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      <span>Activate</span>
                                     </button>
-                                    <button
-                                      onClick={() => {
-                                        setActionMenuId(null);
-                                        setActionModal({ open: true, type: 'reject', library: lib });
-                                      }}
-                                      className="w-full px-3 py-1.5 hover:bg-rose-50 text-xs font-bold text-rose-700 flex items-center gap-2 cursor-pointer"
-                                    >
-                                      <X className="w-3.5 h-3.5" />
-                                      <span>Reject Library</span>
-                                    </button>
-                                  </>
-                                )}
-
-                                {lib.status === 'active' && (
-                                  <button
-                                    onClick={() => {
-                                      setActionMenuId(null);
-                                      setActionModal({ open: true, type: 'deactivate', library: lib });
-                                    }}
-                                    className="w-full px-3 py-1.5 hover:bg-rose-50 text-xs font-bold text-rose-700 flex items-center gap-2 cursor-pointer"
-                                  >
-                                    <XCircle className="w-3.5 h-3.5" />
-                                    <span>Deactivate</span>
-                                  </button>
-                                )}
-
-                                {(lib.status === 'inactive' || lib.status === 'suspended') && (
-                                  <button
-                                    onClick={() => {
-                                      setActionMenuId(null);
-                                      handleStatusChange(lib.id, 'active');
-                                    }}
-                                    className="w-full px-3 py-1.5 hover:bg-emerald-50 text-xs font-bold text-emerald-700 flex items-center gap-2 cursor-pointer"
-                                  >
-                                    <CheckCircle2 className="w-3.5 h-3.5" />
-                                    <span>Activate</span>
-                                  </button>
-                                )}
-                              </div>
+                                  )}
+                                </div>
                               </>
                             )}
                           </div>
@@ -575,127 +667,127 @@ export default function AdminLibraries() {
               </tbody>
             </table>
           </div>
-        )}
+        ) : (
+          /* ============================================================ */
+          /* 🎴 CARD GRID VIEW: MODERN DISCOVERY CATALOG LAYOUT           */
+          /* ============================================================ */
+          <div className="overflow-y-auto flex-1 min-h-0 p-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {paginatedLibraries.map((lib) => {
+                const bookCount = lib.books_count ?? lib.total_books ?? (Array.isArray(lib.books) ? lib.books.length : 0);
 
-        <AdminPagination
-          currentPage={currentPage}
-          lastPage={totalPages}
-          total={totalItems}
-          from={pagination.from}
-          to={pagination.to}
-          perPage={perPage}
-          onPageChange={setCurrentPage}
-          onPerPageChange={(value) => { setPerPage(value); setCurrentPage(1); }}
-          label="libraries"
-        />
-      </div>
-
-      {/* 5. LIBRARY DETAILS & REVIEW DRAWER */}
-      {drawerOpen && selectedLibrary && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/60 backdrop-blur-xs" onClick={() => setDrawerOpen(false)}>
-          <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white h-full shadow-2xl flex flex-col justify-between p-6 space-y-6 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div>
-                  <span className="text-[9px] uppercase font-extrabold tracking-widest text-amber-700 block">Library Overview</span>
-                  <h3 className="text-base font-extrabold text-slate-900 leading-tight">Details & Status</h3>
-                </div>
-                <button onClick={() => setDrawerOpen(false)} className="p-1 text-slate-400 hover:text-slate-900 rounded-lg cursor-pointer">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Cover & Logo Header */}
-              <div className="h-32 rounded-2xl bg-slate-900 overflow-hidden relative border border-slate-200">
-                {selectedLibrary.cover_image_url && (
-                  <img src={selectedLibrary.cover_image_url} alt="Cover" className="w-full h-full object-cover opacity-80" />
-                )}
-                <div className="absolute bottom-3 left-3 flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-base flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
-                    {selectedLibrary.image_url ? (
-                      <img src={selectedLibrary.image_url} alt={selectedLibrary.name} className="w-full h-full object-cover" />
-                    ) : (
-                      selectedLibrary.name[0].toUpperCase()
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-white leading-tight drop-shadow-xs">{selectedLibrary.name}</h3>
-                    <span className="text-xs text-amber-300 font-semibold">{selectedLibrary.city || 'Location not set'}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Description Section */}
-              <div className="space-y-1 text-xs">
-                <span className="font-extrabold text-slate-400 uppercase text-[9px] tracking-wider">Library Overview</span>
-                <p className="text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/60 font-medium">
-                  {selectedLibrary.description || 'No description provided for this library.'}
-                </p>
-              </div>
-
-              {/* Librarian Owner Section */}
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 space-y-2 text-xs">
-                <span className="font-extrabold text-slate-900 block border-b border-slate-200/60 pb-1">Librarian Owner</span>
-                <div className="space-y-1 text-slate-600 font-medium">
-                  <p><strong className="text-slate-900">Name:</strong> {selectedLibrary.owner?.name || 'N/A'}</p>
-                  <p><strong className="text-slate-900">Email:</strong> {selectedLibrary.owner?.email || 'N/A'}</p>
-                  <p><strong className="text-slate-900">Phone:</strong> {selectedLibrary.phone || selectedLibrary.owner?.phone || 'N/A'}</p>
-                </div>
-              </div>
-
-              {/* Location & Contact Section */}
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/60 space-y-2 text-xs">
-                <span className="font-extrabold text-slate-900 block border-b border-slate-200/60 pb-1">Location & Contact</span>
-                <div className="space-y-1 text-slate-600 font-medium">
-                  <p><strong className="text-slate-900">Address:</strong> {selectedLibrary.address || 'N/A'}</p>
-                  <p><strong className="text-slate-900">City:</strong> {selectedLibrary.city || 'N/A'}</p>
-                  <p><strong className="text-slate-900">Created:</strong> {selectedLibrary.created_at ? new Date(selectedLibrary.created_at).toLocaleDateString() : 'N/A'}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Actions */}
-            <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-              {selectedLibrary.status === 'pending' ? (
-                <>
-                  <button
-                    disabled={actionLoading}
-                    onClick={() => setActionModal({ open: true, type: 'reject', library: selectedLibrary })}
-                    className="flex-1 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-xs rounded-xl border border-rose-200 transition-colors cursor-pointer"
+                return (
+                  <div
+                    key={lib.id}
+                    onClick={() => {
+                      setSelectedLibrary(lib);
+                      setDrawerOpen(true);
+                    }}
+                    className="bg-white border border-slate-200/90 hover:border-amber-400/80 rounded-2xl p-3 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
                   >
-                    Reject
-                  </button>
-                  <button
-                    disabled={actionLoading}
-                    onClick={() => handleStatusChange(selectedLibrary.id, 'active')}
-                    className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-2xs transition-colors cursor-pointer"
-                  >
-                    Approve Library
-                  </button>
-                </>
-              ) : selectedLibrary.status === 'active' ? (
-                <button
-                  disabled={actionLoading}
-                  onClick={() => setActionModal({ open: true, type: 'deactivate', library: selectedLibrary })}
-                  className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl transition-colors cursor-pointer"
-                >
-                  Deactivate Library
-                </button>
-              ) : (
-                <button
-                  disabled={actionLoading}
-                  onClick={() => handleStatusChange(selectedLibrary.id, 'active')}
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl transition-colors cursor-pointer"
-                >
-                  Activate Library
-                </button>
-              )}
+                    <div>
+                      {/* Card Header: Cover Image & Status Badge */}
+                      <div className="relative h-24 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 overflow-hidden flex items-center justify-center border border-slate-200/70 shadow-2xs mb-2.5">
+                        {lib.image_url ? (
+                          <img src={lib.image_url} alt={lib.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        ) : (
+                          <span className="text-3xl font-black text-slate-950/80">{lib.name[0].toUpperCase()}</span>
+                        )}
+                        <span className={`absolute top-2 right-2 inline-flex items-center gap-1 text-[8.5px] uppercase font-black px-2 py-0.5 rounded-full shadow-xs backdrop-blur-xs ${
+                          lib.status === 'active'
+                            ? 'bg-emerald-500 text-white'
+                            : lib.status === 'pending'
+                            ? 'bg-amber-500 text-slate-950 animate-pulse'
+                            : 'bg-slate-700 text-white'
+                        }`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
+                          {lib.status || 'Active'}
+                        </span>
+                      </div>
+
+                      {/* Card Body: Title & Location */}
+                      <h4 className="font-black text-slate-900 text-sm leading-snug group-hover:text-amber-700 transition-colors truncate">
+                        {lib.name}
+                      </h4>
+                      <p className="text-[10.5px] text-slate-500 flex items-center gap-1 font-medium mt-0.5 truncate">
+                        <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
+                        {lib.city || lib.address || 'Location unassigned'}
+                      </p>
+
+                      {/* Metadata row: Librarian & Books */}
+                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between gap-1 text-xs">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <div className="w-5.5 h-5.5 rounded-full bg-amber-100 border border-slate-200 text-slate-700 font-black text-[9px] flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                            {lib.owner?.avatar_url || lib.owner?.avatar ? (
+                              <img
+                                src={lib.owner.avatar_url || lib.owner.avatar}
+                                alt={lib.owner?.name || 'Librarian'}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <img
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(lib.owner?.name || 'L')}&background=fef3c7&color=b45309&bold=true`}
+                                alt={lib.owner?.name || 'Librarian'}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                          </div>
+                          <span className="text-[10.5px] font-bold text-slate-800 truncate">{lib.owner?.name || 'Unassigned'}</span>
+                        </div>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-black text-slate-900 px-1.5 py-0.5 bg-slate-100 rounded-md shrink-0">
+                          📚 {bookCount}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card Footer: Quick Actions */}
+                    <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => navigate(`/admin/libraries/${lib.id}`)}
+                        className="flex-1 inline-flex items-center justify-center gap-1 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-[11px] font-black shadow-2xs transition-all cursor-pointer"
+                      >
+                        <Eye className="w-3 h-3" />
+                        <span>View Details</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditLib(lib);
+                          setEditModalOpen(true);
+                        }}
+                        className="p-1.5 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all cursor-pointer"
+                        title="Edit Library"
+                      >
+                        <Building2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 6. CONFIRMATION / REJECTION MODAL */}
+        {/* Clean Pinned Pagination Footer */}
+        <div className="shrink-0">
+          <AdminPagination
+            currentPage={currentPage}
+            lastPage={totalPages}
+            total={totalItems}
+            from={pagination.from}
+            to={pagination.to}
+            perPage={perPage}
+            onPageChange={setCurrentPage}
+            onPerPageChange={(value) => { setPerPage(value); setCurrentPage(1); }}
+            label="libraries"
+            showDetails={true}
+          />
+        </div>
+      </div>
+
+      {/* 5. CONFIRMATION / REJECTION MODAL */}
       {actionModal.open && actionModal.library && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
           <div className="w-[calc(100vw-24px)] md:w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
