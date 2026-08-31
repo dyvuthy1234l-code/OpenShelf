@@ -7,6 +7,8 @@ use App\Models\LibraryReview;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 
 class LibraryReviewController extends Controller
@@ -47,6 +49,31 @@ class LibraryReviewController extends Controller
             ['user_id' => $user->id, 'library_id' => $library->id],
             ['rating' => $validated['rating'], 'comment' => $validated['comment']]
         );
+
+        // Notify the librarian (library owner)
+        $librarian = $library->owner;
+        if ($librarian && $librarian->id !== $user->id) {
+            $starStr = str_repeat('⭐', $validated['rating']);
+            $commentSnippet = !empty($validated['comment']) ? ': "' . Str::limit($validated['comment'], 80) . '"' : '.';
+
+            DB::table('notifications')->insert([
+                'id' => (string) Str::uuid(),
+                'type' => 'library_review',
+                'notifiable_type' => 'App\\Models\\User',
+                'notifiable_id' => $librarian->id,
+                'data' => json_encode([
+                    'title' => 'New Library Review ' . $starStr,
+                    'message' => 'Member "' . $user->name . '" rated ' . $validated['rating'] . '/5 on ' . $library->name . $commentSnippet,
+                    'library_id' => $library->id,
+                    'library_name' => $library->name,
+                    'reviewer_name' => $user->name,
+                    'rating' => $validated['rating'],
+                    'target_url' => '/librarian/library',
+                ]),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         return response()->json([
             'message' => 'Review submitted successfully',

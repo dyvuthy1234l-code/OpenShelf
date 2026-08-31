@@ -20,15 +20,8 @@ export default function ProtectedRoute({ allowedRoles = [], publicWebsite = fals
     return <Navigate to={`/login${redirectQuery}`} replace />;
   }
 
-  // 3. Authenticated Staff redirected to their dedicated workspaces from public layout
+  // 3. Authenticated users (Members, Librarians, Admins) can freely browse public website pages
   if (publicWebsite) {
-    if (user.role === 'librarian') {
-      const isSubActive = subscription && subscription.status === 'active';
-      return isSubActive ? <Navigate to="/librarian" replace /> : <Navigate to="/librarian/subscription" replace />;
-    }
-    if (user.role === 'admin') {
-      return <Navigate to="/admin" replace />;
-    }
     return <Outlet />;
   }
 

@@ -40,6 +40,31 @@ export default function AdminLayout() {
     idle(() => { ADMIN_CHUNKS.forEach((load) => load().catch(() => {})); });
   }, []);
 
+  // Isolate Admin Workspace: do not inherit member night mode toggle
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const wasDark = root.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+
+    root.classList.remove('dark');
+    body.classList.remove('dark', 'bg-slate-950', 'text-slate-100');
+    body.style.backgroundColor = '#F8FAFC';
+    body.style.color = '#0F172A';
+
+    return () => {
+      // Restore public website theme preference on unmount
+      if (wasDark || localStorage.getItem('theme') === 'dark') {
+        root.classList.add('dark');
+        body.classList.add('dark', 'bg-slate-950', 'text-slate-100');
+        body.style.backgroundColor = '#040C16';
+        body.style.color = '#F8FAFC';
+      } else {
+        body.style.backgroundColor = '';
+        body.style.color = '';
+      }
+    };
+  }, []);
+
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
 

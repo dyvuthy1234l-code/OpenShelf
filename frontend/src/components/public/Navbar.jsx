@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2, Settings, Moon, Sun } from 'lucide-react';
+import { Search, Menu, X, LogOut, Bookmark, Bell, User, Clock, Building2, Settings, Moon, Sun, LayoutDashboard, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import OpenShelfBrand from '../common/OpenShelfBrand';
@@ -129,6 +129,28 @@ export default function Navbar() {
 
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-2">
+                  {/* Staff Workspace Direct Shortcut Button */}
+                  {user?.role === 'librarian' && (
+                    <Link
+                      to="/librarian"
+                      className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 text-xs font-black shadow-2xs hover:from-amber-400 hover:to-amber-300 transition-all cursor-pointer"
+                      title="Open Librarian Workspace"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5" />
+                      <span>Workspace</span>
+                    </Link>
+                  )}
+                  {user?.role === 'admin' && (
+                    <Link
+                      to="/admin"
+                      className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950 dark:bg-slate-800 text-white text-xs font-black shadow-2xs hover:bg-slate-800 transition-all cursor-pointer"
+                      title="Open Admin Portal"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Admin</span>
+                    </Link>
+                  )}
+
                   {/* Favorites Shortcut Icon */}
                   <Link
                     to="/member/favorites"
@@ -223,6 +245,28 @@ export default function Navbar() {
 
                     {isAuthenticated && user ? (
                       <>
+                        {user?.role === 'librarian' && (
+                          <Link
+                            to="/librarian"
+                            onClick={() => setSettingsOpen(false)}
+                            className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-amber-700 hover:bg-amber-50 rounded-xl transition-all duration-200 group"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                            <span>Librarian Workspace</span>
+                          </Link>
+                        )}
+
+                        {user?.role === 'admin' && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setSettingsOpen(false)}
+                            className="flex items-center gap-3 px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:bg-slate-100 rounded-xl transition-all duration-200 group"
+                          >
+                            <ShieldCheck className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                            <span>Admin Portal</span>
+                          </Link>
+                        )}
+
                         <Link
                           to="/member/borrowings"
                           onClick={() => setSettingsOpen(false)}

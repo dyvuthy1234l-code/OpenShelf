@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ReviewController extends Controller
 {
@@ -43,7 +45,7 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Only members can submit book reviews.'], 403);
         }
 
-        $book = Book::findOrFail($bookId);
+        $book = Book::with('library.owner')->findOrFail($bookId);
 
         $validated = $request->validate([
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
@@ -60,6 +62,31 @@ class ReviewController extends Controller
                 'comment' => $validated['comment'] ?? null,
             ]
         );
+
+        // Notify the librarian (book library owner)
+        $librarian = $book->library?->owner;
+        if ($librarian && $librarian->id !== $user->id) {
+            $starStr = str_repeat('⭐', $validated['rating']);
+            $commentSnippet = !empty($validated['comment']) ? ': "' . Str::limit($validated['comment'], 80) . '"' : '.';
+
+            DB::table('notifications')->insert([
+                'id' => (string) Str::uuid(),
+                'type' => 'book_review',
+                'notifiable_type' => 'App\\Models\\User',
+                'notifiable_id' => $librarian->id,
+                'data' => json_encode([
+                    'title' => 'New Book Rating ' . $starStr,
+                    'message' => 'Member "' . $user->name . '" rated ' . $validated['rating'] . '/5 on "' . $book->title . '"' . $commentSnippet,
+                    'book_id' => $book->id,
+                    'book_title' => $book->title,
+                    'reviewer_name' => $user->name,
+                    'rating' => $validated['rating'],
+                    'target_url' => '/librarian/books/' . $book->id,
+                ]),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         return response()->json([
             'message' => 'Your review has been submitted successfully!',

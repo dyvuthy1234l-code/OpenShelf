@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PAGE_MOTION_VARIANTS, BANNER_MOTION, LIST_STAGGER, LIST_ITEM } from '../../constants/motionTokens';
 import { 
   Bell, Inbox, ArrowLeftRight, CheckCircle2, 
-  Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink, CreditCard, BookOpen, Users
+  Trash2, RefreshCw, AlertCircle, Sparkles, ExternalLink, CreditCard, BookOpen, Users, Star
 } from 'lucide-react';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 import { useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/queries/useNotificationMutations';
@@ -18,35 +18,32 @@ export default function LibrarianNotificationsPage() {
   const [successMessage, setSuccessMessage] = useState('');
   const [filter, setFilter] = useState('all'); // 'all' | 'unread'
 
-  // TanStack Query with Optimistic UI updates
+  // TanStack Query for reactive notifications state
   const { data: resData, isLoading: loading, isError, refetch: fetchNotifications } = useNotifications('librarian');
-  const markReadMutation = useMarkNotificationAsRead('librarian');
-  const markAllReadMutation = useMarkAllNotificationsAsRead('librarian');
+  const markAsReadMutation = useMarkNotificationAsRead('librarian', {
+    onError: () => setSuccessMessage('Unable to update notification. Rollback applied.'),
+  });
+  const markAllAsReadMutation = useMarkAllNotificationsAsRead('librarian', {
+    onSuccess: () => setSuccessMessage('All notifications marked as read.'),
+  });
 
   const notifications = Array.isArray(resData?.data) ? resData.data : (Array.isArray(resData) ? resData : []);
   const error = isError ? 'Unable to load notifications. Please try again.' : null;
 
   const handleMarkAsRead = (id) => {
-    markReadMutation.mutate(id, {
-      onSuccess: () => setSuccessMessage('Notification marked as read.'),
-      onError: () => setSuccessMessage('Unable to update notification. Rollback applied.'),
-    });
+    markAsReadMutation.mutate(id);
   };
 
-  const handleMarkAllRead = () => {
-    markAllReadMutation.mutate(undefined, {
-      onSuccess: () => setSuccessMessage('All notifications marked as read.'),
-      onError: () => setSuccessMessage('Unable to mark all as read. Rollback applied.'),
-    });
+  const handleMarkAllAsRead = () => {
+    markAllAsReadMutation.mutate();
   };
 
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
+  const handleDelete = async (id) => {
     try {
       await librarianService.deleteNotification(id);
       fetchNotifications();
     } catch {
-      // Non-critical
+      setSuccessMessage('Failed to delete notification.');
     }
   };
 
@@ -56,26 +53,22 @@ export default function LibrarianNotificationsPage() {
       await librarianService.clearAllNotifications();
       fetchNotifications();
       setSuccessMessage('All notifications cleared.');
-      setTimeout(() => setSuccessMessage(''), 3000);
     } catch {
       setSuccessMessage('Failed to clear notifications.');
     }
   };
 
-  const handleNavigateToTarget = (notif) => {
-    if (!notif.read_at) {
-      handleMarkAsRead(notif.id);
-    }
-    const data = notif.data || {};
-    const title = (data.title || notif.title || '').toLowerCase();
-    const message = (data.message || notif.message || '').toLowerCase();
-    const type = (notif.type || data.type || '').toLowerCase();
-    const link = data.link || data.action_url || data.url || notif.link || '';
+  const handleNotificationClick = (n) => {
+    if (!n.read_at) handleMarkAsRead(n.id);
 
-    if (link) {
-      navigate(link);
+    if (n.data?.target_url) {
+      navigate(n.data.target_url);
       return;
     }
+
+    const title = (n.data?.title || n.title || '').toLowerCase();
+    const message = (n.data?.message || n.message || '').toLowerCase();
+    const type = (n.type || '').toLowerCase();
 
     if (
       title.includes('subscription') || 
@@ -89,6 +82,8 @@ export default function LibrarianNotificationsPage() {
       navigate('/librarian/returns');
     } else if (title.includes('borrow') || message.includes('borrow') || title.includes('request') || message.includes('request')) {
       navigate('/librarian/borrow-requests');
+    } else if (title.includes('rating') || title.includes('review') || message.includes('rating') || message.includes('review')) {
+      navigate(title.includes('library') ? '/librarian/library' : '/librarian/books');
     } else if (title.includes('book') || message.includes('book')) {
       navigate('/librarian/books');
     } else if (title.includes('category') || message.includes('category')) {
@@ -96,9 +91,9 @@ export default function LibrarianNotificationsPage() {
     } else if (title.includes('member') || message.includes('member') || title.includes('user') || message.includes('user')) {
       navigate('/librarian/members');
     } else if (title.includes('library') || message.includes('library')) {
-      navigate('/librarian/my-library');
+      navigate('/librarian/library');
     } else {
-      navigate('/librarian/subscription');
+      navigate('/librarian/dashboard');
     }
   };
 
@@ -111,6 +106,9 @@ export default function LibrarianNotificationsPage() {
 
   const getNotifIcon = (title = '', message = '') => {
     const text = (title + ' ' + message).toLowerCase();
+    if (text.includes('rating') || text.includes('review') || text.includes('star')) {
+      return <Star className="w-5 h-5 text-amber-500 fill-amber-400" />;
+    }
     if (text.includes('subscription') || text.includes('premium')) {
       return <CreditCard className="w-5 h-5 text-amber-600" />;
     }
@@ -252,7 +250,7 @@ export default function LibrarianNotificationsPage() {
               <motion.div
                 variants={LIST_ITEM}
                 key={notif.id}
-                onClick={() => handleNavigateToTarget(notif)}
+                onClick={() => handleNotificationClick(notif)}
                 className={`group p-4 rounded-2xl border transition-all duration-200 flex items-start gap-4 cursor-pointer relative ${
                   isUnread
                     ? 'bg-amber-50/40 border-amber-300/80 shadow-2xs hover:bg-amber-50/70 hover:border-amber-400'
@@ -300,7 +298,7 @@ export default function LibrarianNotificationsPage() {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleNavigateToTarget(notif);
+                        handleNotificationClick(notif);
                       }}
                       className="inline-flex items-center gap-1 text-[11px] font-extrabold text-amber-700 hover:text-amber-800 hover:underline cursor-pointer"
                     >
@@ -328,7 +326,10 @@ export default function LibrarianNotificationsPage() {
 
                   <button
                     type="button"
-                    onClick={(e) => handleDelete(e, notif.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(notif.id);
+                    }}
                     title="Delete message"
                     className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                   >
