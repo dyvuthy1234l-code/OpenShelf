@@ -14,10 +14,11 @@ const sizes = {
   lg: { mark: 'w-14 h-14 rounded-2xl', icon: 'w-7 h-7', name: 'text-2xl', label: 'text-[11px]' },
 };
 
-export default function OpenShelfBrand({ role = 'member', size = 'sm', showSubtitle = true, dark = false, className = '' }) {
+export default function OpenShelfBrand({ role = 'member', size = 'sm', showSubtitle = true, dark = null, className = '' }) {
   const scale = sizes[size] || sizes.sm;
   const labels = roleLabels[role] || roleLabels.member;
-  const isDark = dark || role !== 'member';
+  const isExplicitDark = dark === true;
+  const isExplicitLight = dark === false;
 
   return (
     <motion.div
@@ -75,7 +76,11 @@ export default function OpenShelfBrand({ role = 'member', size = 'sm', showSubti
         <div className="min-w-0 flex flex-col justify-center">
           <span
             className={`${scale.name} font-black tracking-tight block leading-none ${
-              isDark ? 'text-white' : 'text-slate-900'
+              isExplicitDark
+                ? 'text-white'
+                : isExplicitLight
+                ? 'text-slate-900'
+                : 'text-slate-900 dark:text-white'
             }`}
           >
             Open<span className="text-amber-500">Shelf</span>
@@ -85,7 +90,11 @@ export default function OpenShelfBrand({ role = 'member', size = 'sm', showSubti
             <span
               key={label}
               className={`block ${scale.label} font-extrabold tracking-widest uppercase mt-1 leading-none ${
-                isDark ? 'text-amber-400/90' : 'text-amber-700'
+                isExplicitDark
+                  ? 'text-amber-400/90'
+                  : isExplicitLight
+                  ? 'text-amber-700'
+                  : 'text-amber-700 dark:text-amber-400/90'
               }`}
             >
               {label}

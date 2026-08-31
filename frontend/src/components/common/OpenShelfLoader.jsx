@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
 import OpenShelfBrand from './OpenShelfBrand';
 
-export default function OpenShelfLoader({ message = 'Loading your library...', compact = false, dark = true }) {
+export default function OpenShelfLoader({ message = 'Loading your library...', compact = false, dark = null }) {
+  const isExplicitDark = dark === true;
+  const isExplicitLight = dark === false;
+
   return (
     <div
       className={`openshelf-loader flex flex-col items-center justify-center text-center select-none ${
@@ -10,14 +13,18 @@ export default function OpenShelfLoader({ message = 'Loading your library...', c
       role="status"
       aria-live="polite"
     >
-      {/* Brand Header with explicit dark prop so "Open" is crisp white */}
+      {/* Brand Header with theme-adaptive styling */}
       <OpenShelfBrand role="member" size={compact ? 'sm' : 'md'} dark={dark} />
 
       {/* Sleek Glowing Progress Bar & Status Text */}
       <div className="relative flex flex-col items-center gap-3 mt-1">
         <motion.div
           className={`w-44 h-1.5 rounded-full overflow-hidden border shadow-inner ${
-            dark ? 'bg-slate-800/80 border-slate-700/60' : 'bg-slate-200 border-slate-300/60'
+            isExplicitDark
+              ? 'bg-slate-800/80 border-slate-700/60'
+              : isExplicitLight
+              ? 'bg-slate-200 border-slate-300/60'
+              : 'bg-slate-200 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-700/60'
           }`}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -35,7 +42,13 @@ export default function OpenShelfLoader({ message = 'Loading your library...', c
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: [0.7, 1, 0.7], y: 0 }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className={`text-xs font-semibold tracking-wide ${dark ? 'text-slate-300' : 'text-slate-600'}`}
+          className={`text-xs font-semibold tracking-wide ${
+            isExplicitDark
+              ? 'text-slate-300'
+              : isExplicitLight
+              ? 'text-slate-600'
+              : 'text-slate-600 dark:text-slate-300'
+          }`}
         >
           {message}
         </motion.p>

@@ -197,7 +197,7 @@ export default function LibraryDetail() {
       </button>
 
       {/* PART 1 — LIBRARY HERO (COVER + OVERLAPPING LOGO) */}
-      <div className="bg-white border border-brand-border/70 rounded-3xl overflow-hidden shadow-xs">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xs">
         {/* Full-width Cover Banner */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -218,26 +218,26 @@ export default function LibraryDetail() {
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-r from-navy-950 via-navy-900 to-navy-700 flex flex-col items-center justify-center p-6 text-center">
-              <Building2 className="w-16 h-16 text-gold-400/40 mb-2" />
-              <span className="text-sm font-bold text-gold-200/80">OpenShelf Community Partner Library</span>
+              <Building2 className="w-16 h-16 text-amber-400/40 mb-2" />
+              <span className="text-sm font-bold text-amber-200/80">OpenShelf Community Partner Library</span>
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-navy-950/20 to-navy-950/10 pointer-events-none" />
 
           {/* Glass stat chips on cover */}
           <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-end gap-2 z-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
-              <BookOpen className="w-3.5 h-3.5 text-gold-600" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/20 text-[11px] font-extrabold text-slate-100 shadow-sm select-none">
+              <BookOpen className="w-3.5 h-3.5 text-amber-400" />
               {totalBooksCount} Books
             </span>
             {library.reviews_count > 0 && Number(library.average_rating) > 0 && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
-                <Star className="w-3.5 h-3.5 text-gold-500 fill-gold-400" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/20 text-[11px] font-extrabold text-slate-100 shadow-sm select-none">
+                <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                 {library.average_rating} ({library.reviews_count})
               </span>
             )}
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-white/40 text-[11px] font-extrabold text-navy-800 shadow-sm">
-              <Clock className="w-3.5 h-3.5 text-gold-600" />
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 backdrop-blur-md border border-white/20 text-[11px] font-extrabold text-slate-100 shadow-sm select-none">
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
               {library.opening_hours && !/Mollitia|Impedit|dolorum|labore|asperio/i.test(library.opening_hours) ? library.opening_hours : 'Mon - Sat: 08:00 - 17:00'}
             </span>
           </div>
@@ -253,7 +253,7 @@ export default function LibraryDetail() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl sm:rounded-3xl bg-white p-2 border-4 border-white shadow-xl shrink-0 z-10 overflow-hidden"
+                className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 p-2 border-4 border-white dark:border-slate-800 shadow-xl shrink-0 z-10 overflow-hidden"
               >
                 {getLibraryLogoUrl(library.image_url || library.image, 200) ? (
                   <img
@@ -264,9 +264,9 @@ export default function LibraryDetail() {
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-100 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center text-slate-400 p-2 text-center">
-                    <Building2 className="w-10 h-10 text-gold-600 mb-1" />
-                    <span className="text-[10px] font-extrabold text-slate-700 leading-tight">LIBRARY LOGO</span>
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center text-slate-400 p-2 text-center">
+                    <Building2 className="w-10 h-10 text-amber-500 mb-1" />
+                    <span className="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 leading-tight">LIBRARY LOGO</span>
                   </div>
                 )}
               </motion.div>
@@ -285,7 +285,7 @@ export default function LibraryDetail() {
                   className="flex flex-wrap items-center gap-2.5 pb-1"
                 >
                   {/* Pro Radar-Pulse "Open Now" Badge */}
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-extrabold shadow-2xs">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-extrabold shadow-2xs">
                     <span className="relative flex h-2 w-2 shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -294,25 +294,25 @@ export default function LibraryDetail() {
                   </span>
 
                   {/* Pro "Verified Partner" Shield Badge */}
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-navy-950 via-navy-900 to-navy-800 text-gold-400 border border-gold-500/30 text-xs font-extrabold shadow-xs">
-                    <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-navy-950 via-navy-900 to-navy-800 text-amber-400 border border-amber-500/30 text-xs font-extrabold shadow-xs">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                     <span>Verified Partner</span>
                   </span>
                 </motion.div>
 
-                <h1 className="os-section-title sm:text-3xl lg:text-4xl">{library.name}</h1>
+                <h1 className="os-section-title sm:text-3xl lg:text-4xl text-slate-900 dark:text-white">{library.name}</h1>
 
                 {library.reviews_count > 0 && (
                   <div className="flex items-center gap-1.5 mt-1">
-                    <Star className="w-4 h-4 text-gold-500 fill-gold-500" />
-                    <span className="text-sm font-bold text-slate-900">{library.average_rating}</span>
-                    <span className="text-xs text-slate-500">({library.reviews_count} reviews)</span>
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">{library.average_rating}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">({library.reviews_count} reviews)</span>
                   </div>
                 )}
 
                 {library.address && (
-                  <div className="flex items-center gap-2 text-slate-600 text-xs sm:text-sm font-medium">
-                    <MapPin className="w-4 h-4 text-gold-600 shrink-0" />
+                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-xs sm:text-sm font-medium">
+                    <MapPin className="w-4 h-4 text-amber-500 shrink-0" />
                     <span>{library.address}</span>
                   </div>
                 )}
@@ -345,9 +345,9 @@ export default function LibraryDetail() {
       {/* PART 2 — TWO-COLUMN INFORMATION SECTION BELOW HERO */}
       <motion.div {...REVEAL_VARIANTS} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* LEFT CARD (2/3 width) — TABBED DETAILS */}
-        <div className="lg:col-span-2 bg-white border border-brand-border/70 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
           {/* Compact Editorial Tab Header */}
-          <div role="tablist" aria-label="Library information" className="flex items-center gap-4 sm:gap-6 border-b border-slate-100 overflow-x-auto no-scrollbar">
+          <div role="tablist" aria-label="Library information" className="flex items-center gap-4 sm:gap-6 border-b border-slate-100 dark:border-slate-800 overflow-x-auto no-scrollbar">
             {[
               { id: 'about', label: 'About' },
               { id: 'contact', label: 'Contact' },
@@ -361,10 +361,10 @@ export default function LibraryDetail() {
                   onClick={() => setActiveTab(tab.id)}
                   role="tab"
                   aria-selected={isActive}
-                  className={`min-h-11 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 whitespace-nowrap ${
+                  className={`min-h-11 pb-3 text-sm font-semibold transition-all duration-200 border-b-2 whitespace-nowrap cursor-pointer ${
                     isActive
-                      ? 'text-navy-800 border-gold-500 font-bold'
-                      : 'text-slate-500 hover:text-navy-800 border-transparent'
+                      ? 'text-slate-900 dark:text-white border-amber-500 font-bold'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent'
                   }`}
                 >
                   {tab.label}
@@ -382,7 +382,7 @@ export default function LibraryDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.2 }}
-                className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed"
+                className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
               >
                 <p className="whitespace-pre-line">
                   {library.description ||
@@ -390,36 +390,36 @@ export default function LibraryDetail() {
                 </p>
 
                 {/* Library Lending Terms & Policy Parameters */}
-                <div className="pt-4 border-t border-slate-100 space-y-3">
-                  <div className="flex items-center gap-2 text-gold-600 font-bold text-xs uppercase tracking-wider">
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                  <div className="flex items-center gap-2 text-amber-500 dark:text-amber-400 font-bold text-xs uppercase tracking-wider">
                     <ShieldAlert className="w-4 h-4" />
                     <span>Lending Terms & Policies</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Borrow Period</span>
-                      <span className="text-sm font-extrabold text-slate-900">{library.borrowing_period_days ?? 14} Days</span>
-                      <span className="text-[10px] text-slate-500 block">Allowed loan duration</span>
+                    <div className="bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3.5 space-y-1">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider block">Borrow Period</span>
+                      <span className="text-sm font-extrabold text-slate-900 dark:text-white">{library.borrowing_period_days ?? 14} Days</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Allowed loan duration</span>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Fine Per Day</span>
-                      <span className="text-sm font-extrabold text-slate-900">${Number(library.fine_per_day ?? 0.50).toFixed(2)}</span>
-                      <span className="text-[10px] text-slate-500 block">For late returns</span>
+                    <div className="bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3.5 space-y-1">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider block">Fine Per Day</span>
+                      <span className="text-sm font-extrabold text-slate-900 dark:text-white">${Number(library.fine_per_day ?? 0.50).toFixed(2)}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">For late returns</span>
                     </div>
 
-                    <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Max Books Limit</span>
-                      <span className="text-sm font-extrabold text-slate-900">{library.max_books_per_member ?? 3} Books</span>
-                      <span className="text-[10px] text-slate-500 block">Concurrent loans per member</span>
+                    <div className="bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3.5 space-y-1">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider block">Max Books Limit</span>
+                      <span className="text-sm font-extrabold text-slate-900 dark:text-white">{library.max_books_per_member ?? 3} Books</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Concurrent loans per member</span>
                     </div>
                   </div>
 
                   {library.borrowing_rules && (
-                    <div className="bg-gold-50 border border-gold-200/80 rounded-2xl p-4 space-y-1 mt-2">
-                      <span className="text-[11px] font-bold text-gold-600 block uppercase tracking-wider">Borrowing Rules</span>
-                      <p className="text-xs text-slate-700 whitespace-pre-line leading-relaxed">
+                    <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl p-4 space-y-1 mt-2">
+                      <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 block uppercase tracking-wider">Borrowing Rules</span>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">
                         {library.borrowing_rules}
                       </p>
                     </div>
@@ -435,41 +435,41 @@ export default function LibraryDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.2 }}
-                className="space-y-4 text-xs sm:text-sm text-slate-600"
+                className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300"
               >
                 {library.phone && (
-                  <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                    <Phone className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                    <Phone className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Phone Contact</span>
-                      <a href={`tel:${library.phone}`} className="text-gold-600 font-bold hover:underline">{library.phone}</a>
+                      <span className="font-bold text-slate-900 dark:text-white block text-xs uppercase tracking-wider mb-0.5">Phone Contact</span>
+                      <a href={`tel:${library.phone}`} className="text-amber-600 dark:text-amber-400 font-bold hover:underline">{library.phone}</a>
                     </div>
                   </div>
                 )}
 
                 {library.email && (
-                  <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                    <Mail className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                    <Mail className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Email Address</span>
-                      <a href={`mailto:${library.email}`} className="text-gold-600 font-bold hover:underline break-all">{library.email}</a>
+                      <span className="font-bold text-slate-900 dark:text-white block text-xs uppercase tracking-wider mb-0.5">Email Address</span>
+                      <a href={`mailto:${library.email}`} className="text-amber-600 dark:text-amber-400 font-bold hover:underline break-all">{library.email}</a>
                     </div>
                   </div>
                 )}
 
-                <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <MapPin className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                  <MapPin className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Province / Location</span>
-                    <span className="text-slate-700 font-semibold">{library.city ? `Province: ${library.city}` : (library.address || 'Phnom Penh, Cambodia')}</span>
+                    <span className="font-bold text-slate-900 dark:text-white block text-xs uppercase tracking-wider mb-0.5">Province / Location</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold">{library.city ? `Province: ${library.city}` : (library.address || 'Phnom Penh, Cambodia')}</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <Clock className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                  <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider mb-0.5">Opening Hours</span>
-                    <span className="text-slate-700 font-semibold">{library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 AM - 05:00 PM'}</span>
+                    <span className="font-bold text-slate-900 dark:text-white block text-xs uppercase tracking-wider mb-0.5">Opening Hours</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold">{library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : 'Mon - Sat: 08:00 AM - 05:00 PM'}</span>
                   </div>
                 </div>
               </motion.div>
@@ -482,18 +482,18 @@ export default function LibraryDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.2 }}
-                className="space-y-4 text-xs sm:text-sm text-slate-600"
+                className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300"
               >
-                <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                  <MapPin className="w-5 h-5 text-gold-600 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+                  <MapPin className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <span className="font-bold text-navy-800 block text-xs uppercase tracking-wider">Physical Address</span>
-                    <p className="text-slate-700 font-medium">{library.address || 'Phnom Penh, Cambodia'}</p>
+                    <span className="font-bold text-slate-900 dark:text-white block text-xs uppercase tracking-wider">Physical Address</span>
+                    <p className="text-slate-700 dark:text-slate-300 font-medium">{library.address || 'Phnom Penh, Cambodia'}</p>
                   </div>
                 </div>
 
                 {/* Embedded map */}
-                <div className="rounded-2xl overflow-hidden border border-slate-200/80 bg-slate-100">
+                <div className="rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-850">
                   <iframe
                     title={`${library.name} location map`}
                     src={`https://www.google.com/maps?q=${encodeURIComponent(library.google_maps_url || `${library.name} ${library.address || library.city || 'Phnom Penh'} Cambodia`)}&output=embed`}
@@ -530,28 +530,28 @@ export default function LibraryDetail() {
                 className="space-y-4"
               >
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 text-center space-y-1.5">
-                    <div className="w-10 h-10 rounded-xl bg-navy-50 text-navy-700 flex items-center justify-center mx-auto">
+                  <div className="bg-slate-50 dark:bg-slate-950/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-500 flex items-center justify-center mx-auto">
                       <BookOpen className="w-5 h-5" />
                     </div>
-                    <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider pt-1">Total Books</span>
-                    <span className="text-2xl font-extrabold text-navy-800 tabular-nums">{totalBooksCount}</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold block uppercase tracking-wider pt-1">Total Books</span>
+                    <span className="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums">{totalBooksCount}</span>
                   </div>
 
-                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 text-center space-y-1.5">
-                    <div className="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 flex items-center justify-center mx-auto">
+                  <div className="bg-slate-50 dark:bg-slate-950/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-slate-800 text-amber-500 flex items-center justify-center mx-auto">
                       <CheckCircle2 className="w-5 h-5" />
                     </div>
-                    <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider pt-1">Available Now</span>
-                    <span className="text-2xl font-extrabold text-gold-600 tabular-nums">{meta.total}</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold block uppercase tracking-wider pt-1">Available Now</span>
+                    <span className="text-2xl font-extrabold text-amber-500 tabular-nums">{meta.total}</span>
                   </div>
 
-                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 text-center space-y-1.5">
-                    <div className="w-10 h-10 rounded-xl bg-navy-50 text-navy-700 flex items-center justify-center mx-auto">
+                  <div className="bg-slate-50 dark:bg-slate-950/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-500 flex items-center justify-center mx-auto">
                       <SlidersHorizontal className="w-5 h-5" />
                     </div>
-                    <span className="text-slate-500 text-[11px] font-semibold block uppercase tracking-wider pt-1">Categories</span>
-                    <span className="text-2xl font-extrabold text-navy-800 tabular-nums">{categories.length}</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold block uppercase tracking-wider pt-1">Categories</span>
+                    <span className="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums">{categories.length}</span>
                   </div>
                 </div>
 
@@ -571,57 +571,57 @@ export default function LibraryDetail() {
         </div>
 
         {/* RIGHT CARD (1/3 width) — LIBRARY INFORMATION SUMMARY */}
-        <div className="bg-white border border-brand-border/70 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs h-fit">
-          <h3 className="font-extrabold text-slate-900 text-base border-b border-slate-100 pb-3">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs h-fit">
+          <h3 className="font-extrabold text-slate-900 dark:text-white text-base border-b border-slate-100 dark:border-slate-800 pb-3">
             Library Information
           </h3>
 
           <div className="space-y-3.5 text-xs">
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Status</span>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Status</span>
               <span className="os-badge-success">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 ● Open
               </span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Borrow Period</span>
-              <span className="font-extrabold text-slate-900">{library.borrowing_period_days ?? 14} Days</span>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Borrow Period</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{library.borrowing_period_days ?? 14} Days</span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Fine Per Day</span>
-              <span className="font-extrabold text-gold-600">${Number(library.fine_per_day ?? 0.50).toFixed(2)}</span>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Fine Per Day</span>
+              <span className="font-extrabold text-amber-500">${Number(library.fine_per_day ?? 0.50).toFixed(2)}</span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Max Books / Member</span>
-              <span className="font-extrabold text-slate-900">{library.max_books_per_member ?? 3} Books</span>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Max Books / Member</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{library.max_books_per_member ?? 3} Books</span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Province / Location</span>
-              <span className="font-extrabold text-slate-900 text-right truncate max-w-[130px]" title={library.city || library.address}>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Province / Location</span>
+              <span className="font-extrabold text-slate-900 dark:text-white text-right truncate max-w-[130px]" title={library.city || library.address}>
                 {library.city || library.address || 'Phnom Penh'}
               </span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Opening Hours</span>
-              <span className="font-extrabold text-slate-900 text-right truncate max-w-[140px]" title={library.opening_hours || 'Mon - Sat: 08:00 AM - 05:00 PM'}>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Opening Hours</span>
+              <span className="font-extrabold text-slate-900 dark:text-white text-right truncate max-w-[140px]" title={library.opening_hours || 'Mon - Sat: 08:00 AM - 05:00 PM'}>
                 {library.opening_hours && !library.opening_hours.includes('Mollitia') ? library.opening_hours : '08:00 AM - 05:00 PM'}
               </span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Book Collections</span>
-              <span className="font-medium text-navy-800">{totalBooksCount}</span>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Book Collections</span>
+              <span className="font-medium text-slate-900 dark:text-white">{totalBooksCount}</span>
             </div>
 
-            <div className="flex items-center justify-between py-1 border-b border-slate-100/80">
-              <span className="text-slate-500 font-medium">Available Books</span>
-              <span className="font-extrabold text-gold-600">{meta.total}</span>
+            <div className="flex items-center justify-between py-1 border-b border-slate-100/80 dark:border-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Available Books</span>
+              <span className="font-extrabold text-amber-500">{meta.total}</span>
             </div>
           </div>
 
@@ -645,23 +645,23 @@ export default function LibraryDetail() {
       <LibraryReviews libraryId={id} initialReviewsCount={library.reviews_count || 0} />
 
       {/* PART 3 — BOOKS AT THIS LIBRARY & LIBRARY-SPECIFIC CATEGORY FILTERS */}
-      <div ref={booksGridRef} className="space-y-6 pt-4 border-t border-brand-border/60">
+      <div ref={booksGridRef} className="space-y-6 pt-4 border-t border-slate-200/80 dark:border-slate-800">
         {/* Section Header */}
         <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gold-500 text-navy-950 flex items-center justify-center font-bold shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-amber-500 text-navy-950 flex items-center justify-center font-bold shrink-0">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="os-section-title">Books at this Library</h2>
-              <p className="text-xs text-slate-500">Browse catalogue holdings available at {library.name}</p>
+              <h2 className="os-section-title text-slate-900 dark:text-white">Books at this Library</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Browse catalogue holdings available at {library.name}</p>
             </div>
           </div>
 
           {(search || categoryId || sort !== 'latest' || page > 1) && (
             <button
               onClick={handleClearFilters}
-              className="os-btn-secondary h-10 px-4 text-xs shrink-0"
+              className="os-btn-secondary h-10 px-4 text-xs shrink-0 cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Clear filters</span>
@@ -670,7 +670,7 @@ export default function LibraryDetail() {
         </motion.div>
 
         {/* Filter Toolbar: Search + Library-Specific Categories + Sort */}
-        <div className="bg-white border border-brand-border/70 rounded-2xl p-4 flex flex-col md:flex-row md:items-center flex-wrap gap-3 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center flex-wrap gap-3 shadow-xs">
           {/* Search */}
           <div className="relative md:flex-1 min-w-[200px]">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -685,7 +685,7 @@ export default function LibraryDetail() {
               <button
                 onClick={() => updateFilters({ search: '' })}
                 aria-label="Clear book search"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1.5 cursor-pointer"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -724,11 +724,11 @@ export default function LibraryDetail() {
         </div>
 
         {/* Real-time Count Indicator */}
-        <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-gold-600" />
+            <SlidersHorizontal className="w-4 h-4 text-amber-500" />
             <span>
-              Showing <strong className="text-navy-800">{startItem}–{endItem}</strong> of <strong className="text-navy-800">{meta.total}</strong> books
+              Showing <strong className="text-slate-900 dark:text-white">{startItem}–{endItem}</strong> of <strong className="text-slate-900 dark:text-white">{meta.total}</strong> books
             </span>
           </div>
         </div>
@@ -739,14 +739,14 @@ export default function LibraryDetail() {
           <BookSkeleton count={10} />
         ) : books.length === 0 ? (
           /* Empty State */
-          <div className="bg-white border border-brand-border/70 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs">
-            <div className="w-14 h-14 bg-navy-50 rounded-2xl flex items-center justify-center mx-auto text-navy-700">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-12 text-center max-w-lg mx-auto space-y-4 shadow-xs">
+            <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto text-amber-500">
               <BookOpen className="w-7 h-7" />
             </div>
-            <h3 className="text-lg font-semibold text-navy-800">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
               {search || categoryId ? 'No matching books found' : 'No books available yet'}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
               {search || categoryId
                 ? 'We couldn\'t find any books at this library matching your active filters.'
                 : 'This library has not added any books to its catalogue yet.'}
