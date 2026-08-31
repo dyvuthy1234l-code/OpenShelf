@@ -265,8 +265,12 @@ export default function AuthLayout() {
       {/* ═══════════════════════════════════════════════════ */}
       {/* RIGHT — AUTH FORM                                  */}
       {/* ═══════════════════════════════════════════════════ */}
-      <div className="w-full lg:w-[45%] h-full bg-[#F7FAFD] flex items-center justify-center p-6 sm:p-8 lg:p-12 overflow-y-auto">
-        <div className="w-full max-w-md">
+      <div className="w-full lg:w-[45%] h-full bg-gradient-to-br from-navy-950 via-[#0a1c31] to-navy-950 relative flex items-center justify-center p-6 sm:p-8 lg:p-12 overflow-y-auto">
+        {/* Subtle Ambient Radial Lighting */}
+        <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-md relative z-10">
           <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-gold-500 border-t-transparent rounded-full animate-spin" /></div>}>
             <Outlet />
           </React.Suspense>
