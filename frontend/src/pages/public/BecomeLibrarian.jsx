@@ -27,7 +27,7 @@ export default function BecomeLibrarian() {
   const [purchaseSuccess, setPurchaseSuccess] = useState('');
   const [purchaseError, setPurchaseError] = useState('');
 
-  const isSubActive = subscription && subscription.status === 'active';
+  const isSubActive = user?.role === 'librarian' && subscription && subscription.status === 'active';
 
   useEffect(() => {
     async function loadPlans() {

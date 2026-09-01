@@ -127,26 +127,6 @@ class DatabaseSeeder extends Seeder
                 ],
             ]);
 
-            // Add member subscription
-            $plan = $plans[array_rand($plans)];
-            $sub = Subscription::create([
-                'user_id' => $member->id,
-                'plan_id' => $plan->id,
-                'start_date' => Carbon::now()->subMonths(1),
-                'end_date' => Carbon::now()->addMonths(5),
-                'status' => 'active',
-            ]);
-
-            Payment::create([
-                'user_id' => $member->id,
-                'subscription_id' => $sub->id,
-                'amount' => $plan->price,
-                'payment_method' => ($idx % 2 === 0) ? 'ABA PayWay' : 'KHQR Bakong',
-                'transaction_id' => 'TXN-' . strtoupper(Str::random(10)),
-                'status' => 'paid',
-                'paid_at' => Carbon::now()->subMonths(1),
-            ]);
-
             $members[] = $member;
         }
 
