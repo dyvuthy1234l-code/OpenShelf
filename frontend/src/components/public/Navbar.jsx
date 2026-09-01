@@ -397,15 +397,16 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <>
             <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[80] lg:hidden" onClick={() => setMobileMenuOpen(false)} />
+            {/* Drawer */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 260 }}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 240 }}
               role="dialog"
               aria-modal="true"
               aria-label="Navigation menu"
-              className="fixed top-2 right-2 max-w-[calc(100vw-1rem)] w-[min(22rem,calc(100vw-1rem))] max-h-[calc(100dvh-5rem)] h-fit bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xl z-[90] lg:hidden rounded-3xl overflow-y-auto"
+              className="fixed top-0 right-0 w-[min(22rem,86vw)] max-h-[calc(100dvh-4.25rem)] h-fit bg-white dark:bg-slate-900 border-l border-b border-slate-200/90 dark:border-slate-800 shadow-2xl z-[90] lg:hidden rounded-bl-[32px] overflow-y-auto"
             >
               <div className="p-3.5 sm:p-4 space-y-3">
                 {isAuthenticated && user ? (
