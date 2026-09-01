@@ -112,18 +112,25 @@ export default function BookCard({ book, showDateAdded = false, compact = false 
         {/* Favorite — top right */}
         <motion.button
           whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.8, rotate: -5 }}
+          whileTap={{ scale: 0.85 }}
           onClick={handleFavoriteClick}
           disabled={savingFav}
           aria-label={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
           title={isFavorited ? 'Remove from favorites' : 'Save to favorites'}
-          className={`absolute ${compact ? 'top-2 right-2 h-7 w-7' : 'top-3 right-3 h-9 w-9'} z-30 flex items-center justify-center rounded-full border backdrop-blur-md transition-all duration-200 shadow-sm cursor-pointer ${
+          className={`absolute ${compact ? 'top-2 right-2 h-7 w-7' : 'top-3 right-3 h-8.5 w-8.5'} z-30 flex items-center justify-center rounded-full border backdrop-blur-md transition-all duration-200 shadow-md cursor-pointer ${
             isFavorited
-              ? 'bg-amber-400 text-navy-950 border-amber-400'
-              : 'bg-slate-950/70 hover:bg-amber-400 text-white hover:text-navy-950 border-white/20'
+              ? 'bg-[#F5B82E] text-[#07172B] border-[#F5B82E] shadow-amber-500/30'
+              : 'bg-white/95 dark:bg-slate-900/95 text-slate-700 dark:text-amber-400 hover:bg-[#F5B82E] dark:hover:bg-[#F5B82E] hover:text-[#07172B] dark:hover:text-[#07172B] border-slate-200 dark:border-amber-400/40 shadow-xs'
           }`}
         >
-          <Bookmark className={`${compact ? 'w-3 h-3' : 'w-4 h-4'} ${isFavorited ? 'fill-navy-950' : ''}`} />
+          <Bookmark
+            className={`${compact ? 'w-3.5 h-3.5' : 'w-4 h-4'} ${
+              isFavorited
+                ? 'fill-[#07172B] text-[#07172B]'
+                : 'text-slate-700 dark:text-amber-400 group-hover/btn:text-[#07172B]'
+            }`}
+            strokeWidth={2.4}
+          />
         </motion.button>
 
         {/* Availability — bottom left */}

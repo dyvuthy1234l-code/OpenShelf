@@ -507,10 +507,10 @@ export default function BookDetail() {
                 className={`inline-flex min-h-11 items-center justify-center gap-2 px-5 rounded-xl border text-xs font-extrabold transition-all shadow-xs shrink-0 cursor-pointer ${
                   isSaved
                     ? 'bg-amber-400 text-navy-950 border-amber-400 shadow-md shadow-amber-400/20'
-                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700'
+                    : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border-slate-300 dark:border-slate-600'
                 }`}
               >
-                <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-navy-950 text-navy-950' : ''}`} />
+                <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-navy-950 text-navy-950' : 'text-slate-700 dark:text-amber-400'}`} strokeWidth={2.4} />
                 <span>{isSaved ? 'Saved' : 'Save'}</span>
               </button>
             </div>

@@ -180,13 +180,13 @@ export default function TrendingBooksMarquee({ books = [], loading = false, erro
                   <button
                     onClick={(e) => handleFavoriteClick(e, book.id)}
                     title={isFav ? 'Remove from favorites' : 'Save to favorites'}
-                    className={`absolute bottom-2.5 right-2.5 p-1.5 rounded-lg border transition-all shadow-xs ${
+                    className={`absolute bottom-2.5 right-2.5 p-1.5 rounded-lg border transition-all shadow-xs cursor-pointer ${
                       isFav
-                        ? 'bg-amber-500 text-slate-950 border-amber-500'
-                        : 'bg-white/90 hover:bg-amber-50 text-slate-600 hover:text-amber-700 border-slate-200'
+                        ? 'bg-amber-400 text-slate-950 border-amber-400'
+                        : 'bg-white/95 dark:bg-slate-900/95 hover:bg-amber-400 dark:hover:bg-amber-400 text-slate-700 dark:text-amber-400 hover:text-slate-950 dark:hover:text-slate-950 border-slate-200 dark:border-amber-400/30'
                     }`}
                   >
-                    <Bookmark className={`w-3.5 h-3.5 ${isFav ? 'fill-slate-950' : ''}`} />
+                    <Bookmark className={`w-3.5 h-3.5 ${isFav ? 'fill-slate-950 text-slate-950' : 'text-slate-700 dark:text-amber-400'}`} strokeWidth={2.4} />
                   </button>
 
                   {/* Availability Badge */}

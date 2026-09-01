@@ -446,6 +446,17 @@ html.dark main,
   color: #94A3B8 !important;
 }
 
+/* Ensure text on Gold / Amber buttons & active badges always stays deep navy/black for accessibility */
+.dark .os-btn-gold,
+.dark .os-btn-gold *,
+.dark [class*="bg-amber-400"],
+.dark [class*="bg-amber-500"],
+.dark [class*="bg-gold-"],
+.dark [class*="from-amber-400"],
+.dark [class*="from-amber-500"] {
+  color: #07172B !important;
+}
+
 /* Interactive Hover States in Dark Mode */
 .dark .hover\:bg-slate-50:hover,
 .dark .hover\:bg-slate-100:hover,

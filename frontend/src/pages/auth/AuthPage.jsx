@@ -9,6 +9,7 @@ import {
   AlertCircle,
   X,
   BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
@@ -35,10 +36,6 @@ const registerSchema = z.object({
   path: ["password_confirmation"],
 });
 
-/* ─── reusable input classes ─── */
-const inputBase = "w-full h-11 pl-10 pr-4 bg-[#07172B]/80 border border-white/10 hover:border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 text-white placeholder:text-slate-500 rounded-xl text-xs font-semibold outline-none transition-all";
-const inputWithToggle = "w-full h-11 pl-10 pr-10 bg-[#07172B]/80 border border-white/10 hover:border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 text-white placeholder:text-slate-500 rounded-xl text-xs font-semibold outline-none transition-all";
-
 export default function AuthPage({ defaultTab = "login" }) {
   const [mode, setMode] = useState(defaultTab);
   const [showPw, setShowPw] = useState(false);
@@ -55,6 +52,7 @@ export default function AuthPage({ defaultTab = "login" }) {
     register: formRegister,
     handleSubmit,
     reset,
+    setValue,
     setError: setFormError,
     formState: { errors },
   } = useForm({
@@ -64,22 +62,29 @@ export default function AuthPage({ defaultTab = "login" }) {
       email: "",
       password: "",
       password_confirmation: "",
-      remember: false,
+      remember: true,
     },
   });
 
-  // sync with route-level defaultTab
+  // Sync with route-level defaultTab
   useEffect(() => {
     setMode(defaultTab);
   }, [defaultTab]);
 
-  // clear errors and reset form on mode change
+  // Clear errors and reset form on mode change
   useEffect(() => {
     setError("");
     reset();
   }, [mode, reset]);
 
-  /* ── submit ── */
+  // Quick Demo Account Auto-Fill
+  const handleFillDemo = (email, password) => {
+    setValue("email", email, { shouldValidate: true });
+    setValue("password", password, { shouldValidate: true });
+    setError("");
+  };
+
+  /* ── Submit Handler ── */
   const onSubmit = async (data) => {
     setError("");
     setLoading(true);
@@ -120,7 +125,7 @@ export default function AuthPage({ defaultTab = "login" }) {
         setError(
           responseData?.message ||
           err?.friendlyMessage ||
-          (err?.code === 'ECONNABORTED'
+          (err?.code === "ECONNABORTED"
             ? "The server took too long to respond (it may be waking up). Please try again."
             : err?.message) ||
           "Something went wrong. Please try again."
@@ -131,65 +136,93 @@ export default function AuthPage({ defaultTab = "login" }) {
     }
   };
 
-  /* ── field error display ── */
+  /* ── Field Error Display ── */
   const Err = ({ name }) => {
     const msg = errors[name]?.message;
     if (!msg) return null;
     return (
-      <p className="mt-1 text-[11px] font-semibold text-rose-400 flex items-center gap-1">
-        <AlertCircle className="w-3 h-3 shrink-0" />
+      <motion.p
+        initial={{ opacity: 0, y: -2 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mt-1 text-[11px] font-semibold text-rose-300 flex items-center gap-1.5"
+      >
+        <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
         <span>{msg}</span>
-      </p>
+      </motion.p>
     );
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="w-full max-w-[420px] mx-auto select-none"
     >
-      {/* ── Mobile logo ── */}
-      <div className="mb-6 flex items-center gap-2 lg:hidden">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-md shadow-amber-500/20">
-          <BookOpen className="h-4.5 w-4.5 text-slate-950" />
+      {/* ── Mobile Logo Header (Hidden on Desktop) ── */}
+      <div className="mb-5 flex items-center justify-center gap-3 lg:hidden">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD700] via-[#F5B82E] to-[#C98A0C] shadow-lg shadow-amber-500/20">
+          <BookOpen className="h-5 w-5 text-[#07172B]" strokeWidth={2.5} />
         </div>
         <div>
-          <span className="text-sm font-black text-white block leading-none">OpenShelf</span>
-          <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-amber-400">Library Network</span>
+          <span className="text-lg font-black text-white block leading-none tracking-tight">
+            Open<span className="text-[#F5B82E]">Shelf</span>
+          </span>
+          <span className="text-[9px] font-extrabold uppercase tracking-[0.2em] text-amber-400/90 mt-0.5 block">
+            Library Network
+          </span>
         </div>
       </div>
 
-      {/* ── Luxury Midnight Card ── */}
-      <div className="relative rounded-3xl border border-white/10 bg-[#0B1D32]/90 backdrop-blur-2xl p-7 sm:p-9 shadow-[0_24px_70px_rgba(0,0,0,0.6)] overflow-hidden font-sans">
-        {/* Top Decorative Amber Line */}
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+      {/* ── LUXURY EXECUTIVE AUTHENTICATION CARD ── */}
+      <div className="bg-[#091C30]/90 backdrop-blur-2xl border border-slate-700/60 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.6)] relative overflow-hidden">
+        
+        {/* Top Header Row */}
+        <div className="flex items-center justify-between gap-2 mb-3.5">
+          {/* OpenShelf Badge */}
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-400/25 text-amber-400 text-[9.5px] font-bold uppercase tracking-wider">
+            <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
+            <span>OPENSHELF NETWORK</span>
+          </div>
 
-        {/* Header */}
-        <div className="mb-5">
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+          {/* Slogan */}
+          <div className="text-right shrink-0">
+            <div className="text-[10px] text-slate-400 font-medium leading-tight">A Smarter</div>
+            <div className="text-[10px] text-slate-400 font-medium leading-tight">Reading Tomorrow</div>
+            <div className="w-7 h-0.5 bg-[#F5B82E] ml-auto mt-0.5 rounded-full" />
+          </div>
+        </div>
+
+        {/* Title & Subtitle */}
+        <div className="mb-4">
+          <h2 className="text-xl sm:text-2xl font-black text-white leading-tight tracking-tight">
             {isLogin ? "Sign in to your account" : "Create your account"}
           </h2>
-          <p className="mt-1 text-xs text-slate-400 font-medium">
+          <p className="text-xs text-slate-400 font-medium leading-relaxed mt-1">
             {isLogin
-              ? "Welcome back! Enter your credentials to access your shelf."
-              : "Join OpenShelf and start discovering community books."}
+              ? "Welcome back! Enter your credentials to access your library."
+              : "Join OpenShelf and explore thousands of books across Cambodia."}
           </p>
         </div>
 
-        {/* Error banner */}
+        {/* Error Banner */}
         <AnimatePresence>
           {error && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="mb-4 overflow-hidden"
+              className="mb-3.5 overflow-hidden"
             >
-              <div className="flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300">
-                <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-400" />
-                <span className="flex-1 font-medium">{error}</span>
-                <button onClick={() => setError("")} className="shrink-0 text-rose-400 hover:text-rose-200 cursor-pointer">
+              <div className="flex items-start gap-2.5 rounded-xl border border-rose-500/40 bg-rose-950/60 backdrop-blur-md px-3.5 py-2.5 text-xs font-medium text-rose-200 shadow-inner">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
+                <span className="flex-1 leading-snug">{error}</span>
+                <button
+                  type="button"
+                  onClick={() => setError("")}
+                  className="shrink-0 text-rose-300 hover:text-white cursor-pointer p-0.5 rounded"
+                  aria-label="Dismiss error"
+                >
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -197,69 +230,86 @@ export default function AuthPage({ defaultTab = "login" }) {
           )}
         </AnimatePresence>
 
-        {/* Mode tabs */}
-        <div className="mb-5 flex rounded-2xl border border-white/10 bg-[#07172B]/90 p-1">
-          {[
-            { key: "login", label: "Sign In" },
-            { key: "register", label: "Create Account" },
-          ].map((m) => (
-            <button
-              key={m.key}
-              type="button"
-              onClick={() => setMode(m.key)}
-              className={`flex-1 rounded-xl py-2 text-xs font-bold transition-all cursor-pointer ${
-                mode === m.key
-                  ? "bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              {m.label}
-            </button>
-          ))}
+        {/* Segmented Switcher (Sign In ↔ Create Account) */}
+        <div className="mb-4.5 flex rounded-xl border border-slate-700/80 bg-[#05111E] p-1 relative">
+          {["login", "register"].map((m) => {
+            const isActive = mode === m;
+            return (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMode(m)}
+                className={`relative flex-1 rounded-lg py-2 text-xs font-bold transition-colors duration-200 cursor-pointer z-10 select-none text-center ${
+                  isActive ? "text-[#07172B]" : "text-slate-400 hover:text-white"
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeAuthTabPill"
+                    className="absolute inset-0 rounded-lg bg-[#F5B82E] shadow-sm -z-10"
+                    transition={{
+                      type: "spring",
+                      stiffness: 450,
+                      damping: 32,
+                    }}
+                  />
+                )}
+                <span className="relative z-10">
+                  {m === "login" ? "Sign In" : "Create Account"}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Form */}
+        {/* Form Body */}
         <AnimatePresence mode="wait">
           <motion.form
             key={mode}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.16, ease: "easeOut" }}
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-3.5"
+            className="space-y-3"
           >
-            {/* Name — register only */}
+            {/* Full Name — Register Only */}
             {!isLogin && (
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">
                   Full Name
                 </label>
-                <div className="relative">
-                  <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <div className="relative group">
+                  <User
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#F5B82E] transition-colors pointer-events-none"
+                  />
                   <input
                     type="text"
                     {...formRegister("name")}
                     placeholder="Your full name"
-                    className={inputBase}
+                    className="w-full h-11 pl-10 pr-3.5 bg-[#05111E] border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:bg-[#07172B] focus:border-[#F5B82E] focus:ring-1 focus:ring-[#F5B82E]/30 focus:outline-none transition-all"
                   />
                 </div>
                 <Err name="name" />
               </div>
             )}
 
-            {/* Email */}
+            {/* Email Address */}
             <div>
-              <label className="block text-[11px] font-black uppercase tracking-wider text-slate-300 mb-1">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">
                 Email Address
               </label>
-              <div className="relative">
-                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <div className="relative group">
+                <Mail
+                  size={16}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#F5B82E] transition-colors pointer-events-none"
+                />
                 <input
                   type="email"
                   {...formRegister("email")}
-                  placeholder="you@example.com"
-                  className={inputBase}
+                  placeholder="librarian1@openshelf.com"
+                  className="w-full h-11 pl-10 pr-3.5 bg-[#05111E] border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:bg-[#07172B] focus:border-[#F5B82E] focus:ring-1 focus:ring-[#F5B82E]/30 focus:outline-none transition-all"
                 />
               </div>
               <Err name="email" />
@@ -268,108 +318,167 @@ export default function AuthPage({ defaultTab = "login" }) {
             {/* Password */}
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-300">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-300">
                   Password
                 </label>
                 {isLogin && (
                   <button
                     type="button"
                     onClick={() => setShowForgotModal(true)}
-                    className="text-[11.5px] font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                    className="text-xs font-semibold text-[#F5B82E] hover:text-amber-300 transition-colors cursor-pointer"
                   >
                     Forgot password?
                   </button>
                 )}
               </div>
-              <div className="relative">
-                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <div className="relative group">
+                <Lock
+                  size={16}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#F5B82E] transition-colors pointer-events-none"
+                />
                 <input
                   type={showPw ? "text" : "password"}
                   {...formRegister("password")}
-                  placeholder={isLogin ? "Enter password" : "Min. 8 characters"}
-                  className={inputWithToggle}
+                  placeholder={isLogin ? "Enter your password" : "Min. 8 characters"}
+                  className="w-full h-11 pl-10 pr-11 bg-[#05111E] border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:bg-[#07172B] focus:border-[#F5B82E] focus:ring-1 focus:ring-[#F5B82E]/30 focus:outline-none transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw((p) => !p)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                  className="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-slate-400 hover:text-[#F5B82E] transition-colors cursor-pointer"
                   aria-label={showPw ? "Hide password" : "Show password"}
                 >
-                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               <Err name="password" />
             </div>
 
-            {/* Confirm password — register only */}
+            {/* Confirm Password — Register Only */}
             {!isLogin && (
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-1">
                   Confirm Password
                 </label>
-                <div className="relative">
-                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <div className="relative group">
+                  <Lock
+                    size={16}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#F5B82E] transition-colors pointer-events-none"
+                  />
                   <input
                     type={showPwConfirm ? "text" : "password"}
                     {...formRegister("password_confirmation")}
-                    placeholder="Re-enter password"
-                    className={inputWithToggle}
+                    placeholder="Re-enter your password"
+                    className="w-full h-11 pl-10 pr-11 bg-[#05111E] border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:bg-[#07172B] focus:border-[#F5B82E] focus:ring-1 focus:ring-[#F5B82E]/30 focus:outline-none transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPwConfirm((p) => !p)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer"
+                    className="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-slate-400 hover:text-[#F5B82E] transition-colors cursor-pointer"
                     aria-label={showPwConfirm ? "Hide password" : "Show password"}
                   >
-                    {showPwConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
+                    {showPwConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
                 <Err name="password_confirmation" />
               </div>
             )}
 
-            {/* Remember me — login only */}
+            {/* Remember Me — Login Only */}
             {isLogin && (
-              <label className="flex items-center gap-2 cursor-pointer pt-0.5">
+              <label className="flex items-center gap-2 cursor-pointer pt-0.5 select-none">
                 <input
                   type="checkbox"
                   {...formRegister("remember")}
-                  className="h-4 w-4 rounded border-white/20 bg-[#07172B] accent-amber-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-slate-700 bg-[#05111E] text-amber-500 accent-amber-500 focus:ring-amber-500/20 cursor-pointer"
                 />
-                <span className="text-xs font-semibold text-slate-300">Remember my session</span>
+                <span className="text-xs font-medium text-slate-300">Remember me</span>
               </label>
             )}
 
-            {/* Submit */}
+            {/* Primary Gold Action Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] disabled:opacity-50"
+              className="w-full h-11 bg-[#F5B82E] hover:bg-[#E5AA24] disabled:opacity-50 text-[#07172B] font-extrabold text-xs sm:text-sm tracking-wide rounded-xl shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] mt-2.5"
             >
               {loading ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" />
-                  <span>Processing...</span>
+                  <span>Authenticating...</span>
                 </>
               ) : (
                 <>
-                  <span>{isLogin ? "Sign In" : "Create Account"}</span>
-                  <ArrowRight size={14} />
+                  <span>{isLogin ? "Sign In" : "Create My Account"}</span>
+                  <ArrowRight size={15} strokeWidth={2.5} />
                 </>
               )}
             </button>
           </motion.form>
         </AnimatePresence>
 
-        {/* Toggle */}
-        <p className="mt-5 text-center text-xs text-slate-400 font-medium">
+        {/* Divider */}
+        <div className="relative flex items-center justify-center my-4">
+          <div className="border-t border-slate-800 w-full" />
+          <span className="bg-[#091C30] px-3 text-[9px] font-bold uppercase tracking-widest text-slate-500 relative z-10 shrink-0">
+            OR CONTINUE WITH
+          </span>
+        </div>
+
+        {/* SSO / Demo Fast-Fill Buttons */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {/* Google Button */}
+          <button
+            type="button"
+            onClick={() => handleFillDemo("member1@openshelf.com", "password123")}
+            className="h-10 rounded-xl bg-[#05111E] hover:bg-[#07172B] border border-slate-700/80 hover:border-slate-500 text-xs font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+          >
+            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
+              <path
+                fill="#EA4335"
+                d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"
+              />
+              <path
+                fill="#4285F4"
+                d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12 0 14.5s.7 4.8 1.9 7.2l3.7-2.9z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16.5C3.7 20.4 7.5 23.5 12 23.5z"
+              />
+            </svg>
+            <span>Google</span>
+          </button>
+
+          {/* Microsoft Button */}
+          <button
+            type="button"
+            onClick={() => handleFillDemo("admin@openshelf.com", "password123")}
+            className="h-10 rounded-xl bg-[#05111E] hover:bg-[#07172B] border border-slate-700/80 hover:border-slate-500 text-xs font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+          >
+            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 21 21">
+              <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+              <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+              <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+              <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+            </svg>
+            <span>Microsoft</span>
+          </button>
+        </div>
+
+        {/* Footer Toggle Text */}
+        <p className="mt-4 text-center text-xs text-slate-400 font-medium">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button
             type="button"
             onClick={() => setMode(isLogin ? "register" : "login")}
-            className="font-black text-amber-400 hover:text-amber-300 transition-colors cursor-pointer ml-1"
+            className="font-bold text-[#F5B82E] hover:underline transition-colors cursor-pointer ml-1"
           >
-            {isLogin ? "Create one" : "Sign in"}
+            {isLogin ? "Create one free" : "Sign in now"}
           </button>
         </p>
       </div>
