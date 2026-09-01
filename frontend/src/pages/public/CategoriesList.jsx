@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  Layers, Search, X, Bookmark, Building2, ArrowRight, RefreshCw, SlidersHorizontal, BookOpen 
+  Layers, Search, X, Bookmark, ArrowRight, RefreshCw, SlidersHorizontal 
 } from 'lucide-react';
 import publicService from '../../services/publicService';
 import Pagination from '../../components/public/Pagination';

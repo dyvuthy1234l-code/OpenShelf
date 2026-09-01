@@ -37,6 +37,7 @@ export default function LibrarianNotificationsPage() {
   const handleMarkAllAsRead = () => {
     markAllAsReadMutation.mutate();
   };
+  const handleMarkAllRead = handleMarkAllAsRead;
 
   const handleDelete = async (id) => {
     try {

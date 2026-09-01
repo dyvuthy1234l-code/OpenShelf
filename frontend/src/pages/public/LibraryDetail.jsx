@@ -493,7 +493,7 @@ export default function LibraryDetail() {
                 </div>
 
                 {/* Embedded map */}
-                <div className="rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-850">
+                <div className="rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-slate-100 dark:bg-slate-800">
                   <iframe
                     title={`${library.name} location map`}
                     src={`https://www.google.com/maps?q=${encodeURIComponent(library.google_maps_url || `${library.name} ${library.address || library.city || 'Phnom Penh'} Cambodia`)}&output=embed`}

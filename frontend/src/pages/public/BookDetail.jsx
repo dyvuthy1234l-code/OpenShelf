@@ -411,7 +411,7 @@ export default function BookDetail() {
                 {book.library?.name && (
                   <Link
                     to={`/libraries/${book.library_id || book.library?.id}`}
-                    className="inline-flex min-h-11 items-center gap-1.5 text-xs text-amber-800 dark:text-amber-300 font-bold bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 hover:bg-amber-100 dark:hover:bg-slate-750 transition-colors px-3 py-1.5 rounded-xl shrink-0 cursor-pointer"
+                    className="inline-flex min-h-11 items-center gap-1.5 text-xs text-amber-800 dark:text-amber-300 font-bold bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 hover:bg-amber-100 dark:hover:bg-slate-700 transition-colors px-3 py-1.5 rounded-xl shrink-0 cursor-pointer"
                   >
                     <Building2 className="w-4 h-4 text-amber-500 shrink-0" />
                     <span className="truncate max-w-[200px]">{book.library.name}</span>
@@ -458,7 +458,7 @@ export default function BookDetail() {
                   Librarians / Admins cannot request member loans
                 </div>
               ) : activeBorrowing ? (
-                <div className="flex-1 flex items-center justify-between gap-3 px-5 py-3 bg-amber-50 dark:bg-slate-800 border border-amber-300 dark:border-amber-750 rounded-xl text-amber-900 dark:text-amber-300 text-xs font-extrabold shadow-xs">
+                <div className="flex-1 flex items-center justify-between gap-3 px-5 py-3 bg-amber-50 dark:bg-slate-800 border border-amber-300 dark:border-amber-700 rounded-xl text-amber-900 dark:text-amber-300 text-xs font-extrabold shadow-xs">
                   <span className="flex items-center gap-2 uppercase tracking-wider">
                     <Clock className="w-4 h-4 text-amber-500" />
                     {activeBorrowing.status === 'pending'
@@ -591,7 +591,7 @@ export default function BookDetail() {
 
               <Link
                 to={`/libraries/${book.library.id}`}
-                className="inline-flex min-h-11 items-center justify-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-750 transition-all shrink-0 cursor-pointer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition-all shrink-0 cursor-pointer"
               >
                 <span>View Library Profile</span>
                 <Building2 className="w-4 h-4 text-amber-500" />
