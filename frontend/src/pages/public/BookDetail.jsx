@@ -751,26 +751,36 @@ export default function BookDetail() {
 
         {/* 6. RELATED BOOKS ("YOU MAY ALSO LIKE") */}
         {relatedBooks.length > 0 && (
-          <motion.div {...REVEAL_VARIANTS} className="space-y-6 pt-4">
-            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-4">
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                You May Also Like
-              </h3>
+          <motion.div {...REVEAL_VARIANTS} className="space-y-4 pt-4">
+            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                  You May Also Like
+                </h3>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                  {relatedBooks.length}
+                </span>
+              </div>
               <Link to="/books" className="text-xs font-bold text-gold-600 dark:text-gold-400 hover:text-gold-500">
                 View All Catalogue →
               </Link>
             </div>
 
+            {/* Horizontal Swipe on Mobile (2 cards visible) & Grid on Desktop */}
             <motion.div
               variants={LIST_STAGGER}
               initial="initial"
               whileInView="animate"
               viewport={{ once: true, margin: '-60px' }}
-              className="flex flex-wrap justify-center gap-5"
+              className="flex md:grid overflow-x-auto md:overflow-visible pb-4 md:pb-0 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 snap-x snap-mandatory scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0"
             >
               {relatedBooks.map((relBook) => (
-                <motion.div key={relBook.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)]">
-                  <BookCard book={relBook} />
+                <motion.div
+                  key={relBook.id}
+                  variants={LIST_ITEM}
+                  className="w-[calc(50vw-1.75rem)] min-w-[145px] max-w-[210px] md:w-auto shrink-0 md:shrink snap-start h-full"
+                >
+                  <BookCard book={relBook} compact={true} />
                 </motion.div>
               ))}
             </motion.div>
