@@ -226,9 +226,9 @@ export default function AuthLayout() {
       {/* ═══════════════════════════════════════════════════════
           RIGHT AUTH FORM CONTAINER (Responsive on all screen sizes)
           ═══════════════════════════════════════════════════════ */}
-      <div className="w-full lg:w-[48%] min-h-screen lg:min-h-0 lg:h-full flex flex-col justify-between items-center p-4 sm:p-6 lg:p-8 relative z-10 ml-auto select-none overflow-y-auto">
+      <div className="w-full lg:w-[48%] min-h-screen lg:min-h-0 lg:h-full flex flex-col justify-between items-center px-4 py-3 sm:px-6 sm:py-4 lg:px-6 lg:py-3 xl:px-8 relative z-10 ml-auto select-none overflow-y-auto lg:overflow-hidden">
         {/* Top Header Slogan (Desktop) */}
-        <div className="w-full max-w-[420px] hidden sm:flex items-center justify-end gap-3 text-[11px] font-medium text-slate-400 tracking-wider pt-1 shrink-0">
+        <div className="w-full max-w-[420px] hidden lg:flex items-center justify-end gap-3 text-[11px] font-medium text-slate-400 tracking-wider shrink-0 pt-0.5">
           <span>Books</span>
           <span className="text-slate-600">•</span>
           <span>People</span>
@@ -237,14 +237,16 @@ export default function AuthLayout() {
         </div>
 
         {/* Center Card Container */}
-        <div className="w-full max-w-[420px] relative z-10 my-auto py-4 sm:py-6">
-          <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-12"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+        <div className="w-full max-w-[420px] relative z-10 my-auto py-1 sm:py-2">
+          <React.Suspense fallback={<div className="flex-1 flex items-center justify-center p-8"><div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
             <Outlet />
           </React.Suspense>
         </div>
 
-        {/* Bottom spacer */}
-        <div className="h-4 hidden sm:block shrink-0" />
+        {/* Bottom copyright / network footer on desktop */}
+        <div className="w-full max-w-[420px] hidden lg:flex items-center justify-center text-[10px] text-slate-500 font-medium tracking-wide shrink-0 pb-1">
+          <span>OpenShelf Library Network © 2026</span>
+        </div>
       </div>
     </div>
   );
