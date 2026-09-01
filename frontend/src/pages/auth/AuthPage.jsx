@@ -425,13 +425,13 @@ export default function AuthPage({ defaultTab = "login" }) {
           </span>
         </div>
 
-        {/* SSO / Demo Fast-Fill Buttons */}
+        {/* SSO / Social Login Display Buttons */}
         <div className="grid grid-cols-2 gap-2">
           {/* Google Button */}
           <button
             type="button"
-            onClick={() => handleFillDemo("member1@openshelf.com", "password123")}
-            className="h-8.5 rounded-xl bg-[#05111E] hover:bg-[#07172B] border border-slate-700/80 hover:border-slate-500 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+            onClick={(e) => e.preventDefault()}
+            className="h-8.5 rounded-xl bg-[#05111E] hover:bg-[#07172B] border border-slate-700/80 hover:border-slate-500 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all cursor-default shadow-xs"
           >
             <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
               <path
@@ -457,8 +457,8 @@ export default function AuthPage({ defaultTab = "login" }) {
           {/* Microsoft Button */}
           <button
             type="button"
-            onClick={() => handleFillDemo("admin@openshelf.com", "password123")}
-            className="h-8.5 rounded-xl bg-[#05111E] hover:bg-[#07172B] border border-slate-700/80 hover:border-slate-500 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+            onClick={(e) => e.preventDefault()}
+            className="h-8.5 rounded-xl bg-[#05111E] hover:bg-[#07172B] border border-slate-700/80 hover:border-slate-500 text-[11px] font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all cursor-default shadow-xs"
           >
             <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 21 21">
               <rect x="1" y="1" width="9" height="9" fill="#f25022" />
