@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Power, Clock, CheckCircle2, AlertTriangle, RefreshCw } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import librarianService from '../../services/librarianService';
 
 export default function LibraryStatusToggle({ library, onStatusChange, compact = false }) {
   const [toggling, setToggling] = useState(false);
+  const queryClient = useQueryClient();
 
   if (!library) return null;
 
@@ -16,8 +18,14 @@ export default function LibraryStatusToggle({ library, onStatusChange, compact =
       setToggling(true);
       const targetStatus = isOpen ? 'inactive' : 'active';
       const res = await librarianService.toggleLibraryStatus(targetStatus);
+      const updatedLib = res.library || res.data;
+
+      queryClient.invalidateQueries({ queryKey: ['librarian', 'my-library'] });
+      queryClient.invalidateQueries({ queryKey: ['public', 'libraries'] });
+      queryClient.invalidateQueries({ queryKey: ['public', 'library'] });
+
       if (onStatusChange) {
-        onStatusChange(res.library || res.data);
+        onStatusChange(updatedLib);
       }
     } catch (err) {
       console.error('Failed to toggle library status:', err);

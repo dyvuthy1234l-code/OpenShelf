@@ -87,9 +87,9 @@ export default function Dashboard() {
           library={library}
           dateRange={dateRange}
           onDateRangeChange={handleDateRangeChange}
-          onLibraryStatusChange={(updatedLib) =>
-            setLibrary(updatedLib)
-          }
+          onLibraryStatusChange={() => {
+            refetchLib();
+          }}
         />
       </div>
 
