@@ -398,46 +398,48 @@ export default function Navbar() {
           <>
             <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[80] lg:hidden" onClick={() => setMobileMenuOpen(false)} />
             <motion.div
-              initial={{ x: '100%', opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: '100%', opacity: 0 }}
-              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 260 }}
               role="dialog"
               aria-modal="true"
               aria-label="Navigation menu"
-              className="fixed top-2 right-2 bottom-18 w-[88vw] max-w-xs bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800 shadow-2xl z-[90] lg:hidden flex flex-col justify-between overflow-y-auto rounded-3xl p-3.5 space-y-3"
+              className="fixed top-2 right-2 max-w-[calc(100vw-1rem)] w-[min(22rem,calc(100vw-1rem))] max-h-[calc(100dvh-5rem)] h-fit bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xl z-[90] lg:hidden rounded-3xl overflow-y-auto"
             >
-              <div className="space-y-3">
-                {/* User Profile Header */}
+              <div className="p-3.5 sm:p-4 space-y-3">
                 {isAuthenticated && user ? (
-                  <div className="bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800/40 rounded-2xl p-2.5 flex items-center justify-between shadow-2xs">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-full ring-2 ring-amber-400 p-0.5 object-cover overflow-hidden bg-white dark:bg-slate-900 shadow-sm shrink-0 flex items-center justify-center">
+                  <div className="bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800/40 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-11 h-11 rounded-full ring-2 ring-amber-400 p-0.5 object-cover overflow-hidden bg-white dark:bg-slate-900 shadow-sm shrink-0 flex items-center justify-center">
                         {getAvatarUrl(user.avatar_url || user.avatar) ? (
                           <img src={getAvatarUrl(user.avatar_url || user.avatar)} alt={user.name} className="w-full h-full rounded-full object-cover" />
                         ) : (
                           <div className="w-full h-full rounded-full bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center">{user.name ? user.name[0].toUpperCase() : 'U'}</div>
                         )}
                       </div>
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-black text-slate-900 dark:text-white truncate leading-tight">{user.name}</h4>
+                      <div className="min-w-0 space-y-0.5">
+                        <h4 className="text-xs font-extrabold text-slate-900 dark:text-white truncate leading-tight">{user.name}</h4>
+                        {user.email && <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate leading-none">{user.email}</p>}
                         <div className="pt-0.5">
                           <span className="inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[8.5px] font-black uppercase tracking-wider bg-amber-400 text-amber-950 shadow-2xs"><Crown className="w-2.5 h-2.5 fill-amber-950" /><span>{user.role}</span></span>
                         </div>
                       </div>
                     </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs cursor-pointer shrink-0 ml-1.5"><X className="w-4 h-4" /></button>
+                    <button onClick={() => setMobileMenuOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs cursor-pointer shrink-0 ml-1.5"><X className="w-3.5 h-3.5" /></button>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
                     <OpenShelfBrand role="member" size="sm" />
-                    <button onClick={() => setMobileMenuOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs cursor-pointer shrink-0"><X className="w-4 h-4" /></button>
+                    <button onClick={() => setMobileMenuOpen(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs cursor-pointer shrink-0"><X className="w-3.5 h-3.5" /></button>
                   </div>
                 )}
-
-                {/* Explore Links */}
+                <form onSubmit={handleSearchSubmit} className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                  <input type="text" placeholder="Search catalogue, libraries, authors..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full h-10 pl-9 pr-3 text-xs font-semibold bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all shadow-2xs" />
+                </form>
                 <div className="space-y-0.5">
-                  <span className="text-[9.5px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">EXPLORE OPENSHELF</span>
+                  <span className="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">EXPLORE OPENSHELF</span>
                   <nav className="space-y-0.5 pt-0.5">
                     <Link to="/libraries" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${location.pathname.startsWith('/libraries') ? 'bg-amber-100/80 dark:bg-amber-950/60 text-slate-950 dark:text-white border border-amber-200/80 dark:border-amber-800/60 shadow-2xs' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'}`}><div className="flex items-center gap-2.5"><Building2 className="w-4 h-4 text-amber-500 shrink-0" /><span>Partner Libraries</span></div><ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" /></Link>
                     <Link to="/categories" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${location.pathname.startsWith('/categories') ? 'bg-amber-100/80 dark:bg-amber-950/60 text-slate-950 dark:text-white border border-amber-200/80 dark:border-amber-800/60 shadow-2xs' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'}`}><div className="flex items-center gap-2.5"><Layers className="w-4 h-4 text-amber-500 shrink-0" /><span>Book Categories</span></div><ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" /></Link>
@@ -447,11 +449,9 @@ export default function Navbar() {
                     <Link to="/become-librarian" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${location.pathname.startsWith('/become-librarian') ? 'bg-sky-100/80 dark:bg-sky-950/60 text-sky-950 dark:text-sky-200 border border-sky-200/80 dark:border-sky-800/60 shadow-2xs' : 'text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40'}`}><div className="flex items-center gap-2.5"><Sparkles className="w-4 h-4 text-sky-500 shrink-0" /><span>For Librarians</span></div><ChevronRight className="w-3.5 h-3.5 text-sky-400 shrink-0" /></Link>
                   </nav>
                 </div>
-
-                {/* Staff Workspaces */}
                 {isAuthenticated && (user?.role === 'librarian' || user?.role === 'admin') && (
                   <div className="space-y-0.5 pt-0.5">
-                    <span className="text-[9.5px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">STAFF WORKSPACES</span>
+                    <span className="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">STAFF WORKSPACES</span>
                     <div className="space-y-0.5 pt-0.5">
                       {user?.role === 'librarian' && (
                         <Link to="/librarian" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs"><div className="flex items-center gap-2.5"><LayoutDashboard className="w-4 h-4 text-amber-500 shrink-0" /><span>Librarian Workspace</span></div><ChevronRight className="w-3.5 h-3.5 text-amber-400 shrink-0" /></Link>
@@ -462,26 +462,23 @@ export default function Navbar() {
                     </div>
                   </div>
                 )}
-
-                {/* Settings */}
                 <div className="space-y-0.5 pt-0.5">
-                  <span className="text-[9.5px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">SETTINGS</span>
+                  <span className="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">SETTINGS</span>
                   <div className="pt-0.5">
-                    <button type="button" onClick={toggleDarkMode} className="flex items-center justify-between w-full px-2.5 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-all cursor-pointer">
+                    <button type="button" onClick={toggleDarkMode} className="flex items-center justify-between w-full px-2 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-all cursor-pointer">
                       <div className="flex items-center gap-2.5">{darkMode ? <Sun className="w-4 h-4 text-amber-400 shrink-0" /> : <Moon className="w-4 h-4 text-slate-700 dark:text-slate-300 shrink-0" />}<span>Dark Theme</span></div>
                       <div className={`w-10 h-5.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-700'}`}><div className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${darkMode ? 'translate-x-4.5' : 'translate-x-0'}`} /></div>
                     </button>
                   </div>
                 </div>
-
-                {/* Account */}
                 {isAuthenticated && (
-                  <div className="pt-1">
-                    <button onClick={async () => { setMobileMenuOpen(false); await logout(); navigate('/login'); }} className="flex items-center justify-center gap-2 w-full h-10 rounded-xl border-2 border-rose-400/80 dark:border-rose-800/80 text-rose-600 dark:text-rose-400 bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-extrabold text-xs shadow-2xs transition-all cursor-pointer"><LogOut className="w-4 h-4 text-rose-500 shrink-0" /><span>Sign Out</span></button>
+                  <div className="space-y-1 pt-0.5">
+                    <span className="text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">ACCOUNT</span>
+                    <button onClick={async () => { setMobileMenuOpen(false); await logout(); navigate('/login'); }} className="flex items-center justify-center gap-2 w-full h-10 rounded-xl border-2 border-rose-400/80 dark:border-rose-800/80 text-rose-600 dark:text-rose-400 bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-extrabold text-xs shadow-2xs transition-all cursor-pointer"><LogOut className="w-3.5 h-3.5 text-rose-500 shrink-0" /><span>Sign Out</span></button>
                   </div>
                 )}
                 {!isAuthenticated && (
-                  <div className="pt-1 flex flex-col gap-2">
+                  <div className="pt-0.5 flex flex-col gap-2">
                     <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-center h-10 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer">Sign In</Link>
                     <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-center h-10 bg-gradient-to-r from-amber-400 via-gold-500 to-amber-500 hover:brightness-105 text-navy-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20 transition-all cursor-pointer">Get Started Free</Link>
                   </div>
