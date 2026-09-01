@@ -308,7 +308,7 @@ export default function AuthPage({ defaultTab = "login" }) {
                 <input
                   type="email"
                   {...formRegister("email")}
-                  placeholder="librarian1@openshelf.com"
+                  placeholder="Your email"
                   className="w-full h-9.5 sm:h-10 pl-9 pr-3 bg-[#05111E] border border-slate-700/80 rounded-xl text-xs sm:text-sm text-white placeholder:text-slate-500 focus:bg-[#07172B] focus:border-[#F5B82E] focus:ring-1 focus:ring-[#F5B82E]/30 focus:outline-none transition-all"
                 />
               </div>
