@@ -466,62 +466,47 @@ export default function Navbar() {
                     <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                     <input
                       type="text"
-                      placeholder="Search books, authors..."
+                      placeholder="Search books, authors, libraries..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       aria-label="Search books"
-                      className="w-full h-10 pl-10 pr-4 text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 transition-all"
+                      className="w-full h-10.5 pl-10 pr-4 text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 transition-all shadow-2xs"
                     />
                   </form>
 
-                  {/* Public Navigation Links */}
-                  <div className="space-y-1">
+                  {/* Explore & Directory Section (Distinct from Bottom Nav) */}
+                  <div className="space-y-1.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3">
-                      Main Menu
+                      Explore OpenShelf
                     </span>
                     <nav className="space-y-1 pt-1">
-                      {navLinks.map((link) => {
-                        const isActive = location.pathname === link.path;
-                        const Icon = link.icon || BookOpen;
-                        return (
-                          <Link
-                            key={link.name}
-                            to={link.path}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                              isActive
-                                ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-                                : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                            }`}
-                          >
-                            <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-slate-950' : 'text-amber-500'}`} />
-                            <span className="flex-1">{link.name}</span>
-                          </Link>
-                        );
-                      })}
-                    </nav>
-                  </div>
+                      <Link
+                        to="/libraries"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                          location.pathname.startsWith('/libraries')
+                            ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <Building2 className={`w-4 h-4 shrink-0 ${location.pathname.startsWith('/libraries') ? 'text-slate-950' : 'text-amber-500'}`} />
+                        <span className="flex-1">Partner Libraries</span>
+                      </Link>
 
-                  {/* Member Area Links (if authenticated) */}
-                  {isAuthenticated && user && (
-                    <div className="space-y-1 pt-3 border-t border-slate-100 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3">
-                        Member Account
-                      </span>
-                      <div className="space-y-1 pt-1">
-                        <Link
-                          to="/member/borrowings"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                            location.pathname.startsWith('/member/borrowings')
-                              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <Clock className="w-4 h-4 text-amber-500 shrink-0" />
-                          <span className="flex-1">My Borrowings</span>
-                        </Link>
+                      <Link
+                        to="/categories"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                          location.pathname.startsWith('/categories')
+                            ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <Layers className={`w-4 h-4 shrink-0 ${location.pathname.startsWith('/categories') ? 'text-slate-950' : 'text-amber-500'}`} />
+                        <span className="flex-1">Book Categories</span>
+                      </Link>
 
+                      {isAuthenticated && user?.role === 'member' && (
                         <Link
                           to="/member/favorites"
                           onClick={() => setMobileMenuOpen(false)}
@@ -531,46 +516,38 @@ export default function Navbar() {
                               : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                           }`}
                         >
-                          <Bookmark className="w-4 h-4 text-amber-500 shrink-0" />
-                          <span className="flex-1">Favorites</span>
+                          <Bookmark className={`w-4 h-4 shrink-0 ${location.pathname.startsWith('/member/favorites') ? 'text-slate-950' : 'text-amber-500'}`} />
+                          <span className="flex-1">Saved Wishlist</span>
                         </Link>
+                      )}
 
-                        <Link
-                          to="/member/notifications"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                            location.pathname.startsWith('/member/notifications')
-                              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <Bell className="w-4 h-4 text-amber-500 shrink-0" />
-                          <span className="flex-1">Notifications</span>
-                          {unreadCount > 0 && (
-                            <span className="bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-full shadow-xs">
-                              {unreadCount}
-                            </span>
-                          )}
-                        </Link>
+                      <Link
+                        to="/become-librarian"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                          location.pathname.startsWith('/become-librarian')
+                            ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                            : 'text-sky-700 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40'
+                        }`}
+                      >
+                        <Sparkles className={`w-4 h-4 shrink-0 ${location.pathname.startsWith('/become-librarian') ? 'text-slate-950' : 'text-sky-500'}`} />
+                        <span className="flex-1">For Librarians</span>
+                      </Link>
+                    </nav>
+                  </div>
 
-                        <Link
-                          to="/member/profile"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                            location.pathname.startsWith('/member/profile')
-                              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <User className="w-4 h-4 text-amber-500 shrink-0" />
-                          <span className="flex-1">My Profile</span>
-                        </Link>
-
+                  {/* Special Workspaces (For Librarian / Admin) */}
+                  {isAuthenticated && (user?.role === 'librarian' || user?.role === 'admin') && (
+                    <div className="space-y-1.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3">
+                        Staff Workspaces
+                      </span>
+                      <div className="space-y-1 pt-1">
                         {user?.role === 'librarian' && (
                           <Link
                             to="/librarian"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60"
+                            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60"
                           >
                             <LayoutDashboard className="w-4 h-4 text-amber-500 shrink-0" />
                             <span className="flex-1">Librarian Workspace</span>
@@ -593,7 +570,7 @@ export default function Navbar() {
 
                   {/* Guest Login/Register Buttons */}
                   {!isAuthenticated && (
-                    <div className="pt-2 flex flex-col gap-2">
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
                       <Link
                         to="/login"
                         onClick={() => setMobileMenuOpen(false)}
