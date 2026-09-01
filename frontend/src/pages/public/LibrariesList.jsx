@@ -67,25 +67,25 @@ function ProvinceDropdown({ selectedValue, onChange }) {
   }, [filterQuery]);
 
   return (
-    <div ref={dropdownRef} className="relative min-w-[200px] sm:min-w-[240px]">
+    <div ref={dropdownRef} className="relative w-full">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`w-full h-10 pl-3.5 pr-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all duration-200 shadow-2xs ${
+        className={`w-full h-11 pl-3.5 pr-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all duration-200 shadow-2xs cursor-pointer ${
           isOpen
-            ? 'bg-white border-gold-500 ring-2 ring-gold-500/20 text-navy-900'
+            ? 'bg-white dark:bg-slate-800 border-amber-500 ring-2 ring-amber-500/20 text-slate-900 dark:text-white'
             : selectedValue
-            ? 'bg-gold-50/80 border-gold-300 text-navy-900 hover:bg-gold-100/60'
-            : 'bg-white border-brand-border/80 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+            ? 'bg-amber-50/80 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-slate-900 dark:text-white'
+            : 'bg-white dark:bg-slate-800 border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
         }`}
       >
         <div className="flex items-center gap-2 truncate">
-          <MapPin className={`w-4 h-4 shrink-0 ${selectedValue ? 'text-gold-600' : 'text-slate-400'}`} />
+          <MapPin className={`w-4 h-4 shrink-0 ${selectedValue ? 'text-amber-500' : 'text-slate-400'}`} />
           <span className="truncate">
             {selectedItem.value ? `${selectedItem.en} (${selectedItem.kh})` : 'All Provinces (ខេត្ត/ក្រុង)'}
           </span>
         </div>
-        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-gold-600' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-amber-500' : ''}`} />
       </button>
 
       <AnimatePresence>
@@ -95,7 +95,7 @@ function ProvinceDropdown({ selectedValue, onChange }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 top-12 z-50 w-72 sm:w-80 bg-white border border-brand-border/80 rounded-2xl shadow-2xl overflow-hidden p-2 space-y-2"
+            className="absolute left-0 sm:left-auto sm:right-0 top-12 z-50 w-[min(calc(100vw-2.5rem),22rem)] bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-2 space-y-2"
           >
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
@@ -105,13 +105,13 @@ function ProvinceDropdown({ selectedValue, onChange }) {
                 value={filterQuery}
                 onChange={(e) => setFilterQuery(e.target.value)}
                 autoFocus
-                className="w-full h-8.5 pl-8.5 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-gold-500 focus:bg-white transition-all"
+                className="w-full h-9 pl-9 pr-8 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:bg-white dark:focus:bg-slate-900 transition-all"
               />
               {filterQuery && (
                 <button
                   type="button"
                   onClick={() => setFilterQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -135,21 +135,21 @@ function ProvinceDropdown({ selectedValue, onChange }) {
                         setIsOpen(false);
                         setFilterQuery('');
                       }}
-                      className={`w-full px-3 py-2 rounded-xl flex items-center justify-between text-left transition-colors font-medium cursor-pointer ${
+                      className={`w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-left transition-colors font-medium cursor-pointer ${
                         isSelected
-                          ? 'bg-navy-900 text-gold-400 font-bold'
-                          : 'text-slate-700 hover:bg-navy-50 hover:text-navy-900'
+                          ? 'bg-amber-400 text-slate-950 font-bold'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center gap-2 truncate">
                         <span className="font-semibold">{prov.en}</span>
                         {prov.kh && (
-                          <span className={`text-[11px] ${isSelected ? 'text-gold-300/80' : 'text-slate-400'}`}>
+                          <span className={`text-[11px] ${isSelected ? 'text-slate-950/80 font-bold' : 'text-slate-400'}`}>
                             ({prov.kh})
                           </span>
                         )}
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-gold-400 shrink-0 ml-2" />}
+                      {isSelected && <Check className="w-4 h-4 text-slate-950 shrink-0 ml-2" />}
                     </button>
                   );
                 })
@@ -186,21 +186,21 @@ function SortDropdown({ selectedValue, onChange }) {
   const selectedOption = SORT_OPTIONS.find((o) => o.value === selectedValue) || SORT_OPTIONS[0];
 
   return (
-    <div ref={dropdownRef} className="relative min-w-[170px] sm:min-w-[190px]">
+    <div ref={dropdownRef} className="relative w-full">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`w-full h-10 pl-3.5 pr-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all duration-200 shadow-2xs cursor-pointer ${
+        className={`w-full h-11 pl-3.5 pr-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all duration-200 shadow-2xs cursor-pointer ${
           isOpen
-            ? 'bg-white border-gold-500 ring-2 ring-gold-500/20 text-navy-900'
-            : 'bg-white border-brand-border/80 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+            ? 'bg-white dark:bg-slate-800 border-amber-500 ring-2 ring-amber-500/20 text-slate-900 dark:text-white'
+            : 'bg-white dark:bg-slate-800 border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
         }`}
       >
         <div className="flex items-center gap-2 truncate">
-          <ArrowUpDown className="w-4 h-4 text-gold-600 shrink-0" />
+          <ArrowUpDown className="w-4 h-4 text-amber-500 shrink-0" />
           <span className="truncate">{selectedOption.label}</span>
         </div>
-        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-gold-600' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-amber-500' : ''}`} />
       </button>
 
       <AnimatePresence>
@@ -210,7 +210,7 @@ function SortDropdown({ selectedValue, onChange }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute right-0 top-12 z-50 w-52 bg-white border border-brand-border/80 rounded-2xl shadow-2xl overflow-hidden p-1.5 space-y-0.5"
+            className="absolute left-0 sm:left-auto sm:right-0 top-12 z-50 w-[min(calc(100vw-2.5rem),16rem)] bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-1.5 space-y-0.5"
           >
             {SORT_OPTIONS.map((opt) => {
               const isSelected = selectedValue === opt.value;
@@ -222,14 +222,14 @@ function SortDropdown({ selectedValue, onChange }) {
                     onChange(opt.value);
                     setIsOpen(false);
                   }}
-                  className={`w-full px-3 py-2 rounded-xl flex items-center justify-between text-left text-xs transition-colors font-semibold cursor-pointer ${
+                  className={`w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-left text-xs transition-colors font-semibold cursor-pointer ${
                     isSelected
-                      ? 'bg-navy-900 text-gold-400 font-bold'
-                      : 'text-slate-700 hover:bg-navy-50 hover:text-navy-900'
+                      ? 'bg-amber-400 text-slate-950 font-bold'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   <span>{opt.label}</span>
-                  {isSelected && <Check className="w-4 h-4 text-gold-400 shrink-0 ml-2" />}
+                  {isSelected && <Check className="w-4 h-4 text-slate-950 shrink-0 ml-2" />}
                 </button>
               );
             })}
@@ -341,17 +341,17 @@ export default function LibrariesList() {
   const endItem = meta.total > 0 ? Math.min(meta.current_page * meta.per_page, meta.total) : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-12 pb-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 space-y-8 sm:space-y-12 pb-24">
       {/* 1. EDITORIAL PAGE HEADER */}
-      <div className="bg-white border border-brand-border/70 rounded-3xl p-6 sm:p-10 shadow-xs space-y-4">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600 mb-1">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xs space-y-3 sm:space-y-4">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-500 mb-1">
           <Building2 className="w-4 h-4" />
           <span>Community Directory</span>
         </div>
-        <h1 className="os-section-title sm:text-3xl lg:text-4xl">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
           Physical Libraries
         </h1>
-        <p className="text-slate-500 text-xs sm:text-base leading-relaxed max-w-3xl">
+        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-base leading-relaxed max-w-3xl">
           Explore partner community libraries across Cambodia. Connect with physical reading spaces, inspect collection counts, and borrow books in person.
         </p>
       </div>
@@ -359,13 +359,13 @@ export default function LibrariesList() {
       {/* 2. FEATURED LIBRARIES SECTION (Show near top on page 1) */}
       {page === 1 && featuredLibraries.length > 0 && (
         <section className="space-y-6">
-          <motion.div {...REVEAL_VARIANTS} className="flex items-center justify-between border-b border-brand-border/60 pb-4">
+          <motion.div {...REVEAL_VARIANTS} className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-4">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600">
-                <Sparkles className="w-4 h-4 text-gold-500" />
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-500">
+                <Sparkles className="w-4 h-4 text-amber-400" />
                 <span>Featured Partners</span>
               </div>
-              <h2 className="os-section-title">Top Rated Libraries</h2>
+              <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">Top Rated Libraries</h2>
             </div>
           </motion.div>
 
@@ -374,10 +374,10 @@ export default function LibrariesList() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
           >
             {featuredLibraries.map((lib, idx) => (
-              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="w-full">
+              <motion.div key={`featured-${lib.id}`} variants={LIST_ITEM} className="w-full h-full">
                 <FeaturedLibraryCard library={lib} rankIndex={idx} />
               </motion.div>
             ))}
@@ -387,64 +387,61 @@ export default function LibrariesList() {
 
       {/* 3. ALL LIBRARIES SECTION WITH SERVER-SIDE PAGINATION */}
       <section ref={directoryRef} className="space-y-6">
-        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-border/60 pb-4">
+        <motion.div {...REVEAL_VARIANTS} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800 pb-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-600">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-500">
               <Building2 className="w-4 h-4" />
               <span>Complete Directory</span>
             </div>
-            <h2 className="os-section-title">
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">
               {debouncedSearch ? `Search Results for "${debouncedSearch}"` : 'All Physical Libraries'}
             </h2>
           </div>
         </motion.div>
 
-        {/* TOOLBAR CARD: Search Input, 25 Cambodian Provinces Selector, & Sort Dropdown */}
-        <div className="bg-white border border-brand-border/70 rounded-2xl p-4 sm:p-5 shadow-2xs">
-          <div className="flex flex-col xl:flex-row xl:items-center flex-wrap gap-3">
+        {/* TOOLBAR CARD: Responsive Search & Filters */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-2xs space-y-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             {/* Real-time Showing Count */}
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 shrink-0">
-              <SlidersHorizontal className="w-4 h-4 text-gold-600 shrink-0" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 shrink-0">
+              <SlidersHorizontal className="w-4 h-4 text-amber-500 shrink-0" />
               <span>
-                Showing <strong className="text-navy-800">{startItem}–{endItem}</strong> of <strong className="text-navy-800">{meta.total}</strong> libraries
+                Showing <strong className="text-slate-900 dark:text-white">{startItem}–{endItem}</strong> of <strong className="text-slate-900 dark:text-white">{meta.total}</strong> libraries
               </span>
             </div>
 
             {/* Embedded Search Input */}
-            <div className="relative flex-1 min-w-[220px] max-w-md w-full">
+            <div className="relative flex-1 min-w-0 max-w-full md:max-w-md w-full">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search library name, address, or location..."
                 value={searchInput}
                 onChange={handleSearchChange}
-                className="os-input h-10 pl-10 pr-10 text-xs font-medium"
+                className="w-full h-11 pl-10 pr-10 text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
               />
               {searchInput && (
                 <button
                   onClick={() => { setSearchInput(''); setPage(1); }}
                   aria-label="Clear library search"
-                  className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
+          </div>
 
-            {/* Selectors: All 25 Provinces of Cambodia & Sort Dropdown */}
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              {/* Custom Animated 25 Cambodian Provinces Dropdown */}
-              <ProvinceDropdown
-                selectedValue={selectedProvince}
-                onChange={handleProvinceChange}
-              />
-
-              {/* Custom Animated Sort Dropdown */}
-              <SortDropdown
-                selectedValue={sortBy}
-                onChange={setSortBy}
-              />
-            </div>
+          {/* Selectors: All 25 Provinces of Cambodia & Sort Dropdown */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+            <ProvinceDropdown
+              selectedValue={selectedProvince}
+              onChange={handleProvinceChange}
+            />
+            <SortDropdown
+              selectedValue={sortBy}
+              onChange={setSortBy}
+            />
           </div>
         </div>
 
