@@ -20,7 +20,7 @@ export default function BottomNav() {
     ? [
         { icon: Home, label: "Home", path: "/" },
         { icon: BookOpen, label: "Books", path: "/books" },
-        { icon: Clock, label: "Loans", path: "/member/borrowings" },
+        { icon: Building2, label: "Libraries", path: "/libraries" },
         { icon: Bell, label: "Alerts", path: "/member/notifications", badge: unreadCount },
         { icon: User, label: "Profile", path: "/member/profile" },
       ]
