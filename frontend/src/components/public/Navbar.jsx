@@ -362,7 +362,7 @@ export default function Navbar() {
                         <button
                           type="button"
                           onClick={toggleDarkMode}
-                          className="flex items-center justify-between w-full px-3.5 py-2.5 text-xs font-extrabold text-navy-800 hover:text-gold-600 hover:bg-amber-50/80 rounded-xl transition-all duration-200 group cursor-pointer"
+                          className="flex items-center justify-between w-full px-3.5 py-2.5 text-xs font-extrabold text-navy-800 dark:text-slate-200 hover:text-gold-600 hover:bg-amber-50/80 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 group cursor-pointer"
                         >
                           <div className="flex items-center gap-3">
                             {darkMode ? (
@@ -372,8 +372,7 @@ export default function Navbar() {
                             )}
                             <span>{darkMode ? 'Light Mode' : 'Night Mode'}</span>
                           </div>
-                          
-                          <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300'}`}>
+                          <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
                             <div className={`w-3.5 h-3.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${darkMode ? 'translate-x-3.5' : 'translate-x-0'}`} />
                           </div>
                         </button>
@@ -385,32 +384,19 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="flex lg:hidden items-center gap-2">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              aria-expanded={mobileMenuOpen}
-               className="os-btn-secondary h-11 w-11 px-0 items-center justify-center"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+          <div className="flex md:hidden items-center gap-2">
+            <button onClick={() => setSearchModalOpen(true)} aria-label="Search" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"><Search className="w-5 h-5" /></button>
+            <button onClick={() => setMobileMenuOpen(true)} aria-label="Open menu" className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl cursor-pointer"><Menu className="w-6 h-6" /></button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      <SearchModal isOpen={searchModalOpen} onClose={() => setSearchModalOpen(false)} />
+
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Backdrop */}
-            <motion.div
-              {...BACKDROP_MOTION_VARIANTS}
-              className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[80] lg:hidden"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-
-            {/* Drawer */}
+            <motion.div {...BACKDROP_MOTION_VARIANTS} className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[80] lg:hidden" onClick={() => setMobileMenuOpen(false)} />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -419,218 +405,87 @@ export default function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Navigation menu"
-              className="fixed top-0 right-0 h-[100dvh] w-[86vw] max-w-sm bg-white dark:bg-slate-900 border-l border-slate-200/90 dark:border-slate-800 shadow-2xl z-[90] lg:hidden flex flex-col justify-between overflow-y-auto"
+              className="fixed top-0 right-0 h-[100dvh] w-[88vw] max-w-sm bg-white dark:bg-slate-900 border-l border-slate-200/80 dark:border-slate-800 shadow-2xl z-[90] lg:hidden flex flex-col justify-between overflow-y-auto rounded-l-[32px]"
             >
-              {/* Top Header */}
-              <div>
-                <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/80 dark:bg-slate-950/60 backdrop-blur-md">
-                  {isAuthenticated && user ? (
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 text-slate-950 font-black text-lg flex items-center justify-center shadow-md shadow-amber-500/20 overflow-hidden shrink-0 ring-2 ring-amber-400/40">
+              <div className="p-4 sm:p-5 space-y-5">
+                {isAuthenticated && user ? (
+                  <div className="bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800/40 rounded-3xl p-4 flex items-center justify-between shadow-2xs">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="w-13 h-13 rounded-full ring-2 ring-amber-400 p-0.5 object-cover overflow-hidden bg-white dark:bg-slate-900 shadow-sm shrink-0 flex items-center justify-center">
                         {getAvatarUrl(user.avatar_url || user.avatar) ? (
-                          <img
-                            src={getAvatarUrl(user.avatar_url || user.avatar)}
-                            alt={user.name}
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={getAvatarUrl(user.avatar_url || user.avatar)} alt={user.name} className="w-full h-full rounded-full object-cover" />
                         ) : (
-                          <span>{user.name ? user.name[0].toUpperCase() : 'U'}</span>
+                          <div className="w-full h-full rounded-full bg-amber-400 text-slate-950 font-black text-lg flex items-center justify-center">{user.name ? user.name[0].toUpperCase() : 'U'}</div>
                         )}
                       </div>
                       <div className="min-w-0 space-y-0.5">
-                        <h4 className="text-sm font-black text-slate-900 dark:text-white truncate leading-tight tracking-tight">
-                          {user.name}
-                        </h4>
-                        {user.email && (
-                          <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 truncate leading-none">
-                            {user.email}
-                          </p>
-                        )}
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-amber-500/15 dark:bg-amber-400/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                          {user.role}
-                        </span>
+                        <h4 className="text-base font-extrabold text-slate-900 dark:text-white truncate leading-tight">{user.name}</h4>
+                        {user.email && <p className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate leading-none">{user.email}</p>}
+                        <div className="pt-0.5">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-amber-950 shadow-2xs"><Crown className="w-3 h-3 fill-amber-950" /><span>{user.role}</span></span>
+                        </div>
                       </div>
                     </div>
-                  ) : (
+                    <button onClick={() => setMobileMenuOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs cursor-pointer shrink-0 ml-2"><X className="w-4.5 h-4.5" /></button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                     <OpenShelfBrand role="member" size="sm" />
-                  )}
-
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    aria-label="Close navigation menu"
-                    className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white bg-slate-200/60 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all cursor-pointer shrink-0 shadow-2xs"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Content body */}
-                <div className="p-4 sm:p-5 space-y-5">
-                  {/* Search bar inside mobile menu */}
-                  <form onSubmit={handleSearchSubmit} className="relative">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                    <input
-                      type="text"
-                      placeholder="Search catalogue, libraries, authors..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      aria-label="Search books"
-                      className="w-full h-11 pl-10 pr-4 text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all shadow-2xs"
-                    />
-                  </form>
-
-                  {/* Explore & Directory Section (Distinct from Bottom Nav) */}
-                  <div className="space-y-1.5">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-3">
-                      Explore OpenShelf
-                    </span>
-                    <nav className="space-y-1 pt-1">
-                      <Link
-                        to="/libraries"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all group ${
-                          location.pathname.startsWith('/libraries')
-                            ? 'bg-amber-500/12 dark:bg-amber-400/15 text-amber-900 dark:text-amber-300 border border-amber-500/30 dark:border-amber-400/30 font-black shadow-2xs'
-                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80'
-                        }`}
-                      >
-                        <Building2 className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${location.pathname.startsWith('/libraries') ? 'text-amber-600 dark:text-amber-400' : 'text-amber-500'}`} />
-                        <span className="flex-1">Partner Libraries</span>
-                      </Link>
-
-                      <Link
-                        to="/categories"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all group ${
-                          location.pathname.startsWith('/categories')
-                            ? 'bg-amber-500/12 dark:bg-amber-400/15 text-amber-900 dark:text-amber-300 border border-amber-500/30 dark:border-amber-400/30 font-black shadow-2xs'
-                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80'
-                        }`}
-                      >
-                        <Layers className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${location.pathname.startsWith('/categories') ? 'text-amber-600 dark:text-amber-400' : 'text-amber-500'}`} />
-                        <span className="flex-1">Book Categories</span>
-                      </Link>
-
-                      {isAuthenticated && user?.role === 'member' && (
-                        <Link
-                          to="/member/favorites"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all group ${
-                            location.pathname.startsWith('/member/favorites')
-                              ? 'bg-amber-500/12 dark:bg-amber-400/15 text-amber-900 dark:text-amber-300 border border-amber-500/30 dark:border-amber-400/30 font-black shadow-2xs'
-                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80'
-                        }`}
-                        >
-                          <Bookmark className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${location.pathname.startsWith('/member/favorites') ? 'text-amber-600 dark:text-amber-400' : 'text-amber-500'}`} />
-                          <span className="flex-1">Saved Wishlist</span>
-                        </Link>
-                      )}
-
-                      <Link
-                        to="/become-librarian"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all group ${
-                          location.pathname.startsWith('/become-librarian')
-                            ? 'bg-amber-500/12 dark:bg-amber-400/15 text-amber-900 dark:text-amber-300 border border-amber-500/30 dark:border-amber-400/30 font-black shadow-2xs'
-                            : 'text-sky-700 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40'
-                        }`}
-                      >
-                        <Sparkles className={`w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 ${location.pathname.startsWith('/become-librarian') ? 'text-amber-600 dark:text-amber-400' : 'text-sky-500'}`} />
-                        <span className="flex-1">For Librarians</span>
-                      </Link>
-                    </nav>
+                    <button onClick={() => setMobileMenuOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs cursor-pointer shrink-0"><X className="w-4.5 h-4.5" /></button>
                   </div>
-
-                  {/* Special Workspaces (For Librarian / Admin) */}
-                  {isAuthenticated && (user?.role === 'librarian' || user?.role === 'admin') && (
-                    <div className="space-y-1.5 pt-3 border-t border-slate-100 dark:border-slate-800">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-3">
-                        Staff Workspaces
-                      </span>
-                      <div className="space-y-1 pt-1">
-                        {user?.role === 'librarian' && (
-                          <Link
-                            to="/librarian"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all"
-                          >
-                            <LayoutDashboard className="w-4 h-4 text-amber-500 shrink-0" />
-                            <span className="flex-1">Librarian Workspace</span>
-                          </Link>
-                        )}
-
-                        {user?.role === 'admin' && (
-                          <Link
-                            to="/admin"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-2xs hover:bg-slate-200 dark:hover:bg-slate-750 transition-all"
-                          >
-                            <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />
-                            <span className="flex-1">Admin Portal</span>
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Guest Login/Register Buttons */}
-                  {!isAuthenticated && (
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
-                      <Link
-                        to="/login"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-center h-10 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-                      >
-                        Sign In
-                      </Link>
-                      <Link
-                        to="/register"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-center h-10 bg-gradient-to-r from-amber-400 via-gold-500 to-amber-500 hover:brightness-105 text-navy-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20 transition-all cursor-pointer"
-                      >
-                        Get Started Free
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Bottom Footer: Dark Mode Toggle & Logout */}
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 space-y-2.5 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-                {/* Dark Mode Switcher */}
-                <button
-                  type="button"
-                  onClick={toggleDarkMode}
-                  className="flex items-center justify-between w-full px-3.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5">
-                    {darkMode ? (
-                      <Sun className="w-4 h-4 text-amber-400 shrink-0" />
-                    ) : (
-                      <Moon className="w-4 h-4 text-slate-500 shrink-0" />
-                    )}
-                    <span>{darkMode ? 'Light Theme' : 'Dark Theme'}</span>
-                  </div>
-                  
-                  <div className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
-                    <div className={`w-3.5 h-3.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${darkMode ? 'translate-x-3.5' : 'translate-x-0'}`} />
-                  </div>
-                </button>
-
-                {/* Sign Out Button */}
-                {isAuthenticated && (
-                  <button
-                    onClick={async () => {
-                      setMobileMenuOpen(false);
-                      await logout();
-                      navigate('/login');
-                    }}
-                    className="flex items-center justify-center gap-2 w-full h-10 font-bold text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all border border-rose-200/80 dark:border-rose-900/40 cursor-pointer shadow-2xs"
-                  >
-                    <LogOut className="w-4 h-4 text-rose-500 shrink-0" />
-                    <span>Sign Out</span>
-                  </button>
                 )}
+                <form onSubmit={handleSearchSubmit} className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <input type="text" placeholder="Search catalogue, libraries, authors..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full h-12 pl-11 pr-4 text-xs font-semibold bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 dark:focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all shadow-2xs" />
+                </form>
+                <div className="space-y-1.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">EXPLORE OPENSHELF</span>
+                  <nav className="space-y-1 pt-1">
+                    <Link to="/libraries" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${location.pathname.startsWith('/libraries') ? 'bg-amber-100/80 dark:bg-amber-950/60 text-slate-950 dark:text-white border border-amber-200/80 dark:border-amber-800/60 shadow-2xs' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'}`}><div className="flex items-center gap-3.5"><Building2 className="w-5 h-5 text-amber-500 shrink-0" /><span>Partner Libraries</span></div><ChevronRight className="w-4 h-4 text-slate-400 shrink-0" /></Link>
+                    <Link to="/categories" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${location.pathname.startsWith('/categories') ? 'bg-amber-100/80 dark:bg-amber-950/60 text-slate-950 dark:text-white border border-amber-200/80 dark:border-amber-800/60 shadow-2xs' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'}`}><div className="flex items-center gap-3.5"><Layers className="w-5 h-5 text-amber-500 shrink-0" /><span>Book Categories</span></div><ChevronRight className="w-4 h-4 text-slate-400 shrink-0" /></Link>
+                    {isAuthenticated && user?.role === 'member' && (
+                      <Link to="/member/favorites" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${location.pathname.startsWith('/member/favorites') ? 'bg-amber-100/80 dark:bg-amber-950/60 text-slate-950 dark:text-white border border-amber-200/80 dark:border-amber-800/60 shadow-2xs' : 'text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60'}`}><div className="flex items-center gap-3.5"><Bookmark className="w-5 h-5 text-amber-500 shrink-0" /><span>Saved Wishlist</span></div><ChevronRight className="w-4 h-4 text-slate-400 shrink-0" /></Link>
+                    )}
+                    <Link to="/become-librarian" onClick={() => setMobileMenuOpen(false)} className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all ${location.pathname.startsWith('/become-librarian') ? 'bg-sky-100/80 dark:bg-sky-950/60 text-sky-950 dark:text-sky-200 border border-sky-200/80 dark:border-sky-800/60 shadow-2xs' : 'text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40'}`}><div className="flex items-center gap-3.5"><Sparkles className="w-5 h-5 text-sky-500 shrink-0" /><span>For Librarians</span></div><ChevronRight className="w-4 h-4 text-sky-400 shrink-0" /></Link>
+                  </nav>
+                </div>
+                {isAuthenticated && (user?.role === 'librarian' || user?.role === 'admin') && (
+                  <div className="space-y-1.5 pt-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">STAFF WORKSPACES</span>
+                    <div className="space-y-1 pt-1">
+                      {user?.role === 'librarian' && (
+                        <Link to="/librarian" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs"><div className="flex items-center gap-3.5"><LayoutDashboard className="w-5 h-5 text-amber-500 shrink-0" /><span>Librarian Workspace</span></div><ChevronRight className="w-4 h-4 text-amber-400 shrink-0" /></Link>
+                      )}
+                      {user?.role === 'admin' && (
+                        <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-2xs"><div className="flex items-center gap-3.5"><ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" /><span>Admin Portal</span></div><ChevronRight className="w-4 h-4 text-slate-400 shrink-0" /></Link>
+                      )}
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-1.5 pt-2">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">SETTINGS</span>
+                  <div className="pt-1">
+                    <button type="button" onClick={toggleDarkMode} className="flex items-center justify-between w-full px-2 py-2 text-sm font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all cursor-pointer">
+                      <div className="flex items-center gap-3.5">{darkMode ? <Sun className="w-5 h-5 text-amber-400 shrink-0" /> : <Moon className="w-5 h-5 text-slate-700 dark:text-slate-300 shrink-0" />}<span>Dark Theme</span></div>
+                      <div className={`w-12 h-6.5 rounded-full p-0.5 transition-colors duration-300 flex items-center ${darkMode ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-700'}`}><div className={`w-5.5 h-5.5 rounded-full bg-white shadow-md transform transition-transform duration-300 ${darkMode ? 'translate-x-5.5' : 'translate-x-0'}`} /></div>
+                    </button>
+                  </div>
+                </div>
+                {isAuthenticated && (
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">ACCOUNT</span>
+                    <button onClick={async () => { setMobileMenuOpen(false); await logout(); navigate('/login'); }} className="flex items-center justify-center gap-2 w-full h-12 rounded-2xl border-2 border-rose-400/80 dark:border-rose-800/80 text-rose-600 dark:text-rose-400 bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-extrabold text-sm shadow-2xs transition-all cursor-pointer"><LogOut className="w-4 h-4 text-rose-500 shrink-0" /><span>Sign Out</span></button>
+                  </div>
+                )}
+                {!isAuthenticated && (
+                  <div className="pt-2 flex flex-col gap-2.5">
+                    <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-center h-12 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-bold rounded-2xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer">Sign In</Link>
+                    <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-center h-12 bg-gradient-to-r from-amber-400 via-gold-500 to-amber-500 hover:brightness-105 text-navy-950 text-xs font-black rounded-2xl shadow-md shadow-amber-500/20 transition-all cursor-pointer">Get Started Free</Link>
+                  </div>
+                )}
+                <div className="pt-3 pb-2 flex justify-center opacity-85 dark:opacity-60 pointer-events-none">
+                  <svg className="w-36 h-20" viewBox="0 0 160 80" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="74" rx="70" ry="6" fill="currentColor" className="text-slate-100 dark:text-slate-800" /><rect x="52" y="24" width="10" height="48" rx="2" fill="#F59E0B" /><rect x="64" y="16" width="12" height="56" rx="2" fill="#3B82F6" /><rect x="78" y="28" width="9" height="44" rx="2" fill="#10B981" /><rect x="89" y="20" width="11" height="52" rx="2" fill="#64748B" /><path d="M110 40C110 32 116 28 116 28C116 28 122 32 122 40C122 46 116 48 116 48C116 48 110 46 110 40Z" fill="#10B981" /><line x1="116" y1="48" x2="116" y2="58" stroke="#059669" strokeWidth="2" strokeLinecap="round" /><path d="M110 58L122 58L119 72L113 72L110 58Z" fill="#334155" /></svg>
+                </div>
               </div>
             </motion.div>
           </>
