@@ -220,9 +220,9 @@ export default function CategoriesList() {
       <div ref={directoryRef} className="space-y-8">
         {loading ? (
           /* Skeleton Loading Cards (4 columns x 3 rows = 12 cards) */
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
-              <div key={n} className="w-full sm:w-[calc(50%_-_0.75rem)] lg:w-[calc(25%_-_1.125rem)] bg-white dark:bg-[#0B1E34] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4 animate-pulse h-48">
+              <div key={n} className="w-full bg-white dark:bg-[#0B1E34] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4 animate-pulse h-48">
                 <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl" />
                 <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4" />
                 <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
@@ -258,7 +258,7 @@ export default function CategoriesList() {
               variants={LIST_STAGGER}
               initial="initial"
               animate="animate"
-              className="flex flex-wrap justify-center gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
             >
               {categories.map((cat) => {
                 const targetLibraryId = libraryId || cat.library_id;
@@ -273,7 +273,7 @@ export default function CategoriesList() {
                     variants={LIST_ITEM}
                     whileHover={{ y: -6 }}
                     transition={{ duration: 0.3, ease: 'easeOut' }}
-                    className="w-full sm:w-[calc(50%_-_0.75rem)] lg:w-[calc(25%_-_1.125rem)]"
+                    className="w-full"
                   >
                     <Link
                       to={bookTarget}

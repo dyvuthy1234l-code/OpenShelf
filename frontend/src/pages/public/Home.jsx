@@ -319,10 +319,10 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-5 pb-4 sm:pb-0 snap-x scrollbar-none"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
           >
             {[...Array(4)].map((_, i) => (
-              <div key={`lib-skeleton-${i}`} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%_-_0.625rem)] lg:w-[calc(25%_-_0.9375rem)] snap-center shrink-0">
+              <div key={`lib-skeleton-${i}`} className="w-full">
                 <LibrarySkeleton />
               </div>
             ))}
@@ -339,10 +339,10 @@ export default function Home() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-5 pb-4 sm:pb-0 snap-x scrollbar-none"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
           >
             {libraries.map((library, idx) => (
-              <motion.div key={library.id} variants={LIST_ITEM} className="min-w-[85vw] sm:min-w-0 sm:w-[calc(50%_-_0.625rem)] lg:w-[calc(25%_-_0.9375rem)] snap-center shrink-0">
+              <motion.div key={library.id} variants={LIST_ITEM} className="w-full">
                 <LibraryCard library={library} rankIndex={idx} />
               </motion.div>
             ))}
@@ -377,7 +377,7 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="flex flex-wrap justify-center gap-5"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"
           >
             {[...Array(10)].map((_, i) => (
               <BookSkeleton key={`book-skeleton-${i}`} />
@@ -394,10 +394,10 @@ export default function Home() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="flex flex-wrap justify-center gap-5"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"
           >
             {availableBooks.map((book) => (
-              <motion.div key={book.id} variants={LIST_ITEM} className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)]">
+              <motion.div key={book.id} variants={LIST_ITEM} className="h-full">
                 <BookCard book={book} />
               </motion.div>
             ))}
@@ -437,7 +437,7 @@ export default function Home() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="flex flex-wrap justify-center gap-5"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"
           >
             {[...Array(10)].map((_, i) => (
               <BookSkeleton key={`recent-skeleton-${i}`} />
@@ -453,10 +453,10 @@ export default function Home() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: '-60px' }}
-            className="flex flex-wrap justify-center gap-5"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5"
           >
             {recentlyAddedBooks.map((book) => (
-              <motion.div key={`recent-${book.id}`} variants={LIST_ITEM} className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)]">
+              <motion.div key={`recent-${book.id}`} variants={LIST_ITEM} className="h-full">
                 <BookCard book={book} showDateAdded={true} />
               </motion.div>
             ))}

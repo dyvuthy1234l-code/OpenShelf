@@ -174,7 +174,7 @@ export default function MemberProfile() {
   };
 
   return (
-    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5 lg:h-[calc(100vh-70px)] flex flex-col justify-between overflow-hidden">
+    <motion.div {...PAGE_MOTION_VARIANTS} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5 min-h-screen lg:min-h-0 lg:h-[calc(100vh-70px)] flex flex-col justify-between overflow-y-auto lg:overflow-hidden pb-16 lg:pb-0">
       {/* Hidden File Input */}
       <input
         ref={fileInputRef}
@@ -224,7 +224,7 @@ export default function MemberProfile() {
       </div>
 
       {/* Main Grid: Left Avatar Card + Right Tabbed Form */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 flex-1 min-h-0 items-stretch overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 flex-1 min-h-0 items-stretch overflow-visible lg:overflow-hidden">
         
         {/* Left Column: Avatar & Identity Card */}
         <div className="lg:col-span-4 bg-white border border-slate-200/90 rounded-3xl p-5 shadow-xs flex flex-col items-center justify-between text-center relative overflow-hidden">

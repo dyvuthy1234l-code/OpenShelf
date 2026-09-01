@@ -501,10 +501,10 @@ export default function LibrariesList() {
               variants={LIST_STAGGER}
               initial="initial"
               animate="animate"
-              className="flex flex-wrap justify-center gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
             >
               {sortedLibraries.map((lib) => (
-                <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="w-full md:w-[calc(50%_-_0.75rem)] lg:w-[calc(33.333%_-_1rem)]">
+                <motion.div key={`all-${lib.id}`} variants={LIST_ITEM} className="w-full">
                   <LibraryCard library={lib} />
                 </motion.div>
               ))}

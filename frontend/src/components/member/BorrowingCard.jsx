@@ -147,7 +147,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
         </div>
 
         {/* Dates Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs text-slate-600 pt-1">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs text-slate-600 pt-1">
           <div>
             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Requested</span>
             <span className="font-bold text-slate-800 tabular-nums">
@@ -231,12 +231,12 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
         )}
 
         {/* Action Buttons: Request Return & Extend Loan */}
-        <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3 pt-2">
           {(status === 'borrowed' || status === 'picked_up') && !isOverdue && status !== 'return_requested' && (
             <button
               onClick={handleExtend}
               disabled={extending}
-              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50 cursor-pointer"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200 transition-all disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${extending ? 'animate-spin' : ''}`} />
               <span>{extending ? 'Extending...' : 'Extend Loan'}</span>
@@ -246,7 +246,7 @@ export default function BorrowingCard({ borrowing, onActionSuccess }) {
           {isEligibleForReturn && (
             <button
               onClick={() => setShowReturnModal(true)}
-              className="inline-flex min-h-11 items-center gap-1.5 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
             >
               <ArrowRightLeft className="w-3.5 h-3.5" />
               <span>Request Return</span>

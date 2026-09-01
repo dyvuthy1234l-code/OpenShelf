@@ -131,7 +131,7 @@ export default function MemberFavorites() {
         />
       ) : (
         <div className="space-y-8">
-          <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="flex flex-wrap justify-center gap-5">
+          <motion.div variants={LIST_STAGGER} initial="initial" animate="animate" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5">
             {displayFavorites.map((fav) => {
               const book = fav.book || fav;
               if (!book || !book.id) return null;
@@ -140,7 +140,7 @@ export default function MemberFavorites() {
                 <motion.div
                   key={fav.id || book.id}
                   variants={LIST_ITEM}
-                  className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)] lg:w-[calc(20%_-_1rem)]"
+                  className="h-full"
                 >
                   <BookCard book={book} />
                 </motion.div>
